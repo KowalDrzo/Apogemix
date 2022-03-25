@@ -1,10 +1,22 @@
 #include <FS.h>
 #include "PinDefinitions.h"
 #include "Globals.h"
+#include <Wire.h>
+#include <SPI.h>
+#include <Adafruit_BMP085.h>
+#include <ESP8266WiFi.h>
+
+GlobalAggregator glob;
+
+Adafruit_BMP085 bmp;
 
 void setup() {
 
-    Serial.begin(115200);
+    Serial.begin(74880);
+    Serial.setTimeout(10);
+
+    Wire.begin(12, 2);
+    bmp.begin(3);
 
     pinMode(SEPAR1_PIN, OUTPUT);
     pinMode(SEPAR2_PIN, OUTPUT);
@@ -15,8 +27,17 @@ void setup() {
 
     Serial.println("siema");
     Serial.println((int)sizeof(DataFrame));
+
+    // TODO config!!!
+
+
+    // LOOPS:
+    glob.loops.railLoop();
+    glob.loops.flightLoop();
+    glob.loops.sep1Loop();
+    glob.loops.sep2Loop();
+    glob.loops.groundLoop();
 }
 
 void loop() {
-
 }
