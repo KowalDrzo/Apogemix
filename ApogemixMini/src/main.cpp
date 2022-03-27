@@ -32,10 +32,19 @@ void setup() {
 
 
     // LOOPS:
+    glob.dataFrame.rocketState = RAIL;
     glob.loops.railLoop();
+
+    glob.dataFrame.rocketState = FLIGHT;
     glob.loops.flightLoop();
+
+    glob.dataFrame.rocketState = FIRST_SEPAR;
     glob.loops.sep1Loop();
+
+    glob.dataFrame.rocketState = SECOND_SEPAR;
     glob.loops.sep2Loop();
+
+    glob.dataFrame.rocketState = GROUND;
     glob.loops.groundLoop();
 }
 

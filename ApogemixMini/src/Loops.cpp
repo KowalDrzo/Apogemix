@@ -1,29 +1,29 @@
 #include "Loops.h"
 
-void Loops::railLoop() {
+void StateLoops::railLoop() {
 
 }
 
 /*********************************************************************/
 
-void Loops::flightLoop() {
+void StateLoops::flightLoop() {
 
 }
 
 /*********************************************************************/
 
-void Loops::sep1Loop() {
+void StateLoops::sep1Loop() {
 
 }
 
 /*********************************************************************/
 
-void Loops::sep2Loop() {
+void StateLoops::sep2Loop() {
 
 }
 
 /*********************************************************************/
 
-void Loops::groundLoop() {
+void StateLoops::groundLoop() {
 
 }

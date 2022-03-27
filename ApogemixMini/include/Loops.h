@@ -1,7 +1,9 @@
 #ifndef LOOPS_H
 #define LOOPS_H
 
-class Loops {
+#include "Tasks.h"
+
+class StateLoops {
 
 public:
     

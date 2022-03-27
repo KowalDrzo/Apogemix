@@ -3,8 +3,11 @@
 
 #include <Arduino.h>
 #include <stdint.h>
+#include <vector>
 
 #include "Loops.h"
+
+using std::vector;
 
 struct Flight {
     
@@ -34,14 +37,6 @@ enum RocketState {
     GROUND
 };
 
-struct GlobalAggregator {
-    
-    Memory memory;
-    float initialPressure;
-    uint8_t rocketState : 3;
-    Loops loops;
-};
-
 struct DataFrame {
 
     uint32_t time;
@@ -51,6 +46,16 @@ struct DataFrame {
     bool continuity1 : 1;
     bool continuity2 : 1;
     char rocketState : 3;
+};
+
+struct GlobalAggregator {
+
+    DataFrame dataFrame;
+    vector<DataFrame> dataFramesVec;
+    Memory memory;
+    float initialPressure;
+    uint8_t rocketState : 3;
+    StateLoops loops;
 };
 
 extern GlobalAggregator glob;
