@@ -1,5 +1,4 @@
 #include <FS.h>
-#include "PinDefinitions.h"
 #include "Globals.h"
 #include <Wire.h>
 #include <SPI.h>
