@@ -10,7 +10,7 @@
 #define CONT1_PIN 14
 #define CONT2_PIN 16
 
-#define SDA_PIN 15
+#define SDA_PIN 12
 #define SCL_PIN 2
 
 #endif

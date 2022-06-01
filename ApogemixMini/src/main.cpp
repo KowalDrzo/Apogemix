@@ -15,7 +15,7 @@ void setup() {
     Serial.begin(74880);
     Serial.setTimeout(10);
 
-    Wire.begin(12, 2);
+    Wire.begin(SDA_PIN, SCL_PIN);
     bmp.begin(3);
 
     pinMode(SEPAR1_PIN, OUTPUT);
