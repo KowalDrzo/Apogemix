@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include "PinDefinitions.h"
+#include "Timer.h"
 
 class Tasks {
 

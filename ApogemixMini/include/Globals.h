@@ -2,9 +2,8 @@
 #define GLOBALS_H
 
 #include <Arduino.h>
-#include <stdint.h>
-#include <vector>
 
+#include "FixedFifo.h"
 #include "Loops.h"
 
 using std::vector;
@@ -17,6 +16,7 @@ struct Flight {
 };
 
 #define FLIGHTS_IN_MEM 50
+#define FRAMES_IN_Q 150
 
 struct Memory {
 
@@ -51,7 +51,7 @@ struct DataFrame {
 struct GlobalAggregator {
 
     DataFrame dataFrame;
-    vector<DataFrame> dataFramesVec;
+    FixedFifo<DataFrame, FRAMES_IN_Q> dataFramesFifo;
     Memory memory;
     float initialPressure;
     uint8_t rocketState : 3;
