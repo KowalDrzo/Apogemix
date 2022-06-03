@@ -36,8 +36,8 @@ struct DataFrame {
 
     uint32_t time;
     float pressure;
-    float altitude;
-    float speed;
+    int16_t altitude;
+    int16_t speed;
     bool continuity1 : 1;
     bool continuity2 : 1;
     char rocketState : 3;

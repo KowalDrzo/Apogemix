@@ -6,10 +6,17 @@ void StateLoops::railLoop() {
 
     pressMeasureTimer.start(200);
 
+    uint32_t testTim = millis();
+
     while (1) {
 
         if (pressMeasureTimer.check()) {
             tasks.measure();
+            glob.dataFramesFifo.push(glob.dataFrame);
+            Serial.println(glob.dataFramesFifo.size());
+
+            Serial.println(millis() - testTim);
+            testTim = millis();
         }
     }
 }
