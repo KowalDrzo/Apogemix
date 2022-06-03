@@ -1,10 +1,16 @@
 #include "Loops.h"
 
+StateLoops loops;
+
 void StateLoops::railLoop() {
+
+    pressMeasureTimer.start(200);
 
     while (1) {
 
-        
+        if (pressMeasureTimer.check()) {
+            tasks.measure();
+        }
     }
 }
 
