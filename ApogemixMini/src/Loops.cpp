@@ -32,6 +32,7 @@ void StateLoops::ignitionLoop(bool apogee) {
 void StateLoops::railLoop() {
 
     pressMeasureTimer.start(200);
+    Website website;
 
     while (1) {
 
@@ -39,6 +40,11 @@ void StateLoops::railLoop() {
             
             dataLoop(0);
             if (tasks.isLaunchDetected()) break;
+
+            if (!digitalRead(SWITCH_PIN) && !website.isEnabled()) {
+
+                website.start();
+            }
         }
     }
 }

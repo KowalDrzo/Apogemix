@@ -1,5 +1,4 @@
 #include "Loops.h"
-#include <ESP8266WiFi.h>
 
 GlobalAggregator glob;
 
