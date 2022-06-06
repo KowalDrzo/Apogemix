@@ -6,6 +6,10 @@
 class StateLoops {
 
     Timer pressMeasureTimer;
+    Timer ignitionTimer;
+
+    void dataLoop(bool enableFlashWrite);
+    void ignitionLoop(bool apogee);
 
 public:
 

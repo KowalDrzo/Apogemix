@@ -2,6 +2,21 @@
 
 StateLoops loops;
 
+void StateLoops::dataLoop(bool enableFlashWrite) {
+
+    tasks.measure();
+    glob.dataFramesFifo.push(glob.dataFrame);
+    if (enableFlashWrite) tasks.writeToFlash();
+}
+
+/*********************************************************************/
+
+void ignitionLoop(bool apogee) {
+
+}
+
+/*********************************************************************/
+
 void StateLoops::railLoop() {
 
     pressMeasureTimer.start(200);
@@ -10,8 +25,7 @@ void StateLoops::railLoop() {
 
         if (pressMeasureTimer.check()) {
             
-            tasks.measure();
-            glob.dataFramesFifo.push(glob.dataFrame);
+            dataLoop(0);
             if (tasks.isLaunchDetected()) break;
         }
     }
@@ -27,10 +41,7 @@ void StateLoops::flightLoop() {
 
         if (pressMeasureTimer.check()) {
 
-            tasks.measure();
-            glob.dataFramesFifo.push(glob.dataFrame);
-            tasks.writeToFlash();
-
+            dataLoop(1);
             if (tasks.isApogeeDetected()) break;
         }
     }
@@ -46,10 +57,7 @@ void StateLoops::sep1Loop() {
 
         if (pressMeasureTimer.check()) {
 
-            tasks.measure();
-            glob.dataFramesFifo.push(glob.dataFrame);
-            tasks.writeToFlash();
-            
+            dataLoop(1);
             if (tasks.isSecondChuteTime()) break;
         }
     }
@@ -65,10 +73,7 @@ void StateLoops::sep2Loop() {
 
         if (pressMeasureTimer.check()) {
 
-            tasks.measure();
-            glob.dataFramesFifo.push(glob.dataFrame);
-            tasks.writeToFlash();
-            
+            dataLoop(1);
             if (tasks.isOnGround()) break;
         }
     }
