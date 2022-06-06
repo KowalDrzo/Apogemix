@@ -14,7 +14,7 @@
 
 class Tasks {
 
-    uint8_t launchDetectionCriteria = 0;
+    uint8_t criteriaCounter = 0;
 
 public:
 
@@ -25,6 +25,8 @@ public:
 
     bool isLaunchDetected();
     bool isApogeeDetected();
+    bool isSecondChuteTime();
+    bool isOnGround();
 
     void writeToFlash();
 };

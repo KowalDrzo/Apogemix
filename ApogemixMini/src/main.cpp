@@ -24,18 +24,23 @@ void setup() {
 
     // LOOPS:
     glob.dataFrame.rocketState = RAIL;
+    Serial.println("RAIL STATE");
     loops.railLoop();
 
     glob.dataFrame.rocketState = FLIGHT;
+    Serial.println("FLIGHT STATE");
     loops.flightLoop();
 
     glob.dataFrame.rocketState = FIRST_SEPAR;
+    Serial.println("FIRST SEPAR STATE");
     loops.sep1Loop();
 
     glob.dataFrame.rocketState = SECOND_SEPAR;
+    Serial.println("SECOND SEPAR STATE");
     loops.sep2Loop();
 
     glob.dataFrame.rocketState = GROUND;
+    Serial.println("GROUND STATE");
     loops.groundLoop();
 }
 

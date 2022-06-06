@@ -21,17 +21,46 @@ bool Tasks::isLaunchDetected() {
 
     if (glob.dataFrame.altitude > 10) {
 
-        launchDetectionCriteria++;
-        if (launchDetectionCriteria > 2) return true;
+        criteriaCounter++;
+        if (criteriaCounter > 2) {
+
+            criteriaCounter = 0;
+            return true;
+        } 
     }
-    else launchDetectionCriteria = 0;
+    else criteriaCounter = 0;
 
     return false;
 }
 
 /*********************************************************************/
 
-bool isApogeeDetected() {
+bool Tasks::isApogeeDetected() {
+
+    if (glob.dataFrame.speed < -1) {
+
+        criteriaCounter++;
+        if (criteriaCounter > 2) {
+
+            criteriaCounter = 0;
+            return true;
+        }
+    }
+    else criteriaCounter = 0;
+
+    return false;
+}
+
+/*********************************************************************/
+
+bool Tasks::isSecondChuteTime() {
+
+    // TODO
+
+    return false;
+}
+
+bool Tasks::isOnGround() {
 
     // TODO
 
