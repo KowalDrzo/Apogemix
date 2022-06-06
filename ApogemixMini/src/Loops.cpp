@@ -11,8 +11,20 @@ void StateLoops::dataLoop(bool enableFlashWrite) {
 
 /*********************************************************************/
 
-void ignitionLoop(bool apogee) {
+void StateLoops::ignitionLoop(bool apogee) {
+    
+    ignitionTimer.start(2000);
 
+    if (apogee) digitalWrite(SEPAR1_PIN, 1);
+    else digitalWrite(SEPAR2_PIN, 1);
+
+    while (!ignitionTimer.check()) {
+
+        if (pressMeasureTimer.check()) dataLoop(1);
+    }
+
+    digitalWrite(SEPAR1_PIN, 0);
+    digitalWrite(SEPAR2_PIN, 0);
 }
 
 /*********************************************************************/
@@ -42,7 +54,11 @@ void StateLoops::flightLoop() {
         if (pressMeasureTimer.check()) {
 
             dataLoop(1);
-            if (tasks.isApogeeDetected()) break;
+            if (tasks.isApogeeDetected()) {
+
+                ignitionLoop(1);
+                break;
+            }
         }
     }
 }
@@ -58,7 +74,11 @@ void StateLoops::sep1Loop() {
         if (pressMeasureTimer.check()) {
 
             dataLoop(1);
-            if (tasks.isSecondChuteTime()) break;
+            if (tasks.isSecondChuteTime()) {
+
+                ignitionLoop(0);
+                break;
+            }
         }
     }
 }

@@ -61,14 +61,32 @@ bool Tasks::isApogeeDetected() {
 
 bool Tasks::isSecondChuteTime() {
 
-    // TODO
+    if (glob.dataFrame.altitude < glob.memory.secondSeparAltitude) {
+
+        criteriaCounter++;
+        if (criteriaCounter > CRITERIA_MARGIN) {
+
+            criteriaCounter = 0;
+            return true;
+        }
+    }
+    else criteriaCounter = 0;
 
     return false;
 }
 
 bool Tasks::isOnGround() {
 
-    // TODO
+    if (abs(glob.dataFrame.speed) < 2) {
+
+        criteriaCounter++;
+        if (criteriaCounter > CRITERIA_MARGIN) {
+
+            criteriaCounter = 0;
+            return true;
+        }
+    }
+    else criteriaCounter = 0;
 
     return false;
 }
@@ -77,6 +95,23 @@ bool Tasks::isOnGround() {
 
 void Tasks::writeToFlash() {
 
+    if (!appendFlash) {
 
-    // TODO
+        appendFlash = true;
+        file = SPIFFS.open("/FlightData.apg", "w");
+    }
+    else {
+        file = SPIFFS.open("/FlightData.apg", "a");
+    }
+
+    if (glob.dataFramesFifo.size() > 20) {
+
+        while(glob.dataFramesFifo.size()) {
+            DataFrame tempData = glob.dataFramesFifo.front();
+            glob.dataFramesFifo.pop();
+            file.write((uint8_t*) &tempData, sizeof(tempData));
+        }
+    }
+
+    file.close();
 }

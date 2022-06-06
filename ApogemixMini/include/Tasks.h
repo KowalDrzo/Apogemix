@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <EEPROM.h>
+#include <FS.h>
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_BMP085.h>
@@ -14,6 +15,8 @@
 
 class Tasks {
 
+    File file;
+    bool appendFlash = false;
     uint8_t criteriaCounter = 0;
 
 public:

@@ -1,8 +1,9 @@
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
 
-#define FLIGHTS_IN_MEM 50
-#define FRAMES_IN_Q 100
+#define APOGEMIX_ID 1
+#define FLIGHTS_IN_MEM 30
+#define FRAMES_IN_Q 70
 
 #include <stdint.h>
 

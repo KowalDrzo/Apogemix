@@ -1,4 +1,3 @@
-#include <FS.h>
 #include "Loops.h"
 #include <ESP8266WiFi.h>
 
@@ -19,7 +18,12 @@ void setup() {
     pinMode(CONT1_PIN, INPUT_PULLUP);
     pinMode(CONT2_PIN, INPUT_PULLUP);
 
-    // TODO config!!!
+    // CONFIG:
+    EEPROM.begin(sizeof(glob.memory));
+    EEPROM.get(0, glob.memory);
+    EEPROM.end();
+
+    SPIFFS.begin();
     glob.initialPressure = tasks.bmp.readPressure();
 
     // LOOPS:
