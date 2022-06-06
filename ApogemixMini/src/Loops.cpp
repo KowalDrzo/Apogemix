@@ -6,17 +6,13 @@ void StateLoops::railLoop() {
 
     pressMeasureTimer.start(200);
 
-    uint32_t testTim = millis();
-
     while (1) {
 
         if (pressMeasureTimer.check()) {
+            
             tasks.measure();
             glob.dataFramesFifo.push(glob.dataFrame);
-            Serial.println(glob.dataFramesFifo.size());
-
-            Serial.println(millis() - testTim);
-            testTim = millis();
+            if (tasks.isLaunchDetected()) break;
         }
     }
 }
@@ -24,6 +20,17 @@ void StateLoops::railLoop() {
 /*********************************************************************/
 
 void StateLoops::flightLoop() {
+
+    pressMeasureTimer.start(200);
+
+    tasks.writeToFlash();
+
+    while(1) {
+
+        tasks.measure();
+        glob.dataFramesFifo.push(glob.dataFrame);
+        if (tasks.isApogeeDetected()) break;
+    }
 
 }
 

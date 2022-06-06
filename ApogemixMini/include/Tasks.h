@@ -14,12 +14,19 @@
 
 class Tasks {
 
+    uint8_t launchDetectionCriteria = 0;
+
 public:
 
     Adafruit_BMP085 bmp;
 
     void measure();
     void readEeprom();
+
+    bool isLaunchDetected();
+    bool isApogeeDetected();
+
+    void writeToFlash();
 };
 
 extern Tasks tasks;
