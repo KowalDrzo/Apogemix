@@ -48,9 +48,9 @@ String Website::generateHtml() {
     
     for (uint8_t i = 0; i < FLIGHTS_IN_MEM; i++) {
 
-        html += "<tr><td>" + String(glob.memory.flight->num) + "</td>";
-        html += "<td>" + String(glob.memory.flight->apogee) + "</td>";
-        html += "<td>" + String(glob.memory.flight->maxSpeed) + "</td></tr>";
+        html += "<tr><td>" + String(glob.memory.flight[i].num) + "</td>";
+        html += "<td>" + String(glob.memory.flight[i].apogee) + "</td>";
+        html += "<td>" + String(glob.memory.flight[i].maxSpeed) + "</td></tr>";
     }
     
     html += "</table>    </p><hr>    <p>        Change settings:        <form>            <label for='set1'>Apogee ignite delay:</label><br>            <input type='number' min='1' max='5000' id='set1' name='set1'><br>            <label for='set2'>Second parachute ignition altitude:</label><br>            <input type='number' min='50' max='5000' id='set2' name='set2'><br>            <label for='set3'>Wifi active time:</label><br>            <input type='number' min='2' max='15' id='set3' name='set3'><br>            <br><input type='submit'><hr>        </form>    </p>    </p>    <a href='/wifioff'>Turn off the wifi.</a>    <p><hr>    </body></html>";
