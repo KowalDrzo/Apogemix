@@ -1,7 +1,6 @@
 #ifndef LOOPS_H
 #define LOOPS_H
 
-#include "Tasks.h"
 #include "Website.h"
 
 class StateLoops {

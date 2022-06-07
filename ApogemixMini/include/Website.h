@@ -6,6 +6,8 @@
 #include "ESPAsyncTCP.h"
 #include "ESPAsyncWebServer.h"
 
+#include "Tasks.h"
+
 class Website {
 
     const char* ssid = "Apogemix_mini_1";
@@ -18,6 +20,8 @@ public:
     bool isEnabled() { return enabled; }
     void start();
     void stop();
+    String generateHtml();
+    void handleArgs(AsyncWebServerRequest *request);
 };
 
 #endif

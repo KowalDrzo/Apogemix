@@ -20,7 +20,6 @@ void setup() {
     // CONFIG:
     EEPROM.begin(sizeof(glob.memory));
     EEPROM.get(0, glob.memory);
-    EEPROM.end();
 
     SPIFFS.begin();
     glob.initialPressure = tasks.bmp.readPressure();
