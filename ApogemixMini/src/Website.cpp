@@ -2,9 +2,8 @@
 
 void Website::start() {
 
-    //WiFi.mode(WIFI_AP);
     WiFi.softAP(ssid, password);
-    //WiFi.hostname("Apogemix.mini");
+    MDNS.begin("apogemix");
 
     Serial.println("server on");
     enabled = true;

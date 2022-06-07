@@ -45,7 +45,7 @@ void StateLoops::railLoop() {
             if (!digitalRead(SWITCH_PIN) && !website.isEnabled()) {
 
                 website.start();
-                wifiTimer.start(30 * 1000);
+                wifiTimer.start(3 * 60 * 1000);
             }
             if (website.isEnabled() && wifiTimer.check()) {
 

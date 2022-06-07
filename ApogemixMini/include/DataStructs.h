@@ -21,7 +21,7 @@ struct Memory {
 
     uint16_t firstSeparDelay_ms;
     uint16_t secondSeparAltitude;
-    uint16_t wifiActiveTime;
+    uint16_t wifiActiveTime_min;
 };
 
 enum RocketState {
