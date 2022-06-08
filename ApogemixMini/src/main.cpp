@@ -37,6 +37,7 @@ void setup() {
     loops.flightLoop();
 
     glob.dataFrame.rocketState = FIRST_SEPAR;
+    tasks.updateDataBase();
     Serial.println("FIRST SEPAR STATE");
     loops.sep1Loop();
 

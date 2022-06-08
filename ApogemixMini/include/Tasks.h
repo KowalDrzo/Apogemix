@@ -32,6 +32,7 @@ public:
     bool isOnGround();
 
     void writeToFlash();
+    void updateDataBase();
 
     void clearMem();
 };

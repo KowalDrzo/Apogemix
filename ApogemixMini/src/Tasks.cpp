@@ -18,6 +18,9 @@ void Tasks::measure() {
 
     glob.dataFrame.time = millis();
 
+    if (glob.apogee < glob.dataFrame.altitude) glob.apogee = glob.dataFrame.altitude;
+    if (glob.maxSpeed < glob.dataFrame.speed) glob.maxSpeed = glob.dataFrame.speed;
+
     Serial.printf("%d;%d\n", glob.dataFrame.altitude, glob.dataFrame.speed);
 }
 
@@ -127,6 +130,22 @@ void Tasks::clearMem() {
         glob.memory.flight[i].apogee = 0;
         glob.memory.flight[i].maxSpeed = 0;
     }
+
+    EEPROM.put(0, glob.memory);
+    EEPROM.commit();
+}
+
+/*********************************************************************/
+
+void Tasks::updateDataBase() {
+
+    glob.memory.lastFlightIndex++;
+    if (glob.memory.lastFlightIndex > FLIGHTS_IN_MEM) glob.memory.lastFlightIndex = 0;
+    uint8_t flnum = glob.memory.lastFlightIndex;
+
+    glob.memory.flight[flnum].num = flnum;
+    glob.memory.flight[flnum].apogee = glob.apogee;
+    glob.memory.flight[flnum].maxSpeed = glob.maxSpeed;
 
     EEPROM.put(0, glob.memory);
     EEPROM.commit();

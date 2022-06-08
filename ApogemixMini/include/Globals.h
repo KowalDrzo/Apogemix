@@ -10,6 +10,8 @@ struct GlobalAggregator {
     FixedFifo<DataFrame, FRAMES_IN_Q> dataFramesFifo;
     Memory memory;
     float initialPressure;
+    int16_t apogee = 0;
+    int16_t maxSpeed = 0;
 };
 
 extern GlobalAggregator glob;
