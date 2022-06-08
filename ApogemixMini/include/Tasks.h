@@ -32,6 +32,8 @@ public:
     bool isOnGround();
 
     void writeToFlash();
+
+    void clearMem();
 };
 
 extern Tasks tasks;

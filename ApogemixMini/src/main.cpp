@@ -21,6 +21,9 @@ void setup() {
     EEPROM.begin(sizeof(glob.memory));
     EEPROM.get(0, glob.memory);
 
+    // Only for first programming:
+    //tasks.clearMem();
+
     SPIFFS.begin();
     glob.initialPressure = tasks.bmp.readPressure();
 

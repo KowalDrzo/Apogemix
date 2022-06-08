@@ -115,3 +115,19 @@ void Tasks::writeToFlash() {
 
     file.close();
 }
+
+/*********************************************************************/
+
+void Tasks::clearMem() {
+
+    for (uint8_t i = 0; i < FLIGHTS_IN_MEM; i++) {
+
+        glob.memory.lastFlightIndex = 0;
+        glob.memory.flight[i].num = 0;
+        glob.memory.flight[i].apogee = 0;
+        glob.memory.flight[i].maxSpeed = 0;
+    }
+
+    EEPROM.put(0, glob.memory);
+    EEPROM.commit();
+}
