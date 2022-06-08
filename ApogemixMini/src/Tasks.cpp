@@ -126,6 +126,7 @@ void Tasks::clearMem() {
     for (uint8_t i = 0; i < FLIGHTS_IN_MEM; i++) {
 
         glob.memory.lastFlightIndex = 0;
+        glob.memory.lastFlightNum = 0;
         glob.memory.flight[i].num = 0;
         glob.memory.flight[i].apogee = 0;
         glob.memory.flight[i].maxSpeed = 0;
@@ -141,11 +142,13 @@ void Tasks::updateDataBase() {
 
     glob.memory.lastFlightIndex++;
     if (glob.memory.lastFlightIndex > FLIGHTS_IN_MEM) glob.memory.lastFlightIndex = 0;
-    uint8_t flnum = glob.memory.lastFlightIndex;
+    uint8_t flid = glob.memory.lastFlightIndex;
 
-    glob.memory.flight[flnum].num = flnum;
-    glob.memory.flight[flnum].apogee = glob.apogee;
-    glob.memory.flight[flnum].maxSpeed = glob.maxSpeed;
+    glob.memory.lastFlightNum++;
+
+    glob.memory.flight[flid].num = glob.memory.lastFlightNum;
+    glob.memory.flight[flid].apogee = glob.apogee;
+    glob.memory.flight[flid].maxSpeed = glob.maxSpeed;
 
     EEPROM.put(0, glob.memory);
     EEPROM.commit();

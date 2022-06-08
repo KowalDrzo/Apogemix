@@ -17,6 +17,7 @@ struct Flight {
 struct Memory {
 
     uint8_t lastFlightIndex;
+    uint16_t lastFlightNum;
     Flight flight[FLIGHTS_IN_MEM];
 
     uint16_t firstSeparDelay_ms;
