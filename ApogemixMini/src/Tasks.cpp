@@ -96,7 +96,7 @@ bool Tasks::isOnGround() {
 
 /*********************************************************************/
 
-void Tasks::writeToFlash() {
+void Tasks::writeToFlash(bool force) {
 
     if (!appendFlash) {
 
@@ -107,7 +107,7 @@ void Tasks::writeToFlash() {
         file = SPIFFS.open("/FlightData.apg", "a");
     }
 
-    if (glob.dataFramesFifo.size() > 20) {
+    if (glob.dataFramesFifo.size() > 20 || force) {
 
         while(glob.dataFramesFifo.size()) {
             DataFrame tempData = glob.dataFramesFifo.front();

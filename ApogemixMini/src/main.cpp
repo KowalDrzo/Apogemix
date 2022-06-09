@@ -51,4 +51,7 @@ void setup() {
 }
 
 void loop() {
+
+    delay(1000);
+    Serial.println("Waiting for pickup");
 }

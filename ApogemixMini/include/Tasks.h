@@ -31,7 +31,7 @@ public:
     bool isSecondChuteTime();
     bool isOnGround();
 
-    void writeToFlash();
+    void writeToFlash(bool force = false);
     void updateDataBase();
 
     void clearMem();

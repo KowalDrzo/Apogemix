@@ -115,13 +115,5 @@ void StateLoops::sep2Loop() {
 
 void StateLoops::groundLoop() {
 
-    pressMeasureTimer.start(3000);
-
-    while (1) {
-
-        if (pressMeasureTimer.check()) {
-
-            tasks.writeToFlash();
-        }
-    }
+    tasks.writeToFlash(1);
 }

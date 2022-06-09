@@ -19,6 +19,11 @@ void Website::start() {
         stop();
     });
 
+    server.on("/FlightData.apg", HTTP_GET, [this](AsyncWebServerRequest *request) {
+
+        request->send(SPIFFS, "/FlightData.apg", String());
+    });
+
     server.begin();
 }
 
