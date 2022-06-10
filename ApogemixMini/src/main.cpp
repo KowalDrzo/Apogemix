@@ -24,7 +24,7 @@ void setup() {
     // Only for first programming:
     //tasks.clearMem();
 
-    SPIFFS.begin();
+    tasks.readFlash();
     glob.initialPressure = tasks.bmp.readPressure();
 
     // LOOPS:

@@ -4,6 +4,8 @@
 #define APOGEMIX_ID 1
 #define FLIGHTS_IN_MEM 30
 #define FRAMES_IN_Q 70
+#define ALPHA_H 0.05
+#define ALPHA_V 0.05
 
 #include <stdint.h>
 
@@ -38,11 +40,18 @@ struct DataFrame {
 
     uint32_t time;
     float pressure;
-    int16_t altitude;
-    int16_t speed;
+    float altitude;
+    float speed;
     bool continuity1 : 1;
     bool continuity2 : 1;
     char rocketState : 3;
+
+    String toString() {
+       
+        char data[30];
+        sprintf(data, "%d;%0.1f;%0.1f;%0.1f;%d;%d;%d", time, pressure, altitude, speed, continuity1, continuity2, (int)rocketState);
+        return String(data);
+    }
 };
 
 #endif

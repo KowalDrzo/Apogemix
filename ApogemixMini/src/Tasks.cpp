@@ -6,22 +6,32 @@ Tasks tasks;
 
 void Tasks::measure() {
 
-    int16_t oldAlt = glob.dataFrame.altitude;
-
+    // Pressure:
     glob.dataFrame.pressure = bmp.readPressure();
-    glob.dataFrame.altitude = 44330*(1.0 - pow(glob.dataFrame.pressure/glob.initialPressure, 0.1903));
-    
-    glob.dataFrame.speed = 1000.0*(glob.dataFrame.altitude - oldAlt)/(millis() - glob.dataFrame.time);
 
+    // Altitude:
+    float oldAlt = glob.dataFrame.altitude;
+    float newAlt = 44330*(1.0 - pow(glob.dataFrame.pressure/glob.initialPressure, 0.1903));
+    glob.dataFrame.altitude = ALPHA_H * oldAlt + (1-ALPHA_H) * newAlt;
+    
+    // Speed:
+    float oldSpd = glob.dataFrame.speed;
+    float newSpd = 1000.0*(glob.dataFrame.altitude - oldAlt)/(millis() - glob.dataFrame.time);
+    glob.dataFrame.speed = ALPHA_V * oldSpd + (1-ALPHA_H) * newSpd;
+
+    // Contunuity:
     glob.dataFrame.continuity1 = !digitalRead(CONT1_PIN);
     glob.dataFrame.continuity2 = !digitalRead(CONT2_PIN);
 
+    // Time:
     glob.dataFrame.time = millis();
 
+    // Maximas:
     if (glob.apogee < glob.dataFrame.altitude) glob.apogee = glob.dataFrame.altitude;
     if (glob.maxSpeed < glob.dataFrame.speed) glob.maxSpeed = glob.dataFrame.speed;
 
-    Serial.printf("%d;%d\n", glob.dataFrame.altitude, glob.dataFrame.speed);
+    // Debug:
+    Serial.println(glob.dataFrame.toString());
 }
 
 /*********************************************************************/
@@ -96,6 +106,9 @@ bool Tasks::isOnGround() {
 
 /*********************************************************************/
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 void Tasks::writeToFlash(bool force) {
 
     if (!appendFlash) {
@@ -118,6 +131,24 @@ void Tasks::writeToFlash(bool force) {
 
     file.close();
 }
+
+/*********************************************************************/
+
+void Tasks::readFlash() {
+
+    SPIFFS.begin();
+
+    file = SPIFFS.open("/FlightData.apg", "r");
+
+    DataFrame dane;
+    while(file.readBytes((char*) &dane, sizeof(dane))) {
+        Serial.println(dane.toString());
+    }
+
+    file.close();
+}
+
+#pragma GCC diagnostic pop
 
 /*********************************************************************/
 

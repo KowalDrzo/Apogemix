@@ -1,5 +1,8 @@
 #include "Website.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+
 void Website::start() {
 
     WiFi.softAP(ssid, password);
@@ -26,6 +29,8 @@ void Website::start() {
 
     server.begin();
 }
+
+#pragma GCC diagnostic pop
 
 /*********************************************************************/
 
