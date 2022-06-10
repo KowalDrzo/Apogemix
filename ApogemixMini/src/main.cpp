@@ -26,6 +26,7 @@ void setup() {
 
     tasks.readFlash();
     glob.initialPressure = tasks.bmp.readPressure();
+    tasks.buzz();
 
     // LOOPS:
     glob.dataFrame.rocketState = RAIL;

@@ -37,7 +37,7 @@ void Website::start() {
 void Website::stop() {
 
     Serial.println("server off");
-    WiFi.mode(WIFI_OFF);
+    WiFi.softAPdisconnect(true);
     enabled = false;
 }
 

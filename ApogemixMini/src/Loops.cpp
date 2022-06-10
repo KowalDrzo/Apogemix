@@ -39,7 +39,11 @@ void StateLoops::railLoop() {
         if (pressMeasureTimer.check()) {
             
             dataLoop(0);
-            if (tasks.isLaunchDetected()) break;
+            if (tasks.isLaunchDetected()) {
+
+                if (website.isEnabled()) website.stop();
+                break;
+            }
 
             // WiFi itp:
             if (!digitalRead(SWITCH_PIN) && !website.isEnabled()) {

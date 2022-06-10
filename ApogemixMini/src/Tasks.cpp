@@ -4,6 +4,14 @@ Tasks tasks;
 
 #define CRITERIA_MARGIN 5
 
+void Tasks::continuityTest() {
+
+    glob.dataFrame.continuity1 = !digitalRead(CONT1_PIN);
+    glob.dataFrame.continuity2 = !digitalRead(CONT2_PIN);
+}
+
+/*********************************************************************/
+
 void Tasks::measure() {
 
     // Pressure:
@@ -20,8 +28,7 @@ void Tasks::measure() {
     glob.dataFrame.speed = ALPHA_V * oldSpd + (1-ALPHA_H) * newSpd;
 
     // Contunuity:
-    glob.dataFrame.continuity1 = !digitalRead(CONT1_PIN);
-    glob.dataFrame.continuity2 = !digitalRead(CONT2_PIN);
+    continuityTest();
 
     // Time:
     glob.dataFrame.time = millis();
@@ -32,6 +39,32 @@ void Tasks::measure() {
 
     // Debug:
     Serial.println(glob.dataFrame.toString());
+}
+
+/*********************************************************************/
+
+void Tasks::buzz() {
+
+    continuityTest();
+
+    digitalWrite(BUZZER_PIN, 1);
+    delay(500);
+    digitalWrite(BUZZER_PIN, 0);
+    delay(2000);
+
+    if (glob.dataFrame.continuity1) {
+        digitalWrite(BUZZER_PIN, 1);
+        delay(500);
+        digitalWrite(BUZZER_PIN, 0);
+        delay(500);
+    }
+
+    if (glob.dataFrame.continuity2) {
+        digitalWrite(BUZZER_PIN, 1);
+        delay(500);
+        digitalWrite(BUZZER_PIN, 0);
+        delay(500);
+    }
 }
 
 /*********************************************************************/
@@ -141,7 +174,7 @@ void Tasks::readFlash() {
     file = SPIFFS.open("/FlightData.apg", "r");
 
     DataFrame dane;
-    while(file.readBytes((char*) &dane, sizeof(dane))) {
+    while (file.readBytes((char*) &dane, sizeof(dane))) {
         Serial.println(dane.toString());
     }
 

@@ -18,13 +18,14 @@ class Tasks {
     File file;
     bool appendFlash = false;
     uint8_t criteriaCounter = 0;
+    void continuityTest();
 
 public:
 
     Adafruit_BMP085 bmp;
 
     void measure();
-    void readEeprom();
+    void buzz();
 
     bool isLaunchDetected();
     bool isApogeeDetected();
