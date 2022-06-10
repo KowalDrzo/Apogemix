@@ -53,6 +53,9 @@ void setup() {
 
 void loop() {
 
-    delay(1000);
+    digitalWrite(BUZZER_PIN, 1);
     Serial.println("Waiting for pickup");
+    delay(1000);
+    digitalWrite(BUZZER_PIN, 0);
+    delay(9000);
 }
