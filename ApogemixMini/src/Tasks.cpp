@@ -43,6 +43,19 @@ void Tasks::measure() {
 
 /*********************************************************************/
 
+void Tasks::buzzBeep(uint16_t time, uint8_t n) {
+
+    for (; n > 0; n--) {
+
+        digitalWrite(BUZZER_PIN, 1);
+        delay(time);
+        digitalWrite(BUZZER_PIN, 0);
+        delay(time);
+    }
+}
+
+/*********************************************************************/
+
 void Tasks::buzz() {
 
     continuityTest();
@@ -50,21 +63,11 @@ void Tasks::buzz() {
     digitalWrite(BUZZER_PIN, 1);
     delay(500);
     digitalWrite(BUZZER_PIN, 0);
-    delay(2000);
+    delay(3000);
 
-    if (glob.dataFrame.continuity1) {
-        digitalWrite(BUZZER_PIN, 1);
-        delay(500);
-        digitalWrite(BUZZER_PIN, 0);
-        delay(500);
-    }
-
-    if (glob.dataFrame.continuity2) {
-        digitalWrite(BUZZER_PIN, 1);
-        delay(500);
-        digitalWrite(BUZZER_PIN, 0);
-        delay(500);
-    }
+    if (glob.dataFrame.continuity1 && glob.dataFrame.continuity2)   buzzBeep(500, 3);
+    else if (glob.dataFrame.continuity1)                            buzzBeep(500, 1);
+    else if (glob.dataFrame.continuity2)                            buzzBeep(500, 2);
 }
 
 /*********************************************************************/

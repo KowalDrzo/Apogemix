@@ -3,9 +3,9 @@
 
 #define APOGEMIX_ID 1
 #define FLIGHTS_IN_MEM 30
-#define FRAMES_IN_Q 70
-#define ALPHA_H 0.05
-#define ALPHA_V 0.05
+#define FRAMES_IN_Q 30
+#define ALPHA_H 0.2
+#define ALPHA_V 0.2
 
 #include <stdint.h>
 
