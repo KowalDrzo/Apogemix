@@ -19,6 +19,7 @@ class Tasks {
     bool appendFlash = false;
     uint8_t criteriaCounter = 0;
     void continuityTest();
+    void buzzBeep(uint16_t time, uint8_t n);
 
 public:
 
