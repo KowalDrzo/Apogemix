@@ -25,7 +25,7 @@ void Tasks::measure() {
     // Speed:
     float oldSpd = glob.dataFrame.speed;
     float newSpd = 1000.0*(glob.dataFrame.altitude - oldAlt)/(millis() - glob.dataFrame.time);
-    glob.dataFrame.speed = ALPHA_V * oldSpd + (1-ALPHA_H) * newSpd;
+    glob.dataFrame.speed = ALPHA_V * oldSpd + (1-ALPHA_V) * newSpd;
 
     // Contunuity:
     continuityTest();
@@ -123,6 +123,8 @@ bool Tasks::isSecondChuteTime() {
 
     return false;
 }
+
+/*********************************************************************/
 
 bool Tasks::isOnGround() {
 
