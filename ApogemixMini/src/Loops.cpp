@@ -12,21 +12,33 @@ void StateLoops::dataLoop(bool enableFlashWrite) {
 /*********************************************************************/
 
 void StateLoops::ignitionLoop(bool apogee) {
-    
-    ignitionTimer.start(2000);
 
-    if (apogee) digitalWrite(SEPAR1_PIN, 1);
+    if (apogee) {
+        
+        waitAndLogData(glob.memory.firstSeparDelay_ms);
+        digitalWrite(SEPAR1_PIN, 1);
+    }
     else digitalWrite(SEPAR2_PIN, 1);
 
-    while (!ignitionTimer.check()) {
-
-        if (pressMeasureTimer.check()) dataLoop(1);
-    }
+    waitAndLogData(FIRE_TIME);
 
     digitalWrite(SEPAR1_PIN, 0);
     digitalWrite(SEPAR2_PIN, 0);
 }
 
+/*********************************************************************/
+
+void StateLoops::waitAndLogData(uint32_t time_ms) {
+
+    waitingTimer.start(time_ms);
+
+    while (!waitingTimer.check()) {
+
+        if (pressMeasureTimer.check()) dataLoop(1);
+    }
+}
+
+/*********************************************************************/
 /*********************************************************************/
 
 void StateLoops::railLoop() {

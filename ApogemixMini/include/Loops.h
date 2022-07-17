@@ -6,11 +6,12 @@
 class StateLoops {
 
     Timer pressMeasureTimer;
-    Timer ignitionTimer;
+    Timer waitingTimer;
     Timer wifiTimer;
 
     void dataLoop(bool enableFlashWrite);
     void ignitionLoop(bool apogee);
+    void waitAndLogData(uint32_t time_ms);
 
 public:
 
