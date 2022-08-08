@@ -6,6 +6,10 @@
 #define FRAMES_IN_Q 30
 #define ALPHA_H 0.2
 #define ALPHA_V 0.2
+#define RAIL_FLIGHT_LOOP_TIME 200
+#define FIRST_SEPAR_LOOP_TIME 500
+#define SECND_SEPAR_LOOP_TIME 1000
+#define FIRE_TIME 2000
 
 #include <stdint.h>
 
