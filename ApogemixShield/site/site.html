@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Apogemix mini configuration page</title>
+</head>
+
+<body>
+    <h3>
+        Apogemix mini
+    </h3><hr>
+    <p>
+        Current settings:
+        <ul>
+            <li>Apogee ignite delay: <strong>X</strong> ms,</li>
+            <li>Second parachute ignition altitude: <strong>X</strong> m,</li>
+            <li>Wifi active time: <strong>X</strong> min,</li>
+        </ul>
+    </p><hr>
+    <a href='/FlightData.apg'>Download data from last flight.</a>
+    <p>
+        Flight data table:
+        <table border='1'>
+            <tr>
+                <th>Num</th>
+                <th>Apogee [m]</th>
+                <th>Max speed [m/s]</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+    </p><hr>
+    <p>
+        Change settings:
+        <form>
+            <label for='set1'>Apogee ignite delay:</label><br>
+            <input type='number' min='1' max='5000' id='set1' name='set1'><br>
+
+            <label for='set2'>Second parachute ignition altitude:</label><br>
+            <input type='number' min='50' max='5000' id='set2' name='set2'><br>
+
+            <label for='set3'>Wifi active time:</label><br>
+            <input type='number' min='2' max='15' id='set3' name='set3'><br>
+
+            <br><input type='submit'><hr>
+        </form>
+    </p>
+    </p>
+    <a href='/wifioff'>Turn off the wifi.</a>
+    <p><hr>
+    
+</body>
+
+</html>
