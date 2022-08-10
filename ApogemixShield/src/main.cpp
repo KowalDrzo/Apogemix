@@ -37,11 +37,11 @@ GlobalAggregator glob;
 
 void setup() {
 
-    Serial.begin(74880);
+    Serial.begin(115200);
     Serial.setTimeout(10);
 
     Wire.begin(SDA_PIN, SCL_PIN);
-    tasks.bmp.begin(3);
+    tasks.bmp.begin(0x76);
 
     pinMode(SEPAR1_PIN, OUTPUT);
     pinMode(SEPAR2_PIN, OUTPUT);
@@ -49,6 +49,7 @@ void setup() {
 
     pinMode(CONT1_PIN, INPUT_PULLUP);
     pinMode(CONT2_PIN, INPUT_PULLUP);
+    pinMode(SWITCH_PIN, INPUT_PULLUP);
 
     // CONFIG:
     EEPROM.begin(sizeof(glob.memory));

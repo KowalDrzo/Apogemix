@@ -35,6 +35,8 @@ void StateLoops::waitAndLogData(uint32_t time_ms) {
     while (!waitingTimer.check()) {
 
         if (pressMeasureTimer.check()) dataLoop(1);
+
+        vTaskDelay(1);
     }
 }
 
@@ -68,6 +70,7 @@ void StateLoops::railLoop() {
                 website.stop();
             }
         }
+        vTaskDelay(1);
     }
 }
 
@@ -88,6 +91,7 @@ void StateLoops::flightLoop() {
                 break;
             }
         }
+        vTaskDelay(1);
     }
 }
 
@@ -108,6 +112,7 @@ void StateLoops::sep1Loop() {
                 break;
             }
         }
+        vTaskDelay(1);
     }
 }
 
@@ -124,6 +129,7 @@ void StateLoops::sep2Loop() {
             dataLoop(1);
             if (tasks.isOnGround()) break;
         }
+        vTaskDelay(1);
     }
 }
 
@@ -132,4 +138,5 @@ void StateLoops::sep2Loop() {
 void StateLoops::groundLoop() {
 
     tasks.writeToFlash(1);
+    vTaskDelay(1);
 }

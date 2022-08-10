@@ -52,7 +52,7 @@ struct DataFrame {
 
     String toString() {
        
-        char data[30];
+        char data[50];
         sprintf(data, "%d;%0.1f;%0.1f;%0.1f;%d;%d;%d", time, pressure, altitude, speed, continuity1, continuity2, (int)rocketState);
         return String(data);
     }

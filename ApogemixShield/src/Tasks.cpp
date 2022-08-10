@@ -174,7 +174,7 @@ void Tasks::writeToFlash(bool force) {
 
 void Tasks::readFlash() {
 
-    LITTLEFS.begin();
+    LITTLEFS.begin(true);
 
     file = LITTLEFS.open("/FlightData.apg", "r");
 
@@ -192,14 +192,12 @@ void Tasks::readFlash() {
 
 void Tasks::clearMem() {
 
-    for (uint8_t i = 0; i < FLIGHTS_IN_MEM; i++) {
+    LITTLEFS.begin(true);
+    file = LITTLEFS.open("/FlightData.apg", "w");
+    file.close();
 
-        glob.memory.lastFlightIndex = 0;
-        glob.memory.lastFlightNum = 0;
-        glob.memory.flight[i].num = 0;
-        glob.memory.flight[i].apogee = 0;
-        glob.memory.flight[i].maxSpeed = 0;
-    }
+    memset(&glob.memory, 0, sizeof(glob.memory));
+    glob.memory.wifiActiveTime_min = 3;
 
     EEPROM.put(0, glob.memory);
     EEPROM.commit();
