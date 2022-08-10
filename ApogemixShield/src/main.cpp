@@ -1,36 +1,3 @@
-/*#include <Arduino.h>
-#include <SPI.h>
-#include <Adafruit_BMP280.h>
-#include <Wire.h>
-
-Adafruit_BMP280 bmp(&Wire);
-float initialPressure;
-
-void setup() {
-
-    Wire.begin(21, 22, 100000);
-
-    Serial.begin(115200);
-    Serial.print("AAA  ");
-    Serial.println(bmp.begin(0x76));
-    bmp.takeForcedMeasurement();
-
-    initialPressure = bmp.readPressure();
-}
-
-void loop() {
-
-    uint32_t tim1 = micros();
-    float press = bmp.readPressure();
-    float alt = 44330*(1.0 - pow(press/initialPressure, 0.1903));
-    tim1 = micros() - tim1;
-    Serial.printf("%0.1f   %d\n", alt, (int)tim1);
-
-    delay(200);
-}
-
-*/
-
 #include "Loops.h"
 
 GlobalAggregator glob;
