@@ -42,6 +42,10 @@ enum RocketState {
 
 struct DataFrame {
 
+    float gpsLat;
+    float gpsLng;
+    float gpsAlt;
+
     uint32_t time;
     float pressure;
     float altitude;
@@ -52,8 +56,8 @@ struct DataFrame {
 
     String toString() {
        
-        char data[50];
-        sprintf(data, "%d;%0.1f;%0.1f;%0.1f;%d;%d;%d", time, pressure, altitude, speed, continuity1, continuity2, (int)rocketState);
+        char data[60];
+        sprintf(data, "%0.4f;%0.4f;%0.1f;%d;%0.1f;%0.1f;%0.1f;%d;%d;%d", gpsLat, gpsLng, gpsAlt, time, pressure, altitude, speed, continuity1, continuity2, (int)rocketState);
         return String(data);
     }
 };

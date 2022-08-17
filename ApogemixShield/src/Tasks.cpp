@@ -37,8 +37,35 @@ void Tasks::measure() {
     if (glob.apogee < glob.dataFrame.altitude) glob.apogee = glob.dataFrame.altitude;
     if (glob.maxSpeed < glob.dataFrame.speed) glob.maxSpeed = glob.dataFrame.speed;
 
+    // GPS:
+    checkGpsStatus();
+
     // Debug:
     Serial.println(glob.dataFrame.toString());
+}
+
+/*********************************************************************/
+
+void Tasks::checkGpsStatus() {
+
+    if (Serial1.available()) {
+
+        char c = Serial1.read();
+        if(gps.encode(c)) {
+
+            glob.dataFrame.gpsLat = gps.location.lat();
+            glob.dataFrame.gpsLng = gps.location.lng();
+            glob.dataFrame.gpsAlt = gps.altitude.meters();
+        }
+    }
+
+    if (gpsNotFixed) {
+
+        if(fabs(glob.dataFrame.gpsLat) > 0.001) {
+            gpsNotFixed = false;
+            glob.initialPressure = glob.dataFrame.pressure;
+        }
+    }
 }
 
 /*********************************************************************/
