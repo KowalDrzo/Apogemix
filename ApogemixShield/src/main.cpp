@@ -29,6 +29,7 @@ void setup() {
 
     tasks.readFlash();
     glob.initialPressure = tasks.bmp.readPressure();
+    glob.initialTemper = tasks.bmp.readTemperature();
     tasks.buzz();
 
     // LOOPS:

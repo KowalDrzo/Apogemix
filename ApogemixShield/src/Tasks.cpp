@@ -14,12 +14,13 @@ void Tasks::continuityTest() {
 
 void Tasks::measure() {
 
-    // Pressure:
+    // Pressure and temperature:
     glob.dataFrame.pressure = bmp.readPressure();
+    glob.dataFrame.temper = bmp.readTemperature();
 
     // Altitude:
     float oldAlt = glob.dataFrame.altitude;
-    float newAlt = 44330*(1.0 - pow(glob.dataFrame.pressure/glob.initialPressure, 0.1903));
+    float newAlt = (glob.dataFrame.temper+273.15)/0.0065*(1.0 - pow(glob.dataFrame.pressure/glob.initialPressure, 0.1903));
     glob.dataFrame.altitude = ALPHA_H * oldAlt + (1-ALPHA_H) * newAlt;
     
     // Speed:
