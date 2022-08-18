@@ -36,7 +36,7 @@ void StateLoops::waitAndLogData(uint32_t time_ms) {
 
         if (pressMeasureTimer.check()) dataLoop(1);
 
-        vTaskDelay(1);
+        vTaskDelay(1 / portTICK_PERIOD_MS);
     }
 }
 
@@ -70,7 +70,7 @@ void StateLoops::railLoop() {
                 website.stop();
             }
         }
-        vTaskDelay(1);
+        vTaskDelay(1 / portTICK_PERIOD_MS);
     }
 }
 
@@ -91,7 +91,7 @@ void StateLoops::flightLoop() {
                 break;
             }
         }
-        vTaskDelay(1);
+        vTaskDelay(1 / portTICK_PERIOD_MS);
     }
 }
 
@@ -112,7 +112,7 @@ void StateLoops::sep1Loop() {
                 break;
             }
         }
-        vTaskDelay(1);
+        vTaskDelay(1 / portTICK_PERIOD_MS);
     }
 }
 
@@ -129,7 +129,7 @@ void StateLoops::sep2Loop() {
             dataLoop(1);
             if (tasks.isOnGround()) break;
         }
-        vTaskDelay(1);
+        vTaskDelay(1 / portTICK_PERIOD_MS);
     }
 }
 
@@ -138,5 +138,37 @@ void StateLoops::sep2Loop() {
 void StateLoops::groundLoop() {
 
     tasks.writeToFlash(1);
-    vTaskDelay(1);
+    vTaskDelay(1 / portTICK_PERIOD_MS);
+}
+
+/*********************************************************************/
+
+void StateLoops::gpsLoop() {
+
+    bool gpsNotFixed = true;
+
+    while(1) {
+
+        if (Serial1.available()) {
+
+            char c = Serial1.read();
+            if(tasks.gps.encode(c)) {
+
+                glob.dataFrame.gpsLat = tasks.gps.location.lat();
+                glob.dataFrame.gpsLng = tasks.gps.location.lng();
+                glob.dataFrame.gpsAlt = tasks.gps.altitude.meters();
+            }
+        }
+
+        if (gpsNotFixed) {
+
+            if(fabs(glob.dataFrame.gpsLat) > 0.001) {
+                gpsNotFixed = false;
+                glob.initialPressure = glob.dataFrame.pressure;
+                glob.initialTemper = glob.dataFrame.temper;
+            }
+        }
+
+        vTaskDelay(1 / portTICK_PERIOD_MS);
+    }
 }

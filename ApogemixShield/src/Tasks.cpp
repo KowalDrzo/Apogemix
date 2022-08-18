@@ -20,7 +20,7 @@ void Tasks::measure() {
 
     // Altitude:
     float oldAlt = glob.dataFrame.altitude;
-    float newAlt = (glob.dataFrame.temper+273.15)/0.0065*(1.0 - pow(glob.dataFrame.pressure/glob.initialPressure, 0.1903));
+    float newAlt = (glob.initialTemper+273.15)/0.0065*(1.0 - pow(glob.dataFrame.pressure/glob.initialPressure, 0.1903));
     glob.dataFrame.altitude = ALPHA_H * oldAlt + (1-ALPHA_H) * newAlt;
     
     // Speed:
@@ -38,35 +38,8 @@ void Tasks::measure() {
     if (glob.apogee < glob.dataFrame.altitude) glob.apogee = glob.dataFrame.altitude;
     if (glob.maxSpeed < glob.dataFrame.speed) glob.maxSpeed = glob.dataFrame.speed;
 
-    // GPS:
-    checkGpsStatus();
-
     // Debug:
     Serial.println(glob.dataFrame.toString());
-}
-
-/*********************************************************************/
-
-void Tasks::checkGpsStatus() {
-
-    if (Serial1.available()) {
-
-        char c = Serial1.read();
-        if(gps.encode(c)) {
-
-            glob.dataFrame.gpsLat = gps.location.lat();
-            glob.dataFrame.gpsLng = gps.location.lng();
-            glob.dataFrame.gpsAlt = gps.altitude.meters();
-        }
-    }
-
-    if (gpsNotFixed) {
-
-        if(fabs(glob.dataFrame.gpsLat) > 0.001) {
-            gpsNotFixed = false;
-            glob.initialPressure = glob.dataFrame.pressure;
-        }
-    }
 }
 
 /*********************************************************************/

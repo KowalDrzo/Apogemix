@@ -32,6 +32,9 @@ void setup() {
     glob.initialTemper = tasks.bmp.readTemperature();
     tasks.buzz();
 
+    // Pararell tasks:
+    xTaskCreate((TaskFunction_t) StateLoops::gpsLoop, "GPS Task", 4096, NULL, 2, NULL);
+
     // LOOPS:
     glob.dataFrame.rocketState = RAIL;
     Serial.println("RAIL STATE");

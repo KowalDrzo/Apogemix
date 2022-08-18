@@ -20,6 +20,8 @@ public:
     void sep1Loop();
     void sep2Loop();
     void groundLoop();
+
+    static void gpsLoop();
 };
 
 extern StateLoops loops;

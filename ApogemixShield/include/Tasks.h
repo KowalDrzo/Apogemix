@@ -18,7 +18,6 @@ class Tasks {
 
     File file;
     bool appendFlash = false;
-    bool gpsNotFixed = true;
     uint8_t criteriaCounter = 0;
     void continuityTest();
     void buzzBeep(uint16_t time, uint8_t n);
@@ -29,7 +28,6 @@ public:
     TinyGPSPlus gps;
 
     void measure();
-    void checkGpsStatus();
     void buzz();
 
     bool isLaunchDetected();
