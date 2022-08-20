@@ -1,8 +1,3 @@
-
-from os import stat
-from re import U
-
-
 class DataFrame:
 
     gpsLat      = 0.0
@@ -27,9 +22,9 @@ class DataFrame:
         self.pressure    = vals[5]
         self.altitude    = vals[6]
         self.speed       = vals[7]
-        self.cont1       = vals[8]
-        self.cont2       = vals[9]
-        self.rocketState = vals[10]
+        self.cont1       = int(vals[8])
+        self.cont2       = int(vals[9])
+        self.rocketState = int(vals[10])
 
     def __str__(self) -> str:
         

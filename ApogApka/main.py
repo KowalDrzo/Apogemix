@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-from time import sleep
 import serial
 import sys
 from data_frame import DataFrame
