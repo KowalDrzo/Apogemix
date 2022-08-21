@@ -1,7 +1,7 @@
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
 
-#define APOGEMIX_ID 1
+#define APOGEMIX_ID 6
 #define FLIGHTS_IN_MEM 30
 #define FRAMES_IN_Q 30
 #define ALPHA_H 0.2
@@ -10,6 +10,7 @@
 #define FIRST_SEPAR_LOOP_TIME 500
 #define SECND_SEPAR_LOOP_TIME 1000
 #define FIRE_TIME 2000
+#define TEMPERATURE_OFFSET (-2)
 
 #include <stdint.h>
 

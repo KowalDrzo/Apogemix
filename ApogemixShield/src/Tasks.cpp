@@ -16,7 +16,7 @@ void Tasks::measure() {
 
     // Pressure and temperature:
     glob.dataFrame.pressure = bmp.readPressure();
-    glob.dataFrame.temper = bmp.readTemperature();
+    glob.dataFrame.temper = bmp.readTemperature() + TEMPERATURE_OFFSET;
 
     // Altitude:
     float oldAlt = glob.dataFrame.altitude;
