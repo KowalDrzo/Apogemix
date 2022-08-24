@@ -258,6 +258,7 @@ class Gui:
         self.speedVal["text"] = dataFrame.speed
         self.temperatureVal["text"] = dataFrame.temper
         self.timeVal["text"] = dataFrame.time
+        self.stateVal["text"] = dataFrame.stateString()
 
         self.root.update()
 
@@ -274,10 +275,8 @@ class Gui:
     #########################################################
 
     def test1Active_command(self):
-        
-        print(self.test1Active)
 
-        if self.test1Active.getboolean():
+        if self.test1Button["state"] == tk.DISABLED:
             self.test1Button["state"] = tk.NORMAL
         else:
             self.test1Button["state"] = tk.DISABLED
@@ -286,9 +285,7 @@ class Gui:
 
     def test2Active_command(self):
 
-        test = True
-        self.test2Active.getboolean(test)
-        if test:
+        if self.test2Button["state"] == tk.DISABLED:
             self.test2Button["state"] = tk.NORMAL
         else:
             self.test2Button["state"] = tk.DISABLED

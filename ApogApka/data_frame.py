@@ -28,17 +28,7 @@ class DataFrame:
 
     def __str__(self) -> str:
 
-        stateString = ""
-        if self.rocketState == 0:
-            stateString = "Na wyrzutni"
-        elif self.rocketState == 1:
-            stateString = "W locie"
-        elif self.rocketState == 2:
-            stateString = "Pierwszy odzysk"
-        elif self.rocketState == 3:
-            stateString = "Drugi odzysk"
-        elif self.rocketState == 4:
-            stateString = "Na ziemii"
+        
 
         frameString = ""
         frameString += "\nGPS szerokość: " + str(self.gpsLat)
@@ -51,6 +41,22 @@ class DataFrame:
         frameString += "\nPrędkość: "      + str(self.speed)
         frameString += "\nCiągłość 1: "    + str(self.cont1)
         frameString += "\nCiągłość 2: "    + str(self.cont2)
-        frameString += "\nStan: "          + stateString
+        frameString += "\nStan: "          + self.stateString()
 
         return frameString
+
+    def stateString(self) -> str:
+
+        stateString = ""
+        if self.rocketState == 0:
+            stateString = "Na wyrzutni"
+        elif self.rocketState == 1:
+            stateString = "W locie"
+        elif self.rocketState == 2:
+            stateString = "Pierwszy odzysk"
+        elif self.rocketState == 3:
+            stateString = "Drugi odzysk"
+        elif self.rocketState == 4:
+            stateString = "Na ziemii"
+
+        return stateString
