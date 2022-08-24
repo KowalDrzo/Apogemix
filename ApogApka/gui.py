@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkFont
+from turtle import update
 from data_frame import DataFrame
 
 class Gui:
@@ -248,6 +249,12 @@ class Gui:
 
     #########################################################
 
+    def update(self):
+
+        self.root.update()
+
+    #########################################################
+
     def showData(self, dataFrame: DataFrame):
 
         self.gpsLatVal["text"] = dataFrame.gpsLat
@@ -260,7 +267,17 @@ class Gui:
         self.timeVal["text"] = dataFrame.time
         self.stateVal["text"] = dataFrame.stateString()
 
-        self.root.update()
+        if dataFrame.cont1 == 1:
+            self.cont1Val.select()
+        else:
+            self.cont1Val.deselect()
+
+        if dataFrame.cont2 == 1:
+            self.cont2Val.select()
+        else:
+            self.cont2Val.deselect()
+
+        self.update()
 
     #########################################################
 
