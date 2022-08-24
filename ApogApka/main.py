@@ -17,7 +17,6 @@ if __name__ == "__main__":
     while True:
 
         try:
-            gui.update()
             frameString = ser.readline().decode("utf-8")
             vals = frameString.split(";")
             try:
