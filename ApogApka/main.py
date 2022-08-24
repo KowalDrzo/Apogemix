@@ -3,22 +3,29 @@
 import serial
 import sys
 from data_frame import DataFrame
+from gui import Gui
 
-portName = sys.argv[1]
-ser = serial.Serial(portName, 115200)
+if __name__ == "__main__":
 
-decodeErrors = 0
+    portName = sys.argv[1]
+    ser = serial.Serial(portName, 115200)
 
-while True:
+    gui = Gui()
 
-    try:
-        frameString = ser.readline().decode("utf-8")
-        vals = frameString.split(";")
+    decodeErrors = 0
+
+    while True:
+
         try:
-            dataFrame = DataFrame(vals)
-            print(dataFrame)
-        except(IndexError):
-            decodeErrors += 1
+            gui.update()
+            frameString = ser.readline().decode("utf-8")
+            vals = frameString.split(";")
+            try:
+                dataFrame = DataFrame(vals)
+                print(dataFrame)
+                gui.showData(dataFrame)
+            except(IndexError):
+                decodeErrors += 1
 
-    except(UnicodeDecodeError):
-        decodeErrors += 1
+        except(UnicodeDecodeError):
+            decodeErrors += 1

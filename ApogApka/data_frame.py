@@ -13,7 +13,7 @@ class DataFrame:
     rocketState = 0
 
     def __init__(self, vals) -> None:
-        
+
         self.gpsLat      = vals[0]
         self.gpsLng      = vals[1]
         self.gpsAlt      = vals[2]
@@ -27,7 +27,7 @@ class DataFrame:
         self.rocketState = int(vals[10])
 
     def __str__(self) -> str:
-        
+
         stateString = ""
         if self.rocketState == 0:
             stateString = "Na wyrzutni"
