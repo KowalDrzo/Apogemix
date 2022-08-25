@@ -28,7 +28,7 @@ class Loops:
                 try:
                     self.dataFrame = DataFrame(vals)
                     print(self.dataFrame)
-                except(IndexError):
+                except(IndexError or ValueError):
                     decodeErrors += 1
 
             except(UnicodeDecodeError):
@@ -38,17 +38,6 @@ class Loops:
 
     def guiLoop(self):
 
-        cap = cv2.VideoCapture(0)
-
-        RES_X = 1280
-        RES_Y = 720
-
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, RES_X)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, RES_Y)
-
-        fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-        out = cv2.VideoWriter("test.mp4", fourcc, 15, (RES_X,RES_Y))
-
         while True:
 
             if self.dataFrame:
@@ -56,31 +45,35 @@ class Loops:
             else:
                 self.gui.update()
 
-            # Capture frames in the video
+    #########################################################
+
+    def camLoop(self, camPort):
+
+        cap = cv2.VideoCapture(int(camPort[-1]))
+
+        RES_X = 640
+        RES_Y = 480
+
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, RES_X)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, RES_Y)
+
+        fourcc = cv2.VideoWriter_fourcc(*'MP4V')
+        out = cv2.VideoWriter("test.mp4", fourcc, 30, (RES_X,RES_Y))
+
+        while True:
+
             ret, frame = cap.read()
-
-            # describe the type of font
-            # to be used.
             font = cv2.FONT_HERSHEY_SIMPLEX
-
-            # Use putText() method for
-            # inserting text on video
             cv2.rotate(frame, cv2.ROTATE_180, frame)
-            
+
             if self.dataFrame:
-                cv2.putText(frame, self.dataFrame.camInfo(), (RES_X-900, RES_Y-30), font, 1.4, (255, 255, 255), 2, cv2.LINE_4)
+                cv2.putText(frame, self.dataFrame.camInfo(), (10, RES_Y-30), font, 1, (255, 255, 255), 2, cv2.LINE_4)
 
             out.write(frame)
-            # Display the resulting frame
             cv2.imshow('video', frame)
 
-            # creating 'q' as the quit 
-            # button for the video
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
-        # release the cap object
         cap.release()
-        # close all windows
         cv2.destroyAllWindows()
-        
