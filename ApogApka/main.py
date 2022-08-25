@@ -5,7 +5,6 @@ import serial
 import threading
 from loops import Loops
 
-
 if __name__ == "__main__":
 
     ser = serial.Serial(sys.argv[1], 115200)

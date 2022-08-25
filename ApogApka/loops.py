@@ -28,7 +28,7 @@ class Loops:
                 try:
                     self.dataFrame = DataFrame(vals)
                     print(self.dataFrame)
-                except(IndexError or ValueError):
+                except(IndexError):
                     decodeErrors += 1
 
             except(UnicodeDecodeError):
@@ -57,6 +57,8 @@ class Loops:
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, RES_X)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, RES_Y)
 
+        cv2.namedWindow("FPV_Cam", cv2.WINDOW_KEEPRATIO)
+
         fourcc = cv2.VideoWriter_fourcc(*'MP4V')
         out = cv2.VideoWriter("test.mp4", fourcc, 30, (RES_X,RES_Y))
 
@@ -67,12 +69,13 @@ class Loops:
             cv2.rotate(frame, cv2.ROTATE_180, frame)
 
             if self.dataFrame:
-                cv2.putText(frame, self.dataFrame.camInfo(), (10, RES_Y-30), font, 1, (255, 255, 255), 2, cv2.LINE_4)
+                cv2.putText(frame, self.dataFrame.camInfo(), (10, RES_Y-30), font, 0.88, (128, 255, 255), 2, cv2.LINE_4)
 
             out.write(frame)
-            cv2.imshow('video', frame)
+            cv2.imshow("FPV_Cam", frame)
 
-            if cv2.waitKey(1) & 0xFF == ord('q'):
+            cv2.waitKey(1)
+            if cv2.getWindowProperty("FPV_Cam", cv2.WND_PROP_VISIBLE) < 1:
                 break
 
         cap.release()

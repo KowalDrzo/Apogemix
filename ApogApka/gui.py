@@ -17,7 +17,7 @@ class Gui:
         screenheight = self.root.winfo_screenheight()
         alignstr = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
         self.root.geometry(alignstr)
-        self.root.resizable(width=False, height=False)
+        self.root.resizable(True, True)
 
         gpsLatLabel=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=18)

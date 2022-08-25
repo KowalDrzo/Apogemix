@@ -22,9 +22,15 @@ class DataFrame:
         self.pressure    = vals[5]
         self.altitude    = vals[6]
         self.speed       = vals[7]
-        self.cont1       = int(vals[8])
-        self.cont2       = int(vals[9])
-        self.rocketState = int(vals[10])
+
+        try:
+            self.cont1       = int(vals[8])
+            self.cont2       = int(vals[9])
+            self.rocketState = int(vals[10])
+        except(ValueError):
+            self.cont1       = False
+            self.cont2       = False
+            self.rocketState = 0
 
     #########################################################
 
