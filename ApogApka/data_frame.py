@@ -26,6 +26,8 @@ class DataFrame:
         self.cont2       = int(vals[9])
         self.rocketState = int(vals[10])
 
+    #########################################################
+
     def __str__(self) -> str:
 
         
@@ -45,6 +47,8 @@ class DataFrame:
 
         return frameString
 
+    #########################################################
+
     def stateString(self) -> str:
 
         stateString = ""
@@ -60,3 +64,8 @@ class DataFrame:
             stateString = "Na ziemii"
 
         return stateString
+
+    #########################################################
+
+    def camInfo(self) -> str:
+        return "A: " + self.altitude +  "m,  S: " + self.speed + "m/s,   st: " + str(self.rocketState)
