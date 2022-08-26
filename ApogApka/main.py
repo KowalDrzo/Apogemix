@@ -10,7 +10,7 @@ if __name__ == "__main__":
     serialName = sys.argv[1]
     callsign = sys.argv[2]
 
-    ser = serial.Serial(sys.argv[1], 115200)
+    ser = serial.Serial(sys.argv[1], 115200, timeout=0.1)
 
     loops = Loops()
 

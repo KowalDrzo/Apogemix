@@ -12,6 +12,7 @@ class Loops:
         self.gui = Gui()
         self.logger = Logger()
         self.dataFrame = None
+        self.txQueue = []
 
     #########################################################
 
@@ -36,6 +37,14 @@ class Loops:
             except(UnicodeDecodeError):
                 decodeErrors += 1
 
+            if self.txQueue:
+                txFrame = callsign + ";" + self.txQueue.pop(0) + "\n"
+                try:
+                    serial.write(txFrame.encode('utf-8'))
+                    time.sleep(1)
+                except serial.serialutil.SerialException:
+                    print(txFrame)
+
     #########################################################
 
     def guiLoop(self):
@@ -46,6 +55,10 @@ class Loops:
                 self.gui.showData(self.dataFrame)
             else:
                 self.gui.update()
+
+            commandStr = self.gui.getCommand()
+            if commandStr:
+                self.txQueue.append(commandStr)
 
     #########################################################
 
