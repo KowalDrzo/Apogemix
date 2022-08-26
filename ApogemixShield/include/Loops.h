@@ -2,6 +2,7 @@
 #define LOOPS_H
 
 #include "Website.h"
+#include <LoRa.h>
 
 class StateLoops {
 
@@ -22,6 +23,7 @@ public:
     void groundLoop();
 
     static void gpsLoop();
+    static void loraLoop();
 };
 
 extern StateLoops loops;

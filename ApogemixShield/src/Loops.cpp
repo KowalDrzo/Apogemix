@@ -172,3 +172,55 @@ void StateLoops::gpsLoop() {
         vTaskDelay(1 / portTICK_PERIOD_MS);
     }
 }
+
+/*********************************************************************/
+
+void StateLoops::loraLoop() {
+
+    Timer loraTimer;
+    SPIClass hspi(HSPI);
+    String loraString;
+
+    ledcSetup(0, 2000, 8);
+    ledcAttachPin(BUZZER_PIN, 0);
+
+    tasks.buzz();
+
+    loraTimer.start(glob.memory.loraDelay_ms);
+
+    hspi.begin(5, 19, 27, 18);
+    LoRa.setSPI(hspi);
+    LoRa.setPins(18, 23, 26);
+    LoRa.setSignalBandwidth(125E3);
+    LoRa.begin(glob.memory.loraFreqMHz * 1E6);
+    LoRa.setTimeout(100);
+
+    while (1) {
+
+        if (loraTimer.check()) {
+
+            loraString = String(glob.memory.callsign) + String(";") + glob.dataFrame.toString();
+            LoRa.beginPacket();
+            LoRa.println(loraString);
+            LoRa.endPacket();
+        }
+
+        if (glob.dataFrame.rocketState == GROUND) {
+
+            while (1) {
+
+                ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+                vTaskDelay(9000 / portTICK_PERIOD_MS);
+
+                loraString = String(glob.memory.callsign) + String(";") + glob.dataFrame.toString();
+                LoRa.beginPacket();
+                LoRa.println(loraString);
+                LoRa.endPacket();
+
+                ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+                vTaskDelay(1000 / portTICK_PERIOD_MS);
+            }
+        }
+        vTaskDelay(1 / portTICK_PERIOD_MS);
+    }
+}

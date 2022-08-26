@@ -30,6 +30,10 @@ struct Memory {
     uint16_t firstSeparDelay_ms;
     uint16_t secondSeparAltitude;
     uint16_t wifiActiveTime_min;
+    uint16_t loraFreqMHz;
+    uint16_t loraDelay_ms;
+
+    char callsign[11];
 };
 
 enum RocketState {
@@ -57,7 +61,7 @@ struct DataFrame {
     char rocketState : 3;
 
     String toString() {
-       
+
         char data[60];
         sprintf(data, "%0.4f;%0.4f;%0.1f;%d;%0.1f;%0.1f;%0.1f;%0.1f;%d;%d;%d", gpsLat, gpsLng, gpsAlt, time, temper, pressure, altitude, speed, continuity1, continuity2, (int)rocketState);
         return String(data);

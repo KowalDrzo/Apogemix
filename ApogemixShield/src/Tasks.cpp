@@ -48,10 +48,10 @@ void Tasks::buzzBeep(uint16_t time, uint8_t n) {
 
     for (; n > 0; n--) {
 
-        digitalWrite(BUZZER_PIN, 1);
-        delay(time);
-        digitalWrite(BUZZER_PIN, 0);
-        delay(time);
+        ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+        vTaskDelay(time / portTICK_PERIOD_MS);
+        ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+        vTaskDelay(time / portTICK_PERIOD_MS);
     }
 }
 
@@ -61,10 +61,10 @@ void Tasks::buzz() {
 
     continuityTest();
 
-    digitalWrite(BUZZER_PIN, 1);
-    delay(500);
-    digitalWrite(BUZZER_PIN, 0);
-    delay(3000);
+    ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+    vTaskDelay(500 / portTICK_PERIOD_MS);
+    ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+    vTaskDelay(3000 / portTICK_PERIOD_MS);
 
     if (glob.dataFrame.continuity1 && glob.dataFrame.continuity2)   buzzBeep(500, 3);
     else if (glob.dataFrame.continuity1)                            buzzBeep(500, 1);
@@ -198,7 +198,14 @@ void Tasks::clearMem() {
     file.close();
 
     memset(&glob.memory, 0, sizeof(glob.memory));
+
     glob.memory.wifiActiveTime_min = 3;
+    glob.memory.secondSeparAltitude = 100;
+    glob.memory.firstSeparDelay_ms = 1;
+
+    glob.memory.loraDelay_ms = 2000;
+    glob.memory.loraFreqMHz = 433;
+    strcpy(glob.memory.callsign, "APOGEMIX");
 
     EEPROM.put(0, glob.memory);
     EEPROM.commit();

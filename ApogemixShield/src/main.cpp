@@ -30,10 +30,10 @@ void setup() {
     tasks.readFlash();
     glob.initialPressure = tasks.bmp.readPressure();
     glob.initialTemper = tasks.bmp.readTemperature();
-    tasks.buzz();
 
     // Pararell tasks:
-    xTaskCreate((TaskFunction_t) StateLoops::gpsLoop, "GPS Task", 4096, NULL, 2, NULL);
+    xTaskCreate((TaskFunction_t) StateLoops::gpsLoop,  "GPS Task",  4096,  NULL, 2, NULL);
+    xTaskCreate((TaskFunction_t) StateLoops::loraLoop, "LoRa Task", 16384, NULL, 2, NULL);
 
     // LOOPS:
     glob.dataFrame.rocketState = RAIL;
@@ -60,9 +60,5 @@ void setup() {
 
 void loop() {
 
-    digitalWrite(BUZZER_PIN, 1);
-    Serial.println("Waiting for pickup");
-    delay(1000);
-    digitalWrite(BUZZER_PIN, 0);
-    delay(9000);
+    vTaskDelay(1 / portTICK_PERIOD_MS);
 }
