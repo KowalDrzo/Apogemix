@@ -14,7 +14,7 @@ class Loops:
 
     #########################################################
 
-    def serialLoop(self, serial: serial.Serial):
+    def serialLoop(self, serial: serial.Serial, callsign: str):
 
         decodeErrors = 0
 
@@ -26,8 +26,9 @@ class Loops:
                 vals = frameString.split(";")
 
                 try:
-                    self.dataFrame = DataFrame(vals)
-                    print(self.dataFrame)
+                    if vals[0] == callsign:
+                        self.dataFrame = DataFrame(vals[1:])
+                        print(self.dataFrame)
                 except(IndexError):
                     decodeErrors += 1
 
