@@ -1,5 +1,6 @@
 import serial
 import cv2
+import time
 from data_frame import DataFrame
 from gui import Gui
 from logger import Logger
@@ -60,8 +61,9 @@ class Loops:
 
         cv2.namedWindow("FPV_Cam", cv2.WINDOW_KEEPRATIO)
 
+        videoName = "videos/vid_" + time.strftime("%Y%m%d%H%M%S") + ".mp4"
         fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-        out = cv2.VideoWriter("test.mp4", fourcc, 30, (RES_X,RES_Y))
+        out = cv2.VideoWriter(videoName, fourcc, 30, (RES_X,RES_Y))
 
         while True:
 
