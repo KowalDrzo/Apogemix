@@ -13,6 +13,7 @@ class StateLoops {
     void dataLoop(bool enableFlashWrite);
     void ignitionLoop(bool apogee);
     void waitAndLogData(uint32_t time_ms);
+    static void loraRxCallback(String rxFrame);
 
 public:
 

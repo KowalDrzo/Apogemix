@@ -196,6 +196,7 @@ void StateLoops::loraLoop() {
 
     while (1) {
 
+        // Tx:
         if (loraTimer.check()) {
 
             loraString = String(glob.memory.callsign) + String(";") + glob.dataFrame.toString();
@@ -212,6 +213,15 @@ void StateLoops::loraLoop() {
             }
         }
 
+        // Rx:
+        if (LoRa.parsePacket()) {
+            while (LoRa.available()) {
+
+                loraRxCallback(LoRa.readString());
+            }
+        }
+
+        // GROUND state:
         if (glob.dataFrame.rocketState == GROUND) {
 
             while (1) {
@@ -229,5 +239,33 @@ void StateLoops::loraLoop() {
             }
         }
         vTaskDelay(1 / portTICK_PERIOD_MS);
+    }
+}
+
+/*********************************************************************/
+
+void StateLoops::loraRxCallback(String rxFrame) {
+
+    if (strstr(rxFrame.c_str(), glob.memory.callsign)) {
+
+        if (strstr(rxFrame.c_str(), "TEST1") && glob.dataFrame.rocketState == RAIL) {
+
+            ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+            digitalWrite(SEPAR1_PIN, 1);
+            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            digitalWrite(SEPAR1_PIN, 0);
+        }
+
+        if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState == RAIL) {
+
+            ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+            digitalWrite(SEPAR2_PIN, 1);
+            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            digitalWrite(SEPAR2_PIN, 0);
+        }
     }
 }

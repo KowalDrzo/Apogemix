@@ -10,11 +10,9 @@ if __name__ == "__main__":
     serialName = sys.argv[1]
     callsign = sys.argv[2]
 
-    ser = serial.Serial(sys.argv[1], 115200, timeout=0.1)
-
     loops = Loops()
 
-    serialThread = threading.Thread(target=loops.serialLoop, args=(ser, callsign))
+    serialThread = threading.Thread(target=loops.serialLoop, args=(serialName, callsign))
     serialThread.start()
 
     if len(sys.argv) > 3:

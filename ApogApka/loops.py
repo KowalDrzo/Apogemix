@@ -16,14 +16,15 @@ class Loops:
 
     #########################################################
 
-    def serialLoop(self, serial: serial.Serial, callsign: str):
+    def serialLoop(self, serialName: serial.Serial, callsign: str):
 
         decodeErrors = 0
+        ser = serial.Serial(serialName, 115200)
 
         while True:
 
             try:
-                frameString = serial.readline().decode("utf-8")
+                frameString = ser.readline().decode("utf-8")
                 self.logger.log(frameString)
                 vals = frameString.split(";")
 
@@ -34,16 +35,17 @@ class Loops:
                 except(IndexError):
                     decodeErrors += 1
 
+                if self.txQueue:
+                    txFrame = callsign + ";" + self.txQueue.pop(0) + "\n"
+                    ser.write(txFrame.encode('utf-8'))
+
             except(UnicodeDecodeError):
                 decodeErrors += 1
 
-            if self.txQueue:
-                txFrame = callsign + ";" + self.txQueue.pop(0) + "\n"
-                try:
-                    serial.write(txFrame.encode('utf-8'))
-                    time.sleep(1)
-                except serial.serialutil.SerialException:
-                    print(txFrame)
+            except(serial.serialutil.SerialException):
+                print("SerialException")
+                ser.close()
+                ser = serial.Serial(serialName, 115200)
 
     #########################################################
 
