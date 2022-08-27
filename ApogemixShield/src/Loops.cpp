@@ -165,7 +165,6 @@ void StateLoops::gpsLoop() {
             if(fabs(glob.dataFrame.gpsLat) > 0.001) {
                 gpsNotFixed = false;
                 glob.initialPressure = glob.dataFrame.pressure;
-                glob.initialTemper = glob.dataFrame.temper;
             }
         }
 

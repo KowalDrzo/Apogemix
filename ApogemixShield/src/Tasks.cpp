@@ -16,7 +16,7 @@ void Tasks::measure() {
 
     // Pressure and temperature:
     glob.dataFrame.pressure = bmp.readPressure();
-    glob.dataFrame.temper = bmp.readTemperature() + TEMPERATURE_OFFSET;
+    glob.dataFrame.temper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
 
     // Altitude:
     float oldAlt = glob.dataFrame.altitude;
@@ -25,7 +25,9 @@ void Tasks::measure() {
     
     // Speed:
     float oldSpd = glob.dataFrame.speed;
-    float newSpd = 1000.0*(glob.dataFrame.altitude - oldAlt)/(millis() - glob.dataFrame.time);
+    uint32_t timeDiff = millis() - glob.dataFrame.time;
+    if (!timeDiff) timeDiff++;
+    float newSpd = 1000.0*(glob.dataFrame.altitude - oldAlt) / timeDiff;
     glob.dataFrame.speed = ALPHA_V * oldSpd + (1-ALPHA_V) * newSpd;
 
     // Contunuity:
