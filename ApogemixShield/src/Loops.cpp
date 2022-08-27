@@ -202,6 +202,14 @@ void StateLoops::loraLoop() {
             LoRa.beginPacket();
             LoRa.println(loraString);
             LoRa.endPacket();
+
+            // No GPS fix buzz:
+            if (glob.dataFrame.gpsLat == 0) {
+
+                ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+                vTaskDelay(30 / portTICK_PERIOD_MS);
+                ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+            }
         }
 
         if (glob.dataFrame.rocketState == GROUND) {
