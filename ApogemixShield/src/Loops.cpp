@@ -18,12 +18,12 @@ void StateLoops::ignitionLoop(bool apogee) {
         waitAndLogData(glob.memory.firstSeparDelay_ms);
         digitalWrite(SEPAR1_PIN, 1);
     }
-    else digitalWrite(SEPAR2_PIN, 1);
+    //else digitalWrite(SEPAR2_PIN, 1);
 
     waitAndLogData(FIRE_TIME);
 
     digitalWrite(SEPAR1_PIN, 0);
-    digitalWrite(SEPAR2_PIN, 0);
+    //digitalWrite(SEPAR2_PIN, 0);
 }
 
 /*********************************************************************/
@@ -261,11 +261,9 @@ void StateLoops::loraRxCallback(String rxFrame) {
         else if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState == RAIL) {
 
             ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
-            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            vTaskDelay(100 / portTICK_PERIOD_MS);
             ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
-            digitalWrite(SEPAR2_PIN, 1);
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
-            digitalWrite(SEPAR2_PIN, 0);
+            digitalWrite(SEPAR2_PIN, !digitalRead(SEPAR2_PIN));
         }
     }
 }
