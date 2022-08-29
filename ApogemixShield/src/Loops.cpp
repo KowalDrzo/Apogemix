@@ -254,17 +254,17 @@ void StateLoops::loraRxCallback(String rxFrame) {
             vTaskDelay(3000 / portTICK_PERIOD_MS);
             ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR1_PIN, 1);
-            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
             digitalWrite(SEPAR1_PIN, 0);
         }
 
-        if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState == RAIL) {
+        else if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState == RAIL) {
 
             ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
             vTaskDelay(3000 / portTICK_PERIOD_MS);
             ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR2_PIN, 1);
-            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
             digitalWrite(SEPAR2_PIN, 0);
         }
     }

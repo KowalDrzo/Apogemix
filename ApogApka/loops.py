@@ -42,11 +42,6 @@ class Loops:
             except(UnicodeDecodeError):
                 decodeErrors += 1
 
-            except(serial.serialutil.SerialException):
-                print("SerialException")
-                ser.close()
-                ser = serial.Serial(serialName, 115200)
-
     #########################################################
 
     def guiLoop(self):
