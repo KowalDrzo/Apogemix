@@ -51,22 +51,18 @@ struct DataFrame {
     float gpsLat;
     float gpsLng;
     float gpsAlt;
+    float gpsSec;
 
     uint32_t time;
-    float temper;
-    float pressure;
-    float altitude;
-    float speed;
-    bool continuity1 : 1;
-    bool continuity2 : 1;
-    char rocketState : 3;
 
     String toString() {
 
         char data[60];
-        sprintf(data, "%0.4f;%0.4f;%0.1f;%d;%0.1f;%0.1f;%0.1f;%0.1f;%d;%d;%d", gpsLat, gpsLng, gpsAlt, time, temper, pressure, altitude, speed, continuity1, continuity2, (int)rocketState);
+        sprintf(data, "%0.4f;%0.4f;%0.1f;%d;%0.1f;%0.1f;%0.1f;%0.1f;%d;%d;%d", gpsLat, gpsLng, gpsAlt, time, (double)gpsSec, 0.0, 0.0, 0.0, 0, 0, 0);
         return String(data);
     }
 };
+
+extern DataFrame dataFrame;
 
 #endif
