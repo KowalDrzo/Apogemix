@@ -1,6 +1,5 @@
 import tkinter as tk
 import tkinter.font as tkFont
-from turtle import update
 from data_frame import DataFrame
 
 class Gui:
@@ -247,6 +246,8 @@ class Gui:
         self.stateVal["text"] = "Text"
         self.stateVal.place(x=660,y=460,width=130,height=40)
 
+        self.txQueue = []
+
     #########################################################
 
     def update(self):
@@ -282,12 +283,12 @@ class Gui:
     #########################################################
 
     def test1Button_command(self):
-        print("command")
+        self.txQueue.append("TEST1")
 
     #########################################################
 
     def test2Button_command(self):
-        print("command")
+        self.txQueue.append("TEST2")
 
     #########################################################
 
@@ -316,3 +317,12 @@ class Gui:
 
     def cont2Val_command(self):
         print("command")
+
+    #########################################################
+
+    def getCommand(self) -> str:
+
+        retStr = ""
+        if self.txQueue:
+            retStr = self.txQueue.pop(0)
+            return retStr

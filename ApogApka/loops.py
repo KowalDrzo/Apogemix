@@ -1,5 +1,6 @@
 import serial
 import cv2
+import time
 from data_frame import DataFrame
 from gui import Gui
 from logger import Logger
@@ -11,25 +12,32 @@ class Loops:
         self.gui = Gui()
         self.logger = Logger()
         self.dataFrame = None
+        self.txQueue = []
 
     #########################################################
 
-    def serialLoop(self, serial: serial.Serial):
+    def serialLoop(self, serialName: serial.Serial, callsign: str):
 
         decodeErrors = 0
+        ser = serial.Serial(serialName, 115200)
 
         while True:
 
             try:
-                frameString = serial.readline().decode("utf-8")
+                frameString = ser.readline().decode("utf-8")
                 self.logger.log(frameString)
                 vals = frameString.split(";")
 
                 try:
-                    self.dataFrame = DataFrame(vals)
-                    print(self.dataFrame)
+                    if vals[0] == callsign:
+                        self.dataFrame = DataFrame(vals[1:])
+                        print(self.dataFrame)
                 except(IndexError):
                     decodeErrors += 1
+
+                if self.txQueue:
+                    txFrame = callsign + ";" + self.txQueue.pop(0) + "\n"
+                    ser.write(txFrame.encode('utf-8'))
 
             except(UnicodeDecodeError):
                 decodeErrors += 1
@@ -45,6 +53,10 @@ class Loops:
             else:
                 self.gui.update()
 
+            commandStr = self.gui.getCommand()
+            if commandStr:
+                self.txQueue.append(commandStr)
+
     #########################################################
 
     def camLoop(self, camPort):
@@ -59,8 +71,9 @@ class Loops:
 
         cv2.namedWindow("FPV_Cam", cv2.WINDOW_KEEPRATIO)
 
+        videoName = "videos/vid_" + time.strftime("%Y%m%d%H%M%S") + ".mp4"
         fourcc = cv2.VideoWriter_fourcc(*'MP4V')
-        out = cv2.VideoWriter("test.mp4", fourcc, 30, (RES_X,RES_Y))
+        out = cv2.VideoWriter(videoName, fourcc, 30, (RES_X,RES_Y))
 
         while True:
 
