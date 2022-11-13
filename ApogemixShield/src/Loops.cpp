@@ -18,12 +18,15 @@ void StateLoops::ignitionLoop(bool apogee) {
         waitAndLogData(glob.memory.firstSeparDelay_ms);
         digitalWrite(SEPAR1_PIN, 1);
     }
-    else digitalWrite(SEPAR2_PIN, 1);
+    // Depending on the P2 mode - TODO!!!
+    //else digitalWrite(SEPAR2_PIN, 1);
 
     waitAndLogData(FIRE_TIME);
 
     digitalWrite(SEPAR1_PIN, 0);
-    digitalWrite(SEPAR2_PIN, 0);
+
+    // Depending on the P2 mode - TODO!!!
+    //digitalWrite(SEPAR2_PIN, 0);
 }
 
 /*********************************************************************/
@@ -248,7 +251,7 @@ void StateLoops::loraRxCallback(String rxFrame) {
 
     if (strstr(rxFrame.c_str(), glob.memory.callsign)) {
 
-        if (strstr(rxFrame.c_str(), "TEST1") && glob.dataFrame.rocketState == RAIL) {
+        if (strstr(rxFrame.c_str(), "TEST1") && (glob.dataFrame.rocketState <= FLIGHT)) {
 
             ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
             vTaskDelay(3000 / portTICK_PERIOD_MS);
@@ -258,14 +261,20 @@ void StateLoops::loraRxCallback(String rxFrame) {
             digitalWrite(SEPAR1_PIN, 0);
         }
 
-        else if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState == RAIL) {
+        else if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState <= FIRST_SEPAR) {
 
             ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+            vTaskDelay(100 / portTICK_PERIOD_MS);
+            ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+            digitalWrite(SEPAR2_PIN, !digitalRead(SEPAR2_PIN));
+
+            // Depending on the P2 mode - TODO!!!
+            /*ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
             vTaskDelay(3000 / portTICK_PERIOD_MS);
             ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR2_PIN, 1);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
-            digitalWrite(SEPAR2_PIN, 0);
+            digitalWrite(SEPAR2_PIN, 0);*/
         }
     }
 }
