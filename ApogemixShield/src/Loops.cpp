@@ -77,6 +77,12 @@ void StateLoops::railLoop() {
             }
         }
         vTaskDelay(1 / portTICK_PERIOD_MS);
+
+        // DEBUG:
+        if (Serial.available()) {
+            rxDebugString = Serial.readString();
+            if (strstr(rxDebugString.c_str(), "FORCE NEXT STATE")) break;
+        }
     }
 }
 
@@ -98,6 +104,12 @@ void StateLoops::flightLoop() {
             }
         }
         vTaskDelay(1 / portTICK_PERIOD_MS);
+
+        // DEBUG:
+        if (Serial.available()) {
+            rxDebugString = Serial.readString();
+            if (strstr(rxDebugString.c_str(), "FORCE NEXT STATE")) break;
+        }
     }
 }
 
