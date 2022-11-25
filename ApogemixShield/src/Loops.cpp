@@ -5,8 +5,11 @@ StateLoops loops;
 void StateLoops::dataLoop(bool enableFlashWrite) {
 
     tasks.measure();
-    glob.dataFramesFifo.push(glob.dataFrame);
-    if (enableFlashWrite) tasks.writeToFlash();
+    DataFrame trashBin;
+    if (uxQueueMessagesWaiting(glob.dataFramesFifo) == FRAMES_IN_Q) {
+        xQueueReceive(glob.dataFramesFifo, &trashBin, portMAX_DELAY);
+    }
+    xQueueSend(glob.dataFramesFifo, &glob.dataFrame, portMAX_DELAY);
 }
 
 /*********************************************************************/
@@ -140,8 +143,10 @@ void StateLoops::sep2Loop() {
 
 void StateLoops::groundLoop() {
 
-    tasks.writeToFlash(1);
-    vTaskDelay(1 / portTICK_PERIOD_MS);
+    vTaskDelay(3000 / portTICK_PERIOD_MS);
+
+    // Depending on the P2 mode - TODO!!!
+    digitalWrite(SEPAR2_PIN, 0);
 }
 
 /*********************************************************************/

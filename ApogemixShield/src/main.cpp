@@ -31,9 +31,13 @@ void setup() {
     glob.initialPressure = tasks.bmp.readPressure();
     glob.initialTemper = tasks.bmp.readTemperature();
 
+    // RTOS queues:
+    glob.dataFramesFifo = xQueueCreate(FRAMES_IN_Q, sizeof(DataFrame));
+
     // Pararell tasks:
-    xTaskCreate((TaskFunction_t) StateLoops::gpsLoop,  "GPS Task",  4096,  NULL, 2, NULL);
-    xTaskCreate((TaskFunction_t) StateLoops::loraLoop, "LoRa Task", 16384, NULL, 2, NULL);
+    xTaskCreate((TaskFunction_t) StateLoops::gpsLoop,  "GPS Task",   4096,  NULL, 2, NULL);
+    xTaskCreate((TaskFunction_t) StateLoops::loraLoop, "LoRa Task",  16384, NULL, 2, NULL);
+    xTaskCreate((TaskFunction_t) Tasks::flashTask,     "Flash Task", 16384, NULL, 1, NULL);
 
     // LOOPS:
     glob.dataFrame.rocketState = RAIL;

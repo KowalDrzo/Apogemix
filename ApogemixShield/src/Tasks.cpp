@@ -150,27 +150,39 @@ bool Tasks::isOnGround() {
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 
-void Tasks::writeToFlash(bool force) {
+void Tasks::flashTask() {
 
-    if (!appendFlash) {
+    File file;
+    bool appendFlash = false;
 
-        appendFlash = true;
-        file = LITTLEFS.open("/FlightData.apg", "w");
-    }
-    else {
-        file = LITTLEFS.open("/FlightData.apg", "a");
+    while (glob.dataFrame.rocketState < FLIGHT) {
+        vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 
-    if (glob.dataFramesFifo.size() > 20 || force) {
+    while (1) {
 
-        while(glob.dataFramesFifo.size()) {
-            DataFrame tempData = glob.dataFramesFifo.front();
-            glob.dataFramesFifo.pop();
-            file.write((uint8_t*) &tempData, sizeof(tempData));
+        if (uxQueueMessagesWaiting(glob.dataFramesFifo) > 20 || glob.dataFrame.rocketState == GROUND) {
+
+            if (!appendFlash) {
+                appendFlash = true;
+                file = LITTLEFS.open("/FlightData.apg", "w");
+            }
+            else {
+                file = LITTLEFS.open("/FlightData.apg", "a");
+            }
+
+            while (uxQueueMessagesWaiting(glob.dataFramesFifo)) {
+
+                DataFrame tempData;
+                xQueueReceive(glob.dataFramesFifo, &tempData, portMAX_DELAY);
+                file.write((uint8_t*) &tempData, sizeof(tempData));
+            }
+
+            file.close();
         }
-    }
 
-    file.close();
+        vTaskDelay(10 / portTICK_PERIOD_MS);
+    }
 }
 
 /*********************************************************************/
@@ -179,7 +191,7 @@ void Tasks::readFlash() {
 
     LITTLEFS.begin(true);
 
-    file = LITTLEFS.open("/FlightData.apg", "r");
+    File file = LITTLEFS.open("/FlightData.apg", "r");
 
     DataFrame dane;
     while (file.readBytes((char*) &dane, sizeof(dane))) {
@@ -196,7 +208,7 @@ void Tasks::readFlash() {
 void Tasks::clearMem() {
 
     LITTLEFS.begin(true);
-    file = LITTLEFS.open("/FlightData.apg", "w");
+    File file = LITTLEFS.open("/FlightData.apg", "w");
     file.close();
 
     memset(&glob.memory, 0, sizeof(glob.memory));
