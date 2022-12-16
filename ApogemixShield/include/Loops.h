@@ -10,6 +10,8 @@ class StateLoops {
     Timer waitingTimer;
     Timer wifiTimer;
 
+    String rxDebugString;
+
     void dataLoop(bool enableFlashWrite);
     void ignitionLoop(bool apogee);
     void waitAndLogData(uint32_t time_ms);

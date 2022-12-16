@@ -79,7 +79,8 @@ class Loops:
 
             ret, frame = cap.read()
             font = cv2.FONT_HERSHEY_SIMPLEX
-            cv2.rotate(frame, cv2.ROTATE_180, frame)
+            # For video cam inversion 180 degree:
+            # cv2.rotate(frame, cv2.ROTATE_180, frame)
 
             if self.dataFrame:
                 cv2.putText(frame, self.dataFrame.camInfo(), (10, RES_Y-30), font, 0.88, (128, 255, 255), 2, cv2.LINE_4)

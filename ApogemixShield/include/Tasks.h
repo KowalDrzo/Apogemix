@@ -16,8 +16,6 @@
 
 class Tasks {
 
-    File file;
-    bool appendFlash = false;
     uint8_t criteriaCounter = 0;
     void continuityTest();
     void buzzBeep(uint16_t time, uint8_t n);
@@ -35,7 +33,7 @@ public:
     bool isSecondChuteTime();
     bool isOnGround();
 
-    void writeToFlash(bool force = false);
+    static void flashTask();
     void readFlash();
     void updateDataBase();
 
