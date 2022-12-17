@@ -20,6 +20,7 @@ void setup() {
 
     pinMode(CONT1_PIN, INPUT_PULLUP);
     pinMode(CONT2_PIN, INPUT_PULLUP);
+    pinMode(SWITCH_PIN, INPUT_PULLUP);
 
     // CONFIG:
     EEPROM.begin(sizeof(glob.memory));
