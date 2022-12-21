@@ -13,6 +13,7 @@ void setup() {
 
     Wire.begin(SDA_PIN, SCL_PIN);
     tasks.bmp.begin(BMP085_ULTRAHIGHRES, &Wire);
+    tasks.ds18b20.begin();
 
     pinMode(SEPAR1_PIN, OUTPUT);
     pinMode(SEPAR2_PIN, OUTPUT);
@@ -31,7 +32,7 @@ void setup() {
 
     tasks.readFlash();
     glob.initialPressure = tasks.bmp.readPressure();
-    glob.initialTemper = tasks.bmp.readTemperature();
+    glob.initialTemper = tasks.readDsTemperature(); // Slower but more accurate sensor.
 
     // RTOS queues:
     glob.dataFramesFifo = xQueueCreate(FRAMES_IN_Q, sizeof(DataFrame));

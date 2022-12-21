@@ -14,7 +14,7 @@ void Tasks::continuityTest() {
 
 void Tasks::measure() {
 
-    // Pressure and temperature:
+    // Pressure and temperature (faster sensor):
     glob.dataFrame.pressure = bmp.readPressure();
     glob.dataFrame.temper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
 
@@ -71,6 +71,14 @@ void Tasks::buzz() {
     if (glob.dataFrame.continuity1 && glob.dataFrame.continuity2)   buzzBeep(500, 3);
     else if (glob.dataFrame.continuity1)                            buzzBeep(500, 1);
     else if (glob.dataFrame.continuity2)                            buzzBeep(500, 2);
+}
+
+/*********************************************************************/
+
+float Tasks::readDsTemperature() {
+
+    ds18b20.requestTemperatures();
+    return ds18b20.getTempCByIndex(0);
 }
 
 /*********************************************************************/

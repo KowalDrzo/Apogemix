@@ -5,7 +5,7 @@
 
 void Website::start() {
 
-    WiFi.softAP(ssid, password);
+    WiFi.softAP(ssid.c_str(), password);
     //MDNS.begin("apogemix");
 
     Serial.println("server on");
@@ -17,7 +17,7 @@ void Website::start() {
         request->send(200, "text/html", generateHtml());
     });
 
-    server.on("/debug", HTTP_GET, [this](AsyncWebServerRequest *request) {
+    server.on("/api", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         request->send(200, "text/html", glob.dataFrame.toString());
     });

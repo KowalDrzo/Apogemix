@@ -16,4 +16,6 @@
 #define GPS_TX_PIN 34
 #define GPS_RX_PIN 12
 
+#define ONE_WIRE_PIN 15
+
 #endif

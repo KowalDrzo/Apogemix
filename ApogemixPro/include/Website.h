@@ -7,8 +7,8 @@
 
 class Website {
 
-    const char* ssid = "Apogemix_shield_1";
-    const char* password = "ApogemixShield";
+    String ssid = String("Apogemix_pro_") + String(APOGEMIX_ID);
+    const char* password = "ApogemixPro";
     AsyncWebServer server = AsyncWebServer(80);
     bool enabled = false;
 

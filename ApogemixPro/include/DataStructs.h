@@ -1,7 +1,7 @@
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
 
-#define APOGEMIX_ID 6
+#define APOGEMIX_ID 7
 #define FLIGHTS_IN_MEM 30
 #define FRAMES_IN_Q 30
 #define ALPHA_H 0.2
