@@ -29,7 +29,7 @@ void StateLoops::ignitionLoop(bool apogee) {
     digitalWrite(SEPAR1_PIN, 0);
 
     // Depending on the P2 mode - TODO!!!
-    //digitalWrite(SEPAR2_PIN, 0);
+    // digitalWrite(SEPAR2_PIN, 0);
 }
 
 /*********************************************************************/
@@ -200,8 +200,8 @@ void StateLoops::loraLoop() {
     SPIClass hspi(HSPI);
     String loraString;
 
-    ledcSetup(0, 2000, 8);
-    ledcAttachPin(BUZZER_PIN, 0);
+    //ledcSetup(0, 2000, 8);
+    //ledcAttachPin(BUZZER_PIN, 0);
 
     tasks.buzz();
 
@@ -227,9 +227,9 @@ void StateLoops::loraLoop() {
             // No GPS fix buzz:
             if (glob.dataFrame.gpsLat == 0) {
 
-                ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+                digitalWrite(BUZZER_PIN, 1);
                 vTaskDelay(30 / portTICK_PERIOD_MS);
-                ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+                digitalWrite(BUZZER_PIN, 0);
             }
         }
 
@@ -246,7 +246,7 @@ void StateLoops::loraLoop() {
 
             while (1) {
 
-                ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+                digitalWrite(BUZZER_PIN, 0);
                 vTaskDelay(9000 / portTICK_PERIOD_MS);
 
                 loraString = String(glob.memory.callsign) + String(";") + glob.dataFrame.toString();
@@ -254,7 +254,7 @@ void StateLoops::loraLoop() {
                 LoRa.println(loraString);
                 LoRa.endPacket();
 
-                ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+                digitalWrite(BUZZER_PIN, 1);
                 vTaskDelay(1000 / portTICK_PERIOD_MS);
             }
         }
@@ -270,9 +270,9 @@ void StateLoops::loraRxCallback(String rxFrame) {
 
         if (strstr(rxFrame.c_str(), "TEST1") && (glob.dataFrame.rocketState <= FLIGHT)) {
 
-            ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+            digitalWrite(BUZZER_PIN, 1);
             vTaskDelay(3000 / portTICK_PERIOD_MS);
-            ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+            digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR1_PIN, 1);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
             digitalWrite(SEPAR1_PIN, 0);
@@ -280,15 +280,15 @@ void StateLoops::loraRxCallback(String rxFrame) {
 
         else if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState <= FIRST_SEPAR) {
 
-            ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+            digitalWrite(BUZZER_PIN, 1);
             vTaskDelay(100 / portTICK_PERIOD_MS);
-            ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+            digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR2_PIN, !digitalRead(SEPAR2_PIN));
 
             // Depending on the P2 mode - TODO!!!
-            /*ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+            /*digitalWrite(BUZZER_PIN, 1);
             vTaskDelay(3000 / portTICK_PERIOD_MS);
-            ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+            digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR2_PIN, 1);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
             digitalWrite(SEPAR2_PIN, 0);*/

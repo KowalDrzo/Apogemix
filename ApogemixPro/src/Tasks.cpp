@@ -50,9 +50,9 @@ void Tasks::buzzBeep(uint16_t time, uint8_t n) {
 
     for (; n > 0; n--) {
 
-        ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+        digitalWrite(BUZZER_PIN, 1);
         vTaskDelay(time / portTICK_PERIOD_MS);
-        ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+        digitalWrite(BUZZER_PIN, 0);
         vTaskDelay(time / portTICK_PERIOD_MS);
     }
 }
@@ -63,9 +63,9 @@ void Tasks::buzz() {
 
     continuityTest();
 
-    ledcWriteTone(0, 2000); //digitalWrite(BUZZER_PIN, 1);
+    digitalWrite(BUZZER_PIN, 1);
     vTaskDelay(500 / portTICK_PERIOD_MS);
-    ledcWriteTone(0, 0); //digitalWrite(BUZZER_PIN, 0);
+    digitalWrite(BUZZER_PIN, 0);
     vTaskDelay(3000 / portTICK_PERIOD_MS);
 
     if (glob.dataFrame.continuity1 && glob.dataFrame.continuity2)   buzzBeep(500, 3);
