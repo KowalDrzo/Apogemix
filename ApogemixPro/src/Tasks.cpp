@@ -63,10 +63,8 @@ void Tasks::buzz() {
 
     continuityTest();
 
-    digitalWrite(BUZZER_PIN, 1);
-    vTaskDelay(500 / portTICK_PERIOD_MS);
-    digitalWrite(BUZZER_PIN, 0);
-    vTaskDelay(3000 / portTICK_PERIOD_MS);
+    buzzBeep(30, 2);
+    vTaskDelay(2000 / portTICK_PERIOD_MS);
 
     if (glob.dataFrame.continuity1 && glob.dataFrame.continuity2)   buzzBeep(500, 3);
     else if (glob.dataFrame.continuity1)                            buzzBeep(500, 1);

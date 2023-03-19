@@ -10,8 +10,8 @@
 #define FIRST_SEPAR_LOOP_TIME 500
 #define SECND_SEPAR_LOOP_TIME 1000
 #define FIRE_TIME 2000
-#define TEMPERATURE_FIX_A 0.855
-#define TEMPERATURE_FIX_B (-1.188)
+#define TEMPERATURE_FIX_A 1//0.855
+#define TEMPERATURE_FIX_B 0//(-1.188)
 
 #include <stdint.h>
 

@@ -33,6 +33,7 @@ void setup() {
     tasks.readFlash();
     glob.initialPressure = tasks.bmp.readPressure();
     glob.initialTemper = tasks.readDsTemperature(); // Slower but more accurate sensor.
+    Serial.println(glob.initialTemper);
 
     // RTOS queues:
     glob.dataFramesFifo = xQueueCreate(FRAMES_IN_Q, sizeof(DataFrame));

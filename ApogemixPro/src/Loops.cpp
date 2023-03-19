@@ -200,6 +200,8 @@ void StateLoops::loraLoop() {
     SPIClass hspi(HSPI);
     String loraString;
 
+    bool gpsFound = false;
+
     //ledcSetup(0, 2000, 8);
     //ledcAttachPin(BUZZER_PIN, 0);
 
@@ -224,12 +226,11 @@ void StateLoops::loraLoop() {
             LoRa.println(loraString);
             LoRa.endPacket();
 
-            // No GPS fix buzz:
-            if (glob.dataFrame.gpsLat == 0) {
+            // GPS fix buzz:
+            if (glob.dataFrame.gpsLat != 0 && !gpsFound) {
 
-                digitalWrite(BUZZER_PIN, 1);
-                vTaskDelay(30 / portTICK_PERIOD_MS);
-                digitalWrite(BUZZER_PIN, 0);
+                gpsFound = true;
+                tasks.buzzBeep(30, 3);
             }
         }
 

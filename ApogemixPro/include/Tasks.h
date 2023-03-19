@@ -20,7 +20,6 @@ class Tasks {
 
     uint8_t criteriaCounter = 0;
     void continuityTest();
-    void buzzBeep(uint16_t time, uint8_t n);
 
 public:
 
@@ -28,6 +27,8 @@ public:
     DallasTemperature ds18b20 = DallasTemperature(&oneWire);
     Adafruit_BMP085 bmp;
     TinyGPSPlus gps;
+
+    void buzzBeep(uint16_t time, uint8_t n);
 
     void measure();
     void buzz();
