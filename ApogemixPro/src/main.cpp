@@ -13,7 +13,6 @@ void setup() {
 
     Wire.begin(SDA_PIN, SCL_PIN);
     tasks.bmp.begin(BMP085_ULTRAHIGHRES, &Wire);
-    tasks.ds18b20.begin();
 
     pinMode(SEPAR1_PIN, OUTPUT);
     pinMode(SEPAR2_PIN, OUTPUT);
@@ -32,7 +31,7 @@ void setup() {
 
     tasks.readFlash();
     glob.initialPressure = tasks.bmp.readPressure();
-    glob.initialTemper = tasks.readDsTemperature(); // Slower but more accurate sensor.
+    glob.initialTemper = tasks.bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
     Serial.println(glob.initialTemper);
 
     // RTOS queues:

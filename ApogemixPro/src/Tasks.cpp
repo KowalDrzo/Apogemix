@@ -73,14 +73,6 @@ void Tasks::buzz() {
 
 /*********************************************************************/
 
-float Tasks::readDsTemperature() {
-
-    ds18b20.requestTemperatures();
-    return ds18b20.getTempCByIndex(0);
-}
-
-/*********************************************************************/
-
 bool Tasks::isLaunchDetected() {
 
     if (glob.dataFrame.altitude > 20) {

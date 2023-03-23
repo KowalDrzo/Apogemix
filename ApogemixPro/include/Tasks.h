@@ -8,8 +8,6 @@
 #include <SPI.h>
 #include <Adafruit_BMP085.h>
 #include <TinyGPS++.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
 
 #include "PinDefinitions.h"
 #include "Timer.h"
@@ -23,8 +21,6 @@ class Tasks {
 
 public:
 
-    OneWire oneWire = OneWire(ONE_WIRE_PIN);
-    DallasTemperature ds18b20 = DallasTemperature(&oneWire);
     Adafruit_BMP085 bmp;
     TinyGPSPlus gps;
 
@@ -32,7 +28,6 @@ public:
 
     void measure();
     void buzz();
-    float readDsTemperature();
 
     bool isLaunchDetected();
     bool isApogeeDetected();
