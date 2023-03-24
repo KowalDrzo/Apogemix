@@ -6,7 +6,7 @@
 void Website::start() {
 
     WiFi.softAP(ssid.c_str(), password);
-    //MDNS.begin("apogemix");
+    MDNS.begin("apogemix");
 
     Serial.println("server on");
     enabled = true;

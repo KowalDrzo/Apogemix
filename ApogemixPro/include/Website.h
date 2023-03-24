@@ -2,6 +2,7 @@
 #define WEBSITE_H
 
 #include "ESPAsyncWebServer.h"
+#include <ESPmDNS.h>
 
 #include "Tasks.h"
 
