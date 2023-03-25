@@ -7,8 +7,8 @@
 #define ALPHA_H 0.2
 #define ALPHA_V 0.2
 #define RAIL_FLIGHT_LOOP_TIME 200
-#define FIRST_SEPAR_LOOP_TIME 500
-#define SECND_SEPAR_LOOP_TIME 1000
+#define FIRST_SEPAR_LOOP_TIME 250
+#define SECND_SEPAR_LOOP_TIME 500
 #define FIRE_TIME 2000
 #define TEMPERATURE_FIX_A 0.855
 #define TEMPERATURE_FIX_B (-1.188)
@@ -16,7 +16,7 @@
 #include <stdint.h>
 
 struct Flight {
-    
+
     uint16_t num;
     uint16_t apogee;
     uint16_t maxSpeed;
@@ -58,12 +58,17 @@ struct DataFrame {
     float speed;
     bool continuity1 : 1;
     bool continuity2 : 1;
+    bool mosState    : 1;
     char rocketState : 3;
 
     String toString() {
 
+        // Make one byte from continuities:
+        uint8_t continuities = 0;
+        continuities |= (continuity1 << 1) | (continuity2 << 2) | (mosState << 3);
+
         char data[60];
-        sprintf(data, "%0.4f;%0.4f;%0.1f;%d;%0.1f;%0.1f;%0.1f;%0.1f;%d;%d;%d", gpsLat, gpsLng, gpsAlt, time, temper, pressure, altitude, speed, continuity1, continuity2, (int)rocketState);
+        sprintf(data, "%0.4f;%0.4f;%0.1f;%d;%0.1f;%0.1f;%0.1f;%0.1f;%d;%d", gpsLat, gpsLng, gpsAlt, time, temper, pressure, altitude, speed, continuities, (int)rocketState);
         return String(data);
     }
 };
