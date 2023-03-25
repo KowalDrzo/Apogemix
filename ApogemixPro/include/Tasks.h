@@ -24,7 +24,7 @@ public:
     Adafruit_BMP085 bmp;
     TinyGPSPlus gps;
 
-    void buzzBeep(uint16_t time, uint8_t n);
+    void buzzBeep(uint16_t activeTime, uint16_t sleepTime, uint8_t n);
 
     void measure();
     void buzz();
@@ -37,6 +37,7 @@ public:
     static void flashTask();
     void readFlash();
     void updateDataBase();
+    void recalibrate();
 
     void clearMem();
 };

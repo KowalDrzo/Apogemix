@@ -30,8 +30,7 @@ void setup() {
     //tasks.clearMem();
 
     tasks.readFlash();
-    glob.initialPressure = tasks.bmp.readPressure();
-    glob.initialTemper = tasks.bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
+    tasks.recalibrate();
     Serial.println(glob.initialTemper);
 
     // RTOS queues:

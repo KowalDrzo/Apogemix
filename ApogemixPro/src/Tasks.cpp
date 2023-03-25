@@ -14,27 +14,28 @@ void Tasks::continuityTest() {
 
 void Tasks::measure() {
 
-    // Pressure and temperature (faster sensor):
+    // Pressure and temperature:
     glob.dataFrame.pressure = bmp.readPressure();
     glob.dataFrame.temper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
+
+    // Time:
+    uint32_t newTime = millis();
+    uint32_t timeDiff = newTime - glob.dataFrame.time;
+    if (!timeDiff) timeDiff++;
+    glob.dataFrame.time = newTime;
 
     // Altitude:
     float oldAlt = glob.dataFrame.altitude;
     float newAlt = (glob.initialTemper+273.15)/0.0065*(1.0 - pow(glob.dataFrame.pressure/glob.initialPressure, 0.1903));
     glob.dataFrame.altitude = ALPHA_H * oldAlt + (1-ALPHA_H) * newAlt;
-    
+
     // Speed:
     float oldSpd = glob.dataFrame.speed;
-    uint32_t timeDiff = millis() - glob.dataFrame.time;
-    if (!timeDiff) timeDiff++;
     float newSpd = 1000.0*(glob.dataFrame.altitude - oldAlt) / timeDiff;
     glob.dataFrame.speed = ALPHA_V * oldSpd + (1-ALPHA_V) * newSpd;
 
     // Contunuity:
     continuityTest();
-
-    // Time:
-    glob.dataFrame.time = millis();
 
     // Maximas:
     if (glob.apogee < glob.dataFrame.altitude) glob.apogee = glob.dataFrame.altitude;
@@ -46,14 +47,14 @@ void Tasks::measure() {
 
 /*********************************************************************/
 
-void Tasks::buzzBeep(uint16_t time, uint8_t n) {
+void Tasks::buzzBeep(uint16_t activeTime, uint16_t sleepTime, uint8_t n) {
 
     for (; n > 0; n--) {
 
         digitalWrite(BUZZER_PIN, 1);
-        vTaskDelay(time / portTICK_PERIOD_MS);
+        vTaskDelay(activeTime / portTICK_PERIOD_MS);
         digitalWrite(BUZZER_PIN, 0);
-        vTaskDelay(time / portTICK_PERIOD_MS);
+        vTaskDelay(sleepTime / portTICK_PERIOD_MS);
     }
 }
 
@@ -63,12 +64,12 @@ void Tasks::buzz() {
 
     continuityTest();
 
-    buzzBeep(30, 2);
+    buzzBeep(30, 150, 2);
     vTaskDelay(2000 / portTICK_PERIOD_MS);
 
-    if (glob.dataFrame.continuity1 && glob.dataFrame.continuity2)   buzzBeep(500, 3);
-    else if (glob.dataFrame.continuity1)                            buzzBeep(500, 1);
-    else if (glob.dataFrame.continuity2)                            buzzBeep(500, 2);
+    if (glob.dataFrame.continuity1 && glob.dataFrame.continuity2)   buzzBeep(500, 500, 3);
+    else if (glob.dataFrame.continuity1)                            buzzBeep(500, 500, 1);
+    else if (glob.dataFrame.continuity2)                            buzzBeep(500, 500, 2);
 }
 
 /*********************************************************************/
@@ -82,7 +83,7 @@ bool Tasks::isLaunchDetected() {
 
             criteriaCounter = 0;
             return true;
-        } 
+        }
     }
     else criteriaCounter = 0;
 
@@ -221,6 +222,11 @@ void Tasks::clearMem() {
 
     EEPROM.put(0, glob.memory);
     EEPROM.commit();
+
+    buzzBeep(30, 30, 10);
+    while(1) {
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+    }
 }
 
 /*********************************************************************/
@@ -239,4 +245,12 @@ void Tasks::updateDataBase() {
 
     EEPROM.put(0, glob.memory);
     EEPROM.commit();
+}
+
+/*********************************************************************/
+
+void Tasks::recalibrate() {
+
+    glob.initialPressure = bmp.readPressure();
+    glob.initialTemper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
 }

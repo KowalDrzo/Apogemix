@@ -165,8 +165,6 @@ void StateLoops::groundLoop() {
 
 void StateLoops::gpsLoop() {
 
-    bool gpsNotFixed = true;
-
     while(1) {
 
         if (Serial1.available()) {
@@ -179,15 +177,6 @@ void StateLoops::gpsLoop() {
                 glob.dataFrame.gpsAlt = tasks.gps.altitude.meters();
             }
         }
-
-        if (gpsNotFixed) {
-
-            if(fabs(glob.dataFrame.gpsLat) > 0.001) {
-                gpsNotFixed = false;
-                glob.initialPressure = glob.dataFrame.pressure;
-            }
-        }
-
         vTaskDelay(1 / portTICK_PERIOD_MS);
     }
 }
@@ -230,7 +219,7 @@ void StateLoops::loraLoop() {
             if (glob.dataFrame.gpsLat != 0 && !gpsFound) {
 
                 gpsFound = true;
-                tasks.buzzBeep(30, 3);
+                tasks.buzzBeep(30, 150, 3);
             }
         }
 
@@ -293,6 +282,19 @@ void StateLoops::loraRxCallback(String rxFrame) {
             digitalWrite(SEPAR2_PIN, 1);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
             digitalWrite(SEPAR2_PIN, 0);*/
+        }
+
+        else if (strstr(rxFrame.c_str(), "MOS_ON")) {
+            // TODO Additional mosfet on.
+        }
+
+        else if (strstr(rxFrame.c_str(), "MOS_OFF")) {
+            // TODO Additional mosfet off.
+        }
+
+        else if (strstr(rxFrame.c_str(), "RECAALIBRATE") && (glob.dataFrame.rocketState < FLIGHT)) {
+
+            tasks.recalibrate();
         }
     }
 }
