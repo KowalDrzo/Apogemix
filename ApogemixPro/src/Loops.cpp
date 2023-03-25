@@ -16,11 +16,7 @@ void StateLoops::dataLoop(bool enableFlashWrite) {
 
 void StateLoops::ignitionLoop(bool apogee) {
 
-    if (apogee) {
-        
-        waitAndLogData(glob.memory.firstSeparDelay_ms);
-        digitalWrite(SEPAR1_PIN, 1);
-    }
+    if (apogee) digitalWrite(SEPAR1_PIN, 1);
     // Depending on the P2 mode - TODO!!!
     //else digitalWrite(SEPAR2_PIN, 1);
 

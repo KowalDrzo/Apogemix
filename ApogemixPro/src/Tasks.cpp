@@ -214,7 +214,6 @@ void Tasks::clearMem() {
 
     glob.memory.wifiActiveTime_min = 3;
     glob.memory.secondSeparAltitude = 100;
-    glob.memory.firstSeparDelay_ms = 1;
 
     glob.memory.loraDelay_ms = 2000;
     glob.memory.loraFreqMHz = 433;
