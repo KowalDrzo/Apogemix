@@ -51,9 +51,16 @@ void Website::stop() {
 
 String Website::generateHtml() {
 
-    String html = "";
-
-    html += "<!DOCTYPE html><head>    <title>Apogemix mini configuration page</title></head><body>    <h3>        Apogemix mini    </h3><hr>    <p>        Current settings:        <ul>";
+    String html = R"rawliteral(
+        <!DOCTYPE html>
+        <head>
+            <title>Apogemix mini configuration page</title>
+        </head>
+        <body>
+            <h3>Apogemix Pro</h3><hr>
+            <p>Current settings:
+            <ul>
+    )rawliteral";
 
     html += "<li>Second parachute ignition altitude: <strong>";
     html += String(glob.memory.secondSeparAltitude);
@@ -64,7 +71,17 @@ String Website::generateHtml() {
     html += "</strong> MHz,</li> <li>LoRa send data period: <strong>";
     html += String(glob.memory.loraDelay_ms);
     html += "</strong> ms.</li>";
-    html += "</ul>    </p><hr>    <a href='/FlightData.apg'>Download data from last flight.</a>    <p>        Flight data table:        <table border='1'>            <tr>                <th>Num</th>                <th>Apogee [m]</th>                <th>Max speed [m/s]</th>            </tr>";
+
+    html += R"rawliteral(
+            </ul>
+            </p><hr>
+            <a href='/FlightData.apg'>Download data from last flight.</a>
+            <p>Flight data table:
+            <table border='1'>
+                <tr>
+                    <th>Num</th><th>Apogee [m]</th><th>Max speed [m/s]</th>
+                </tr>
+    )rawliteral";
 
     for (uint8_t i = 0; i < FLIGHTS_IN_MEM; i++) {
 
@@ -73,10 +90,26 @@ String Website::generateHtml() {
         html += "<td>" + String(glob.memory.flight[i].maxSpeed) + "</td></tr>";
     }
 
-    html += "</table>    </p><hr>    <p>        Change settings:        <form>            <label for='set2'>Second parachute ignition altitude:</label><br>            <input type='number' min='50' max='5000' id='set2' name='set2'><br>            <label for='set3'>Wifi active time:</label><br>            <input type='number' min='2' max='15' id='set3' name='set3'><br>";
-    html += "<label for='set4'>LoRa frequency:</label><br> <input type='number' min='100' max='999' id='set4' name='set4'><br>";
-    html += "<label for='set5'>LoRa send period:</label><br> <input type='number' min='500' max='5000' id='set5' name='set5'><br>";
-    html +="<br><input type='submit'><hr>        </form>    </p>    </p>    <a href='/wifioff'>Turn off the wifi.</a>    <p><hr>    </body></html>";
+    html += R"rawliteral(
+            </table>
+            </p><hr>
+            <p>Change settings:
+            <form>
+                <label for='set2'>Second parachute ignition altitude:</label><br>
+                <input type='number' min='50' max='5000' id='set2' name='set2'><br>
+                <label for='set3'>Wifi active time:</label><br>
+                <input type='number' min='2' max='15' id='set3' name='set3'><br>
+                <label for='set4'>LoRa frequency:</label><br>
+                <input type='number' min='100' max='999' id='set4' name='set4'><br>
+                <label for='set5'>LoRa send period:</label><br>
+                <input type='number' min='500' max='5000' id='set5' name='set5'><br>
+                <br><input type='submit'>
+            </form>
+            </p><hr>
+            <a href='/wifioff'>Turn off the wifi.</a>
+        </body>
+        </html>
+    )rawliteral";
 
     return html;
 }
