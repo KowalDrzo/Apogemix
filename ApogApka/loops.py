@@ -56,6 +56,7 @@ class Loops:
             commandStr = self.gui.getCommand()
             if commandStr:
                 self.txQueue.append(commandStr)
+            time.sleep(0.1)
 
     #########################################################
 

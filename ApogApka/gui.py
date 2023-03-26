@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkFont
+import os
 from data_frame import DataFrame
 
 class Gui:
@@ -247,12 +248,20 @@ class Gui:
         self.stateVal.place(x=660,y=460,width=130,height=40)
 
         self.txQueue = []
+        self.root.protocol("WM_DELETE_WINDOW", self.onClosing)
 
     #########################################################
 
     def update(self):
 
         self.root.update()
+
+    #########################################################
+
+    def onClosing(self):
+
+        self.root.destroy()
+        os._exit(0)
 
     #########################################################
 
@@ -268,12 +277,12 @@ class Gui:
         self.timeVal["text"] = dataFrame.time
         self.stateVal["text"] = dataFrame.stateString()
 
-        if dataFrame.cont1 == 1:
+        if dataFrame.cont1:
             self.cont1Val.select()
         else:
             self.cont1Val.deselect()
 
-        if dataFrame.cont2 == 1:
+        if dataFrame.cont2:
             self.cont2Val.select()
         else:
             self.cont2Val.deselect()

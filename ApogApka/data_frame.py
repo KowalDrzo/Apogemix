@@ -10,6 +10,7 @@ class DataFrame:
     speed       = 0.0
     cont1       = False
     cont2       = False
+    mosState    = False
     rocketState = 0
 
     def __init__(self, vals) -> None:
@@ -24,22 +25,22 @@ class DataFrame:
         self.speed       = vals[7]
 
         try:
-            self.cont1       = int(vals[8])
-            self.cont2       = int(vals[9])
-            self.rocketState = int(vals[10])
+            continuities     = int(vals[8])
+            self.cont1       = bool(continuities & 0b001)
+            self.cont2       = bool(continuities & 0b010)
+            self.mosState    = bool(continuities & 0b100)
+            self.rocketState = int(vals[9])
         except(ValueError):
             self.cont1       = False
             self.cont2       = False
+            self.mosState    = False
             self.rocketState = 0
 
     #########################################################
 
     def __str__(self) -> str:
 
-        
-
-        frameString = ""
-        frameString += "\nGPS szerokość: " + str(self.gpsLat)
+        frameString =  "\nGPS szerokość: " + str(self.gpsLat)
         frameString += "\nGPS długość: "   + str(self.gpsLng)
         frameString += "\nGPS wysokość: "  + str(self.gpsAlt)
         frameString += "\nCzas ms: "       + str(self.time)
@@ -49,6 +50,7 @@ class DataFrame:
         frameString += "\nPrędkość: "      + str(self.speed)
         frameString += "\nCiągłość 1: "    + str(self.cont1)
         frameString += "\nCiągłość 2: "    + str(self.cont2)
+        frameString += "\nMosfet: "        + str(self.mosState)
         frameString += "\nStan: "          + self.stateString()
 
         return frameString

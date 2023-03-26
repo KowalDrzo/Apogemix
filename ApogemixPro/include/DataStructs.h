@@ -65,7 +65,7 @@ struct DataFrame {
 
         // Make one byte from continuities:
         uint8_t continuities = 0;
-        continuities |= (continuity1 << 1) | (continuity2 << 2) | (mosState << 3);
+        continuities |= (continuity1 << 0) | (continuity2 << 1) | (mosState << 2);
 
         char data[60];
         sprintf(data, "%0.4f;%0.4f;%0.1f;%d;%0.1f;%0.1f;%0.1f;%0.1f;%d;%d", gpsLat, gpsLng, gpsAlt, time, temper, pressure, altitude, speed, continuities, (int)rocketState);
