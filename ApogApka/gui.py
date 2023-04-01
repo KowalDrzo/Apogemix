@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.font as tkFont
+import time
 import os
 from data_frame import DataFrame
 
@@ -18,6 +19,8 @@ class Gui:
         alignstr = '%dx%d+%d+%d' % (width, height, (screenwidth - width) / 2, (screenheight - height) / 2)
         self.root.geometry(alignstr)
         self.root.resizable(True, True)
+
+        self.forceExit = False
 
         gpsLatLabel=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=18)
@@ -261,6 +264,8 @@ class Gui:
     def onClosing(self):
 
         self.root.destroy()
+        self.forceExit = True
+        time.sleep(0.25)
         os._exit(0)
 
     #########################################################
