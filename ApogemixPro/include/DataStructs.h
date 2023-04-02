@@ -12,6 +12,7 @@
 #define FIRE_TIME 2000
 #define TEMPERATURE_FIX_A 0.855
 #define TEMPERATURE_FIX_B (-1.188)
+#define WIFI_TIME_MS 600000
 
 #include <stdint.h>
 
@@ -28,12 +29,20 @@ struct Memory {
     uint16_t lastFlightNum;
     Flight flight[FLIGHTS_IN_MEM];
 
+    bool isCsvFile; // TODO implement TODO test
+    bool isSep1BeforeApog; // TODO implement TODO test
+    bool isSep2Staging; // TODO implement TODO test
+    uint16_t stagingDelay; // TODO implement TODO test
     uint16_t secondSeparAltitude;
-    uint16_t wifiActiveTime_min;
     uint16_t loraFreqMHz;
     uint16_t loraDelay_ms;
-
-    char callsign[11];
+    char callsign[11]; // TODO implement TODO test
+    uint8_t servo1Initial; // TODO implement TODO test
+    uint8_t servo1Apog; // TODO implement TODO test
+    uint8_t servo1dd; // TODO implement TODO test
+    uint8_t servo2Initial; // TODO implement TODO test
+    uint8_t servo2Apog; // TODO implement TODO test
+    uint8_t servo2dd; // TODO implement TODO test
 };
 
 enum RocketState {

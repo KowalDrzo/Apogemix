@@ -164,7 +164,7 @@ void Tasks::flashTask() {
 
             if (!appendFlash) {
                 appendFlash = true;
-                file = LITTLEFS.open("/FlightData.apg", "w");
+                File file = LITTLEFS.open("/FlightData.apg", "w");
             }
             else {
                 file = LITTLEFS.open("/FlightData.apg", "a");
@@ -192,9 +192,14 @@ void Tasks::readFlash() {
 
     File file = LITTLEFS.open("/FlightData.apg", "r");
 
-    DataFrame dane;
-    while (file.readBytes((char*) &dane, sizeof(dane))) {
-        Serial.println(dane.toString());
+    if (glob.memory.isCsvFile) {
+        while (file.available()) Serial.print(file.read());
+    }
+    else {
+        DataFrame dane;
+        while (file.readBytes((char*) &dane, sizeof(dane))) {
+            Serial.println(dane.toString());
+        }
     }
 
     file.close();
@@ -208,13 +213,10 @@ void Tasks::clearMem() {
 
     LITTLEFS.begin(true);
     File file = LITTLEFS.open("/FlightData.apg", "w");
-    file.close();
 
     memset(&glob.memory, 0, sizeof(glob.memory));
 
-    glob.memory.wifiActiveTime_min = 3;
     glob.memory.secondSeparAltitude = 100;
-
     glob.memory.loraDelay_ms = 2000;
     glob.memory.loraFreqMHz = 433;
     strcpy(glob.memory.callsign, "APOGEMIX");
