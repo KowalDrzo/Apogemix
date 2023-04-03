@@ -113,9 +113,11 @@ String Website::generateHtml() {
 
     for (uint8_t i = 0; i < FLIGHTS_IN_MEM; i++) {
 
-        html += "<tr><td>" + String(glob.memory.flight[i].num) + "</td>";
-        html += "<td>" + String(glob.memory.flight[i].apogee) + "</td>";
-        html += "<td>" + String(glob.memory.flight[i].maxSpeed) + "</td></tr>\n";
+        if (glob.memory.flight[i].apogee || glob.memory.flight[i].maxSpeed) {
+            html += "<tr><td>" + String(glob.memory.flight[i].num) + "</td>";
+            html += "<td>" + String(glob.memory.flight[i].apogee) + "</td>";
+            html += "<td>" + String(glob.memory.flight[i].maxSpeed) + "</td></tr>\n";
+        }
     }
 
     html += R"rawliteral(
@@ -186,7 +188,7 @@ String Website::generateSettingsPage(uint8_t settingsType) {
             html += "<input type='radio' name='sep2Mode' id='stage' value='1'><label for='stage'>staging at ascent (set the right delay between launch and staging, please).</label><br>\n";
         }
         html += "<label for='setStaging'>Delay between launch and staging (Current: <strong>"
-            + String(glob.memory.secondSeparAltitude) + "</strong>ms):</label><br>\n";
+            + String(glob.memory.stagingDelay) + "</strong>ms):</label><br>\n";
         html += "<input type='number' min='2000' max='30000' name='setStaging'><br>\n";
         html += "<label for='setSecAlt'>Second parachute ignition altitude (Current: <strong>"
             + String(glob.memory.secondSeparAltitude) + "</strong>m):</label><br>\n";
@@ -258,27 +260,102 @@ String Website::generateSettingsPage(uint8_t settingsType) {
 
 void Website::handleArgs(AsyncWebServerRequest *request) {
 
-    if (request->params()) {
+    uint8_t paramNb = request->params();
 
-        // TODO dodać dataSave
-        // TODO sep1Mode
-        // TODO sep2Mode
-        // TODO setStaging
-        uint16_t setSecAlt    = request->getParam("setSecAlt")->value().toInt();
-        uint16_t setLoraFreq  = request->getParam("setLoraFreq")->value().toInt();
-        uint16_t setLoRaDelay = request->getParam("setLoRaDelay")->value().toInt();
-        // TODO setCallSign
-        // TODO servo1init
-        // TODO servo1Apog
-        // TODO servo1dd
-        // TODO servo2init
-        // TODO servo2Apog
-        // TODO servo2dd
+    if (paramNb) {
 
-        if (setSecAlt >= 50 && setSecAlt <= 5000) glob.memory.secondSeparAltitude = setSecAlt;
-        if (setLoraFreq >= 100 && setLoraFreq <= 999) glob.memory.loraFreqMHz     = setLoraFreq;
-        if (setLoRaDelay >= 500 && setLoRaDelay <= 5000) glob.memory.loraDelay_ms = setLoRaDelay;
+        for (uint8_t i = 0; i < paramNb; i++) {
 
+            AsyncWebParameter* p = request->getParam(i);
+
+            // Recovery params:
+            if (p->name() == "dataSave") {
+
+                if      (p->value() == "1") glob.memory.isCsvFile = 1;
+                else if (p->value() == "0") glob.memory.isCsvFile = 0;
+            }
+
+            else if (p->name() == "sep1Mode") {
+
+                if      (p->value() == "1") glob.memory.isSep1BeforeApog = 1;
+                else if (p->value() == "0") glob.memory.isSep1BeforeApog = 0;
+            }
+
+            else if (p->name() == "sep2Mode") {
+
+                if      (p->value() == "1") glob.memory.isSep2Staging = 1;
+                else if (p->value() == "0") glob.memory.isSep2Staging = 0;
+            }
+
+            else if (p->name() == "setStaging") {
+
+                uint16_t val = p->value().toInt();
+                if (val >= 2000 && val <= 30000) glob.memory.stagingDelay = val;
+            }
+
+            else if (p->name() == "setSecAlt") {
+
+                uint16_t val = p->value().toInt();
+                if (val >= 50 && val <= 5000) glob.memory.secondSeparAltitude = val;
+            }
+
+            // Telemetry params:
+            else if (p->name() == "setLoraFreq") {
+
+                uint16_t val = p->value().toInt();
+                if (val >= 100 && val <= 999) glob.memory.loraFreqMHz = val;
+            }
+
+            else if (p->name() == "setLoRaDelay") {
+
+                uint16_t val = p->value().toInt();
+                if (val >= 500 && val <= 5000) glob.memory.loraDelay_ms = val;
+            }
+
+            else if (p->name() == "setCallSign" && p->value().length() >= 2) {
+
+                String newCall = p->value();
+                strncpy(glob.memory.callsign, newCall.c_str(), CALLSIGN_LEN - 1);
+                glob.memory.callsign[CALLSIGN_LEN - 1] = 0;
+            }
+
+            // Servo params:
+            else if (p->name() == "servo1init") {
+
+                uint8_t val = p->value().toInt();
+                if (val >= 0 && val <= 180) glob.memory.servo1Initial = val;
+            }
+
+            else if (p->name() == "servo1Apog") {
+
+                uint8_t val = p->value().toInt();
+                if (val >= 0 && val <= 180) glob.memory.servo1Apog = val;
+            }
+
+            else if (p->name() == "servo1dd") {
+
+                uint8_t val = p->value().toInt();
+                if (val >= 0 && val <= 180) glob.memory.servo1dd = val;
+            }
+
+            else if (p->name() == "servo2init") {
+
+                uint8_t val = p->value().toInt();
+                if (val >= 0 && val <= 180) glob.memory.servo2Initial = val;
+            }
+
+            else if (p->name() == "servo2Apog") {
+
+                uint8_t val = p->value().toInt();
+                if (val >= 0 && val <= 180) glob.memory.servo2Apog = val;
+            }
+
+            else if (p->name() == "servo2dd") {
+
+                uint8_t val = p->value().toInt();
+                if (val >= 0 && val <= 180) glob.memory.servo2dd = val;
+            }
+        }
         EEPROM.put(0, glob.memory);
         EEPROM.commit();
     }

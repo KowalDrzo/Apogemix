@@ -13,6 +13,7 @@
 #define TEMPERATURE_FIX_A 0.855
 #define TEMPERATURE_FIX_B (-1.188)
 #define WIFI_TIME_MS 600000
+#define CALLSIGN_LEN 11
 
 #include <stdint.h>
 
@@ -36,7 +37,7 @@ struct Memory {
     uint16_t secondSeparAltitude;
     uint16_t loraFreqMHz;
     uint16_t loraDelay_ms;
-    char callsign[11]; // TODO implement TODO test
+    char callsign[CALLSIGN_LEN]; // TODO implement TODO test
     uint8_t servo1Initial; // TODO implement TODO test
     uint8_t servo1Apog; // TODO implement TODO test
     uint8_t servo1dd; // TODO implement TODO test

@@ -174,7 +174,9 @@ void Tasks::flashTask() {
 
                 DataFrame tempData;
                 xQueueReceive(glob.dataFramesFifo, &tempData, portMAX_DELAY);
-                file.write((uint8_t*) &tempData, sizeof(tempData));
+                
+                if (glob.memory.isCsvFile) file.println(tempData.toString());
+                else file.write((uint8_t*) &tempData, sizeof(tempData));
             }
 
             file.close();
@@ -193,7 +195,7 @@ void Tasks::readFlash() {
     File file = LITTLEFS.open("/FlightData.apg", "r");
 
     if (glob.memory.isCsvFile) {
-        while (file.available()) Serial.print(file.read());
+        while (file.available()) Serial.print(file.readString());
     }
     else {
         DataFrame dane;
