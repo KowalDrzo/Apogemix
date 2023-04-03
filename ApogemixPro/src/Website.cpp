@@ -13,7 +13,6 @@ void Website::start() {
 
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
-        handleArgs(request);
         request->send(200, "text/html", generateHtml());
     });
 
@@ -31,6 +30,24 @@ void Website::start() {
     server.on("/FlightData.apg", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         request->send(LITTLEFS, "/FlightData.apg", String());
+    });
+
+    server.on("/e_recovery", HTTP_GET, [this](AsyncWebServerRequest *request) {
+
+        handleArgs(request);
+        request->send(200, "text/html", generateHtml()); // TODO
+    });
+
+    server.on("/e_telemetry", HTTP_GET, [this](AsyncWebServerRequest *request) {
+
+        handleArgs(request);
+        request->send(200, "text/html", generateHtml()); // TODO
+    });
+
+    server.on("/e_servos", HTTP_GET, [this](AsyncWebServerRequest *request) {
+
+        handleArgs(request);
+        request->send(200, "text/html", generateHtml()); // TODO
     });
 
     server.begin();
@@ -58,6 +75,34 @@ String Website::generateHtml() {
         </head>
         <body>
             <h3>Apogemix Pro</h3><hr>
+            <p>Current settings:<br>
+        )rawliteral";
+
+    html += "Flightdata file type: <strong>" + (glob.memory.isCsvFile ? String("csv") : String("binary")) + String("</strong><br>\n");
+    html += "Pyro channel 1 mode: <strong>" + (glob.memory.isSep1BeforeApog ? String("At apogee") : String("After apogee")) + String("</strong><br>\n");
+    html += "Pyro channel 2 mode: <strong>" + (glob.memory.isSep2Staging ? String("Staging") : String("Double deploy")) + String("</strong><br>\n");
+
+    if (glob.memory.isSep2Staging) {
+        html += "Staging delay: <strong>" + String(glob.memory.stagingDelay) + String("</strong>ms<br>\n");
+    }
+    else {
+        html += "<span style='color:#808080'>Staging delay: " + String(glob.memory.stagingDelay) + String("ms</span><br>\n");
+    }
+
+    html += "Dual deploy altitude: <strong>" + String(glob.memory.secondSeparAltitude) + String("</strong>m<br>\n");
+    html += "Telemetry frequency: <strong>" + String(glob.memory.loraFreqMHz) + String("</strong>MHz<br>\n");
+    html += "Telemetry period: <strong>" + String(glob.memory.loraDelay_ms) + String("</strong>ms<br>\n");
+    html += "Telemetry callsign: <strong>" + String(glob.memory.callsign) + String("</strong><br>\n");
+
+    html += "Servo 1 angle (init; apogee; dual deploy): <strong>"
+        + String(glob.memory.servo1Initial) + String(";") + String(glob.memory.servo1Apog) + String(";") + String(glob.memory.servo1dd)
+        + String("</strong>deg<br>\n");
+    html += "Servo 2 angle (init; apogee; dual deploy): <strong>"
+        + String(glob.memory.servo2Initial) + String(";") + String(glob.memory.servo2Apog) + String(";") + String(glob.memory.servo2dd)
+        + String("</strong>deg<br>\n");
+
+    html += R"rawliteral(
+            </p><hr>
             <a href='/FlightData.apg'>Download data from last flight.</a>
             <p>Flight data table:
             <table border='1'>
@@ -70,13 +115,23 @@ String Website::generateHtml() {
 
         html += "<tr><td>" + String(glob.memory.flight[i].num) + "</td>";
         html += "<td>" + String(glob.memory.flight[i].apogee) + "</td>";
-        html += "<td>" + String(glob.memory.flight[i].maxSpeed) + "</td></tr>";
+        html += "<td>" + String(glob.memory.flight[i].maxSpeed) + "</td></tr>\n";
     }
 
     html += R"rawliteral(
             </table>
             </p><hr>
-            <p>Change settings:
+            <p>Change settings:<br>
+            <a href='/e_recovery'>Edit recovery settings.<a/><br>
+            <a href='/e_telemetry'>Edit telemetry settings.<a/><br>
+            <a href='/e_servos'>Edit servos settings.<a/><br>
+            </p><hr>
+            <a href='/wifioff'>Turn off the wifi.</a>
+        </body>
+        </html>
+    )rawliteral";
+
+    /*
             <form>
                 <p>Save data binary (less size but, needs to be converted in ApogApka, required if the time in air could be longer than 15 min.)
                 or csv (more size, but conversion not needed, good for flights <15 min.)</p>
@@ -134,16 +189,7 @@ String Website::generateHtml() {
     html += "<label for='servo2dd'>Second deploy servo 2 angle (Current: <strong>"
         + String(glob.memory.servo2dd) + "</strong>deg):</label><br>\n";
     html += "<input type='number' min='0' max='180' name='servo2dd'><br>\n";
-
-
-    html += R"rawliteral(
-                <br><input type='submit'>
-            </form>
-            </p><hr>
-            <a href='/wifioff'>Turn off the wifi.</a>
-        </body>
-        </html>
-    )rawliteral";
+    */
 
     return html;
 }
