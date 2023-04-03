@@ -94,7 +94,7 @@ bool Tasks::isLaunchDetected() {
 
 bool Tasks::isApogeeDetected() {
 
-    if (glob.dataFrame.speed < -1) {
+    if (glob.dataFrame.speed < -1 || (glob.memory.isSep1BeforeApog && glob.dataFrame.speed < 10)) {
 
         criteriaCounter++;
         if (criteriaCounter > CRITERIA_MARGIN) {
@@ -174,7 +174,7 @@ void Tasks::flashTask() {
 
                 DataFrame tempData;
                 xQueueReceive(glob.dataFramesFifo, &tempData, portMAX_DELAY);
-                
+
                 if (glob.memory.isCsvFile) file.println(tempData.toString());
                 else file.write((uint8_t*) &tempData, sizeof(tempData));
             }
@@ -256,4 +256,29 @@ void Tasks::recalibrate() {
 
     glob.initialPressure = bmp.readPressure();
     glob.initialTemper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
+}
+
+/*********************************************************************/
+
+void Tasks::servosInit() {
+
+    servos[0].attach(SERVO_1_PIN);
+    servos[1].attach(SERVO_2_PIN);
+
+    servos[0].write(glob.memory.servo1Initial);
+    servos[1].write(glob.memory.servo2Initial);
+}
+
+/*********************************************************************/
+
+void Tasks::servosSet(bool isApogee) {
+
+    if (isApogee) {
+        servos[0].write(glob.memory.servo1Apog);
+        servos[1].write(glob.memory.servo2Apog);
+    }
+    else {
+        servos[0].write(glob.memory.servo1dd);
+        servos[1].write(glob.memory.servo2dd);
+    }
 }

@@ -30,20 +30,20 @@ struct Memory {
     uint16_t lastFlightNum;
     Flight flight[FLIGHTS_IN_MEM];
 
-    bool isCsvFile; // TODO implement TODO test
-    bool isSep1BeforeApog; // TODO implement TODO test
+    bool isCsvFile;
+    bool isSep1BeforeApog; // TODO test
     bool isSep2Staging; // TODO implement TODO test
     uint16_t stagingDelay; // TODO implement TODO test
     uint16_t secondSeparAltitude;
     uint16_t loraFreqMHz;
     uint16_t loraDelay_ms;
-    char callsign[CALLSIGN_LEN]; // TODO implement TODO test
-    uint8_t servo1Initial; // TODO implement TODO test
-    uint8_t servo1Apog; // TODO implement TODO test
-    uint8_t servo1dd; // TODO implement TODO test
-    uint8_t servo2Initial; // TODO implement TODO test
-    uint8_t servo2Apog; // TODO implement TODO test
-    uint8_t servo2dd; // TODO implement TODO test
+    char callsign[CALLSIGN_LEN]; // TODO test
+    uint8_t servo1Initial; // TODO test
+    uint8_t servo1Apog; // TODO test
+    uint8_t servo1dd; // TODO test
+    uint8_t servo2Initial; // TODO test
+    uint8_t servo2Apog; // TODO test
+    uint8_t servo2dd; // TODO test
 };
 
 enum RocketState {

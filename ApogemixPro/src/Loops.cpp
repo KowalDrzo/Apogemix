@@ -16,6 +16,7 @@ void StateLoops::dataLoop(bool enableFlashWrite) {
 
 void StateLoops::ignitionLoop(bool apogee) {
 
+    tasks.servosSet(apogee);
     if (apogee) digitalWrite(SEPAR1_PIN, 1);
     // Depending on the P2 mode - TODO!!!
     //else digitalWrite(SEPAR2_PIN, 1);
@@ -49,6 +50,7 @@ void StateLoops::railLoop() {
 
     pressMeasureTimer.start(RAIL_FLIGHT_LOOP_TIME);
     Website website;
+    tasks.servosInit();
 
     while (1) {
 

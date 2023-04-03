@@ -8,6 +8,7 @@
 #include <SPI.h>
 #include <Adafruit_BMP085.h>
 #include <TinyGPS++.h>
+#include <Servo.h>
 
 #include "PinDefinitions.h"
 #include "Timer.h"
@@ -18,6 +19,7 @@ class Tasks {
 
     uint8_t criteriaCounter = 0;
     void continuityTest();
+    Servo servos[2];
 
 public:
 
@@ -40,6 +42,9 @@ public:
     void recalibrate();
 
     void clearMem();
+
+    void servosInit();
+    void servosSet(bool isApogee);
 };
 
 extern Tasks tasks;
