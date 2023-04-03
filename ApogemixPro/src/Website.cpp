@@ -35,19 +35,19 @@ void Website::start() {
     server.on("/e_recovery", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         handleArgs(request);
-        request->send(200, "text/html", generateHtml()); // TODO
+        request->send(200, "text/html", generateSettingsPage(RECOVERY_SETTINGS));
     });
 
     server.on("/e_telemetry", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         handleArgs(request);
-        request->send(200, "text/html", generateHtml()); // TODO
+        request->send(200, "text/html", generateSettingsPage(TELEMETRY_SETTINGS));
     });
 
     server.on("/e_servos", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         handleArgs(request);
-        request->send(200, "text/html", generateHtml()); // TODO
+        request->send(200, "text/html", generateSettingsPage(SERVOS_SETTINGS));
     });
 
     server.begin();
@@ -131,65 +131,125 @@ String Website::generateHtml() {
         </html>
     )rawliteral";
 
-    /*
-            <form>
-                <p>Save data binary (less size but, needs to be converted in ApogApka, required if the time in air could be longer than 15 min.)
-                or csv (more size, but conversion not needed, good for flights <15 min.)</p>
-                )rawliteral";
+    return html;
+}
 
-    // Binary od CSV file save:
-    html += "<input type='radio' name='dataSave' id='bin' value='0'><label for='0'>binary,</label><br>\n";
-    html += "<input type='radio' name='dataSave' id='csv' value='1'><label for='1'>csv.</label><br>\n";
+/*********************************************************************/
 
-    // Separation 1 pin mode:
-    html += "<p>Set the separation 1 pin mode:</p>\n";
-    html += "<input type='radio' name='sep1Mode' id='after' value='0'><label for='after'>fire just after the apogee (safer).</label><br>\n";
-    html += "<input type='radio' name='sep1Mode' id='apog' value='1'><label for='apog'>fire at the apogee,</label><br>\n";
+String Website::generateSettingsPage(uint8_t settingsType) {
 
-    // Separation 2 pin modes:
-    html += "<p>Set the separation 2 pin mode (dual deploy at descent or second stage ignite at ascent):</p>\n";
-    html += "<input type='radio' name='sep2Mode' id='dd' value='0'><label for='dd'>dual deploy at descent (set the right second parachute ignition altitude, please),</label><br>\n";
-    html += "<input type='radio' name='sep2Mode' id='stage' value='1'><label for='stage'>staging at ascent (set the right delay between launch and staging, please).</label><br>\n";
-    html += "<label for='setStaging'>Delay between launch and staging (Current: <strong>"
-        + String(glob.memory.secondSeparAltitude) + "</strong>ms):</label><br>\n";
-    html += "<input type='number' min='2000' max='30000' name='setStaging'><br>\n";
-    html += "<label for='setSecAlt'>Second parachute ignition altitude (Current: <strong>"
-        + String(glob.memory.secondSeparAltitude) + "</strong>m):</label><br>\n";
-    html += "<input type='number' min='50' max='5000' name='setSecAlt'><br>\n";
+    String html = R"rawliteral(
+    <!DOCTYPE html>
+    <head>
+        <title>Apogemix Pro configuration page</title>
+    </head>
+    <body>
+        <h3>Settings for )rawliteral";
 
-    // Transmitter modes:
-    html += "<label for='setLoraFreq'>LoRa frequency (Current: <strong>"
-        + String(glob.memory.loraFreqMHz) + "</strong>MHz):</label><br>\n";
-    html += "<input type='number' min='100' max='999' name='setLoraFreq'><br>\n";
-    html += "<label for='setLoRaDelay'>LoRa send period (Current: <strong>"
-        + String(glob.memory.loraDelay_ms) + "</strong>ms):</label><br>\n";
-    html += "<input type='number' min='500' max='5000' name='setLoRaDelay'><br>\n";
-    html += "<label for='setCallSign'>LoRa send period (Current: <strong>"
-        + String(glob.memory.callsign) + "</strong>):</label><br>\n";
-    html += "<input type='text' maxlength='10' name='setCallSign'><br>\n";
+    switch (settingsType) {
 
-    // Servo 1 modes:
-    html += "<label for='servo1init'>Initial servo 1 angle (Current: <strong>"
-        + String(glob.memory.servo1Initial) + "</strong>deg):</label><br>\n";
-    html += "<input type='number' min='0' max='180' name='servo1init'><br>\n";
-    html += "<label for='servo1Apog'>Apogee servo 1 angle (Current: <strong>"
-        + String(glob.memory.servo1Apog) + "</strong>deg):</label><br>\n";
-    html += "<input type='number' min='0' max='180' name='servo1Apog'><br>\n";
-    html += "<label for='servo1dd'>Second deploy servo 1 angle (Current: <strong>"
-        + String(glob.memory.servo1dd) + "</strong>deg):</label><br>\n";
-    html += "<input type='number' min='0' max='180' name='servo1dd'><br>\n";
+    case RECOVERY_SETTINGS:
 
-    // Servo 2 modes:
-    html += "<label for='servo2init'>Initial servo 2 angle (Current: <strong>"
-        + String(glob.memory.servo2Initial) + "</strong>deg):</label><br>\n";
-    html += "<input type='number' min='0' max='180' name='servo2init'><br>\n";
-    html += "<label for='servo2Apog'>Apogee servo 2 angle (Current: <strong>"
-        + String(glob.memory.servo2Apog) + "</strong>deg):</label><br>\n";
-    html += "<input type='number' min='0' max='180' name='servo2Apog'><br>\n";
-    html += "<label for='servo2dd'>Second deploy servo 2 angle (Current: <strong>"
-        + String(glob.memory.servo2dd) + "</strong>deg):</label><br>\n";
-    html += "<input type='number' min='0' max='180' name='servo2dd'><br>\n";
-    */
+        html += "recovery</h3>\n\t\t<form>\n";
+
+        // Binary or CSV file save:
+        html += "<p>Save data binary (less size but, needs to be converted in ApogApka, required if the time in air could be longer than 15 min.)\
+            or csv (more size, but conversion not needed, good for flights <15 min.)</p>\n";
+        if (glob.memory.isCsvFile) {
+            html += "<input type='radio' name='dataSave' id='bin' value='0'><label for='0'>binary,</label><br>\n";
+            html += "<input type='radio' name='dataSave' id='csv' value='1' checked><label for='1'>csv.</label><br>\n";
+        }
+        else {
+            html += "<input type='radio' name='dataSave' id='bin' value='0' checked><label for='0'>binary,</label><br>\n";
+            html += "<input type='radio' name='dataSave' id='csv' value='1'><label for='1'>csv.</label><br>\n";
+        }
+
+        // Separation 1 pin mode:
+        html += "<p>Set the separation 1 pin mode:</p>\n";
+        if (glob.memory.isSep1BeforeApog) {
+            html += "<input type='radio' name='sep1Mode' id='after' value='0'><label for='after'>fire just after the apogee (safer).</label><br>\n";
+            html += "<input type='radio' name='sep1Mode' id='apog' value='1' checked><label for='apog'>fire at the apogee,</label><br>\n";
+        }
+        else {
+            html += "<input type='radio' name='sep1Mode' id='after' value='0' checked><label for='after'>fire just after the apogee (safer).</label><br>\n";
+            html += "<input type='radio' name='sep1Mode' id='apog' value='1'><label for='apog'>fire at the apogee,</label><br>\n";
+        }
+
+        // Separation 2 pin modes:
+        html += "<p>Set the separation 2 pin mode (dual deploy at descent or second stage ignite at ascent):</p>\n";
+        if (glob.memory.isSep2Staging) {
+            html += "<input type='radio' name='sep2Mode' id='dd' value='0'><label for='dd'>dual deploy at descent (set the right second parachute ignition altitude, please),</label><br>\n";
+            html += "<input type='radio' name='sep2Mode' id='stage' value='1' checked><label for='stage'>staging at ascent (set the right delay between launch and staging, please).</label><br>\n";
+        }
+        else {
+            html += "<input type='radio' name='sep2Mode' id='dd' value='0' checked><label for='dd'>dual deploy at descent (set the right second parachute ignition altitude, please),</label><br>\n";
+            html += "<input type='radio' name='sep2Mode' id='stage' value='1'><label for='stage'>staging at ascent (set the right delay between launch and staging, please).</label><br>\n";
+        }
+        html += "<label for='setStaging'>Delay between launch and staging (Current: <strong>"
+            + String(glob.memory.secondSeparAltitude) + "</strong>ms):</label><br>\n";
+        html += "<input type='number' min='2000' max='30000' name='setStaging'><br>\n";
+        html += "<label for='setSecAlt'>Second parachute ignition altitude (Current: <strong>"
+            + String(glob.memory.secondSeparAltitude) + "</strong>m):</label><br>\n";
+        html += "<input type='number' min='50' max='5000' name='setSecAlt'><br>\n";
+
+        break;
+
+    /******************************/
+    case TELEMETRY_SETTINGS:
+
+        html += "telemetry</h3>\n\t\t<form>\n";
+
+        // Transmitter modes:
+        html += "<label for='setLoraFreq'>LoRa frequency (Current: <strong>"
+            + String(glob.memory.loraFreqMHz) + "</strong>MHz):</label><br>\n";
+        html += "<input type='number' min='100' max='999' name='setLoraFreq'><br>\n";
+        html += "<label for='setLoRaDelay'>LoRa send period (Current: <strong>"
+            + String(glob.memory.loraDelay_ms) + "</strong>ms):</label><br>\n";
+        html += "<input type='number' min='500' max='5000' name='setLoRaDelay'><br>\n";
+        html += "<label for='setCallSign'>LoRa send period (Current: <strong>"
+            + String(glob.memory.callsign) + "</strong>):</label><br>\n";
+        html += "<input type='text' maxlength='10' name='setCallSign'><br>\n";
+
+        break;
+
+    /******************************/
+    case SERVOS_SETTINGS:
+
+        html += "servos</h3>\n\t\t<form>\n";
+
+        // Servo 1 modes:
+        html += "<label for='servo1init'>Initial servo 1 angle (Current: <strong>"
+            + String(glob.memory.servo1Initial) + "</strong>deg):</label><br>\n";
+        html += "<input type='number' min='0' max='180' name='servo1init'><br>\n";
+        html += "<label for='servo1Apog'>Apogee servo 1 angle (Current: <strong>"
+            + String(glob.memory.servo1Apog) + "</strong>deg):</label><br>\n";
+        html += "<input type='number' min='0' max='180' name='servo1Apog'><br>\n";
+        html += "<label for='servo1dd'>Second deploy servo 1 angle (Current: <strong>"
+            + String(glob.memory.servo1dd) + "</strong>deg):</label><br>\n";
+        html += "<input type='number' min='0' max='180' name='servo1dd'><br>\n";
+
+        // Servo 2 modes:
+        html += "<label for='servo2init'>Initial servo 2 angle (Current: <strong>"
+            + String(glob.memory.servo2Initial) + "</strong>deg):</label><br>\n";
+        html += "<input type='number' min='0' max='180' name='servo2init'><br>\n";
+        html += "<label for='servo2Apog'>Apogee servo 2 angle (Current: <strong>"
+            + String(glob.memory.servo2Apog) + "</strong>deg):</label><br>\n";
+        html += "<input type='number' min='0' max='180' name='servo2Apog'><br>\n";
+        html += "<label for='servo2dd'>Second deploy servo 2 angle (Current: <strong>"
+            + String(glob.memory.servo2dd) + "</strong>deg):</label><br>\n";
+        html += "<input type='number' min='0' max='180' name='servo2dd'><br>\n";
+
+        break;
+    }
+
+    html += R"rawliteral(
+            <input type="submit" value="save">
+        </form>
+        <a href='/'>Back to main page.<a/>
+    </body>
+    </html>
+
+    )rawliteral";
 
     return html;
 }
