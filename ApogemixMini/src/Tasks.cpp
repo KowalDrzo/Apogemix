@@ -75,7 +75,7 @@ void Tasks::buzz() {
 
 bool Tasks::isLaunchDetected() {
 
-    if (glob.dataFrame.altitude > 10) {
+    if (glob.dataFrame.altitude > 20) {
 
         criteriaCounter++;
         if (criteriaCounter > CRITERIA_MARGIN) {
