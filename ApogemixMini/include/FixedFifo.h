@@ -1,18 +1,38 @@
 #ifndef FIXED_FIFO_H
 #define FIXED_FIFO_H
 
-#include <queue>
+template <typename T, const int MaxLen>
+class FixedFifo {
 
-template <typename T, int MaxLen, typename Container=std::deque<T>>
-class FixedFifo : public std::queue<T, Container> {
+    T dataQue[MaxLen];
+    uint8_t len = 0;
+    uint8_t writeIndex = 0;
+    uint8_t readIndex = 0;
+
 public:
-    void push(const T& value) {
-        if (this->size() == MaxLen) {
-           this->c.pop_front();
-        }
-        std::queue<T, Container>::push(value);
+
+    void push(const T &data) {
+
+        if (len >= MaxLen) pop();
+
+        dataQue[writeIndex] = data;
+        writeIndex = (writeIndex + 1) % MaxLen;
+        len++;
+    }
+
+    T pop() {
+
+        T data = dataQue[readIndex];
+        memset((uint8_t*) &dataQue[readIndex], 0, sizeof(T));
+        readIndex = (readIndex + 1) % MaxLen;
+        len--;
+
+        return data;
+    }
+
+    uint8_t size() {
+        return len;
     }
 };
-
 
 #endif

@@ -7,6 +7,8 @@ void setup() {
     Serial.begin(74880);
     Serial.setTimeout(10);
 
+    delay(1000);
+
     Wire.begin(SDA_PIN, SCL_PIN);
     tasks.bmp.begin(3);
 

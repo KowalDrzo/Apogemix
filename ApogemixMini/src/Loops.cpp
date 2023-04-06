@@ -67,6 +67,12 @@ void StateLoops::railLoop() {
 
                 website.stop();
             }
+
+            // DEBUG:
+            if (Serial.available()) {
+                String rxDebugString = Serial.readString();
+                if (strstr(rxDebugString.c_str(), "FORCE NEXT STATE")) break;
+            }
         }
     }
 }
@@ -86,6 +92,12 @@ void StateLoops::flightLoop() {
 
                 ignitionLoop(1);
                 break;
+            }
+
+            // DEBUG:
+            if (Serial.available()) {
+                String rxDebugString = Serial.readString();
+                if (strstr(rxDebugString.c_str(), "FORCE NEXT STATE")) break;
             }
         }
     }
