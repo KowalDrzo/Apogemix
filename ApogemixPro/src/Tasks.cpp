@@ -164,7 +164,7 @@ void Tasks::flashTask() {
 
             if (!appendFlash) {
                 appendFlash = true;
-                File file = LITTLEFS.open("/FlightData.apg", "w");
+                file = LITTLEFS.open("/FlightData.apg", "w");
             }
             else {
                 file = LITTLEFS.open("/FlightData.apg", "a");
@@ -175,7 +175,12 @@ void Tasks::flashTask() {
                 DataFrame tempData;
                 xQueueReceive(glob.dataFramesFifo, &tempData, portMAX_DELAY);
 
-                if (glob.memory.isCsvFile) file.println(tempData.toString());
+                if (glob.memory.isCsvFile) {
+                    char tempDataAscii[120];
+                    strcpy(tempDataAscii, tempData.toString().c_str());
+                    strcat(tempDataAscii, "\n");
+                    file.write((uint8_t*) tempDataAscii, strlen(tempDataAscii));
+                }
                 else file.write((uint8_t*) &tempData, sizeof(tempData));
             }
 
