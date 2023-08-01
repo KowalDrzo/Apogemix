@@ -12,10 +12,24 @@ void Tasks::continuityTest() {
 
 /*********************************************************************/
 
+float Tasks::getPressureMedian() {
+
+    float press[3];
+
+    for (uint8_t i = 0; i < 3; i++) {
+        press[i] = bmp.readPressure();
+    }
+
+    std::sort(press, press+3);
+    return press[1];
+}
+
+/*********************************************************************/
+
 void Tasks::measure() {
 
     // Pressure:
-    glob.dataFrame.pressure = bmp.readPressure();
+    glob.dataFrame.pressure = getPressureMedian();
 
     // Time:
     uint32_t newTime = millis();
@@ -78,7 +92,7 @@ bool Tasks::isLaunchDetected() {
     if (glob.dataFrame.altitude > 20) {
 
         criteriaCounter++;
-        if (criteriaCounter > CRITERIA_MARGIN) {
+        if (criteriaCounter >= CRITERIA_MARGIN) {
 
             criteriaCounter = 0;
             return true;
@@ -96,7 +110,7 @@ bool Tasks::isApogeeDetected() {
     if (glob.dataFrame.speed < -1) {
 
         criteriaCounter++;
-        if (criteriaCounter > CRITERIA_MARGIN) {
+        if (criteriaCounter >= CRITERIA_MARGIN) {
 
             criteriaCounter = 0;
             return true;
@@ -114,7 +128,7 @@ bool Tasks::isSecondChuteTime() {
     if (glob.dataFrame.altitude < glob.memory.secondSeparAltitude) {
 
         criteriaCounter++;
-        if (criteriaCounter > CRITERIA_MARGIN) {
+        if (criteriaCounter >= CRITERIA_MARGIN) {
 
             criteriaCounter = 0;
             return true;
@@ -132,7 +146,7 @@ bool Tasks::isOnGround() {
     if (abs(glob.dataFrame.speed) < 2) {
 
         criteriaCounter++;
-        if (criteriaCounter > CRITERIA_MARGIN) {
+        if (criteriaCounter >= CRITERIA_MARGIN) {
 
             criteriaCounter = 0;
             return true;

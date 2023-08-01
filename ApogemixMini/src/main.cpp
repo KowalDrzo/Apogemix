@@ -10,7 +10,7 @@ void setup() {
     delay(1000);
 
     Wire.begin(SDA_PIN, SCL_PIN);
-    tasks.bmp.begin(3);
+    tasks.bmp.begin(BMP085_HIGHRES);
 
     pinMode(SEPAR1_PIN, OUTPUT);
     pinMode(SEPAR2_PIN, OUTPUT);
