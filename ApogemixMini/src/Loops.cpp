@@ -82,6 +82,7 @@ void StateLoops::railLoop() {
 void StateLoops::flightLoop() {
 
     pressMeasureTimer.start(RAIL_FLIGHT_LOOP_TIME);
+    tasks.buzzBeep(30, 1, 1);
 
     while(1) {
 
