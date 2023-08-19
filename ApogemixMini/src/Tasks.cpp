@@ -12,26 +12,43 @@ void Tasks::continuityTest() {
 
 /*********************************************************************/
 
+float Tasks::getPressureMedian() {
+
+    float press[3];
+
+    for (uint8_t i = 0; i < 3; i++) {
+        press[i] = bmp.readPressure();
+    }
+
+    std::sort(press, press+3);
+    return press[1];
+}
+
+/*********************************************************************/
+
 void Tasks::measure() {
 
     // Pressure:
-    glob.dataFrame.pressure = bmp.readPressure();
+    glob.dataFrame.pressure = getPressureMedian();
+
+    // Time:
+    uint32_t newTime = millis();
+    uint32_t timeDiff = newTime - glob.dataFrame.time;
+    if (!timeDiff) timeDiff++;
+    glob.dataFrame.time = newTime;
 
     // Altitude:
     float oldAlt = glob.dataFrame.altitude;
     float newAlt = 44330*(1.0 - pow(glob.dataFrame.pressure/glob.initialPressure, 0.1903));
     glob.dataFrame.altitude = ALPHA_H * oldAlt + (1-ALPHA_H) * newAlt;
-    
+
     // Speed:
     float oldSpd = glob.dataFrame.speed;
-    float newSpd = 1000.0*(glob.dataFrame.altitude - oldAlt)/(millis() - glob.dataFrame.time);
+    float newSpd = 1000.0*(glob.dataFrame.altitude - oldAlt) / timeDiff;
     glob.dataFrame.speed = ALPHA_V * oldSpd + (1-ALPHA_V) * newSpd;
 
     // Contunuity:
     continuityTest();
-
-    // Time:
-    glob.dataFrame.time = millis();
 
     // Maximas:
     if (glob.apogee < glob.dataFrame.altitude) glob.apogee = glob.dataFrame.altitude;
@@ -43,14 +60,14 @@ void Tasks::measure() {
 
 /*********************************************************************/
 
-void Tasks::buzzBeep(uint16_t time, uint8_t n) {
+void Tasks::buzzBeep(uint16_t activeTime, uint16_t sleepTime, uint8_t n) {
 
     for (; n > 0; n--) {
 
         digitalWrite(BUZZER_PIN, 1);
-        delay(time);
+        delay(activeTime);
         digitalWrite(BUZZER_PIN, 0);
-        delay(time);
+        delay(sleepTime);
     }
 }
 
@@ -60,28 +77,26 @@ void Tasks::buzz() {
 
     continuityTest();
 
-    digitalWrite(BUZZER_PIN, 1);
-    delay(500);
-    digitalWrite(BUZZER_PIN, 0);
-    delay(3000);
+    buzzBeep(30, 150, 2);
+    delay(2000);
 
-    if (glob.dataFrame.continuity1 && glob.dataFrame.continuity2)   buzzBeep(500, 3);
-    else if (glob.dataFrame.continuity1)                            buzzBeep(500, 1);
-    else if (glob.dataFrame.continuity2)                            buzzBeep(500, 2);
+    if (glob.dataFrame.continuity1 && glob.dataFrame.continuity2)   buzzBeep(500, 500, 3);
+    else if (glob.dataFrame.continuity1)                            buzzBeep(500, 500, 1);
+    else if (glob.dataFrame.continuity2)                            buzzBeep(500, 500, 2);
 }
 
 /*********************************************************************/
 
 bool Tasks::isLaunchDetected() {
 
-    if (glob.dataFrame.altitude > 10) {
+    if (glob.dataFrame.altitude > 20) {
 
         criteriaCounter++;
-        if (criteriaCounter > CRITERIA_MARGIN) {
+        if (criteriaCounter >= CRITERIA_MARGIN) {
 
             criteriaCounter = 0;
             return true;
-        } 
+        }
     }
     else criteriaCounter = 0;
 
@@ -95,7 +110,7 @@ bool Tasks::isApogeeDetected() {
     if (glob.dataFrame.speed < -1) {
 
         criteriaCounter++;
-        if (criteriaCounter > CRITERIA_MARGIN) {
+        if (criteriaCounter >= CRITERIA_MARGIN) {
 
             criteriaCounter = 0;
             return true;
@@ -113,7 +128,7 @@ bool Tasks::isSecondChuteTime() {
     if (glob.dataFrame.altitude < glob.memory.secondSeparAltitude) {
 
         criteriaCounter++;
-        if (criteriaCounter > CRITERIA_MARGIN) {
+        if (criteriaCounter >= CRITERIA_MARGIN) {
 
             criteriaCounter = 0;
             return true;
@@ -131,7 +146,7 @@ bool Tasks::isOnGround() {
     if (abs(glob.dataFrame.speed) < 2) {
 
         criteriaCounter++;
-        if (criteriaCounter > CRITERIA_MARGIN) {
+        if (criteriaCounter >= CRITERIA_MARGIN) {
 
             criteriaCounter = 0;
             return true;
@@ -161,8 +176,7 @@ void Tasks::writeToFlash(bool force) {
     if (glob.dataFramesFifo.size() > 20 || force) {
 
         while(glob.dataFramesFifo.size()) {
-            DataFrame tempData = glob.dataFramesFifo.front();
-            glob.dataFramesFifo.pop();
+            DataFrame tempData = glob.dataFramesFifo.pop();
             file.write((uint8_t*) &tempData, sizeof(tempData));
         }
     }

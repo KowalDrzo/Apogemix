@@ -19,11 +19,13 @@ class Tasks {
     bool appendFlash = false;
     uint8_t criteriaCounter = 0;
     void continuityTest();
-    void buzzBeep(uint16_t time, uint8_t n);
+    float getPressureMedian();
 
 public:
 
     Adafruit_BMP085 bmp;
+
+    void buzzBeep(uint16_t activeTime, uint16_t sleepTime, uint8_t n);
 
     void measure();
     void buzz();
