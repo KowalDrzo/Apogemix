@@ -260,7 +260,7 @@ void StateLoops::loraRxCallback(String rxFrame) {
         if (strstr(rxFrame.c_str(), "TEST1") && (glob.dataFrame.rocketState <= FLIGHT)) {
 
             digitalWrite(BUZZER_PIN, 1);
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
             digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR1_PIN, 1);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
@@ -270,7 +270,7 @@ void StateLoops::loraRxCallback(String rxFrame) {
         else if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState <= FIRST_SEPAR) {
 
             digitalWrite(BUZZER_PIN, 1);
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
             digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR2_PIN, 1);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
