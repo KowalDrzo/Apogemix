@@ -9,6 +9,7 @@ class StateLoops {
     Timer pressMeasureTimer;
     Timer waitingTimer;
     Timer wifiTimer;
+    Timer stagingTimer;
 
     String rxDebugString;
 

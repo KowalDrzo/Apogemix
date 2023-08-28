@@ -31,13 +31,13 @@ struct Memory {
     Flight flight[FLIGHTS_IN_MEM];
 
     bool isCsvFile;
-    bool isSep1BeforeApog; // TODO test
-    bool isSep2Staging; // TODO implement TODO test
-    uint16_t stagingDelay; // TODO implement TODO test
+    bool isSep1BeforeApog;
+    bool isSep2Staging; // TODO test
+    uint16_t stagingDelay; // TODO test
     uint16_t secondSeparAltitude;
     uint16_t loraFreqMHz;
     uint16_t loraDelay_ms;
-    char callsign[CALLSIGN_LEN]; // TODO test
+    char callsign[CALLSIGN_LEN];
     uint8_t servo1Initial; // TODO test
     uint8_t servo1Apog; // TODO test
     uint8_t servo1dd; // TODO test

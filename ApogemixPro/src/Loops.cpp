@@ -18,15 +18,12 @@ void StateLoops::ignitionLoop(bool apogee) {
 
     tasks.servosSet(apogee);
     if (apogee) digitalWrite(SEPAR1_PIN, 1);
-    // Depending on the P2 mode - TODO!!!
-    //else digitalWrite(SEPAR2_PIN, 1);
+    else digitalWrite(SEPAR2_PIN, 1);
 
     waitAndLogData(FIRE_TIME);
 
     digitalWrite(SEPAR1_PIN, 0);
-
-    // Depending on the P2 mode - TODO!!!
-    // digitalWrite(SEPAR2_PIN, 0);
+    digitalWrite(SEPAR2_PIN, 0);
 }
 
 /*********************************************************************/
@@ -55,7 +52,7 @@ void StateLoops::railLoop() {
     while (1) {
 
         if (pressMeasureTimer.check()) {
-            
+
             dataLoop(0);
             if (tasks.isLaunchDetected()) {
 
@@ -86,9 +83,12 @@ void StateLoops::railLoop() {
 
 /*********************************************************************/
 
+#define STAGING_TIME_OFFSET_MS 1000
+
 void StateLoops::flightLoop() {
 
     pressMeasureTimer.start(RAIL_FLIGHT_LOOP_TIME);
+    stagingTimer.start(glob.memory.stagingDelay - STAGING_TIME_OFFSET_MS);
 
     while(1) {
 
@@ -102,6 +102,13 @@ void StateLoops::flightLoop() {
             }
         }
         vTaskDelay(1 / portTICK_PERIOD_MS);
+
+        // Staging:
+        if (glob.memory.isSep2Staging && stagingTimer.check()) {
+
+            ignitionLoop(0);
+            glob.memory.isSep2Staging = false;
+        }
 
         // DEBUG:
         if (Serial.available()) {
@@ -154,9 +161,6 @@ void StateLoops::sep2Loop() {
 void StateLoops::groundLoop() {
 
     vTaskDelay(3000 / portTICK_PERIOD_MS);
-
-    // Depending on the P2 mode - TODO!!!
-    digitalWrite(SEPAR2_PIN, 0);
 }
 
 /*********************************************************************/
@@ -189,16 +193,13 @@ void StateLoops::loraLoop() {
 
     bool gpsFound = false;
 
-    //ledcSetup(0, 2000, 8);
-    //ledcAttachPin(BUZZER_PIN, 0);
-
     tasks.buzz();
 
     loraTimer.start(glob.memory.loraDelay_ms);
 
-    hspi.begin(5, 19, 27, 18);
+    hspi.begin(SCK_PIN, MISO_PIN, MOSI_PIN, LORA_CS_PIN);
     LoRa.setSPI(hspi);
-    LoRa.setPins(18, 23, 26);
+    LoRa.setPins(LORA_CS_PIN, LORA_RES_PIN, LORA_D0_PIN);
     LoRa.setSignalBandwidth(125E3);
     LoRa.begin(glob.memory.loraFreqMHz * 1E6);
     LoRa.setTimeout(100);
@@ -259,7 +260,7 @@ void StateLoops::loraRxCallback(String rxFrame) {
         if (strstr(rxFrame.c_str(), "TEST1") && (glob.dataFrame.rocketState <= FLIGHT)) {
 
             digitalWrite(BUZZER_PIN, 1);
-            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
             digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR1_PIN, 1);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
@@ -269,25 +270,31 @@ void StateLoops::loraRxCallback(String rxFrame) {
         else if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState <= FIRST_SEPAR) {
 
             digitalWrite(BUZZER_PIN, 1);
-            vTaskDelay(100 / portTICK_PERIOD_MS);
-            digitalWrite(BUZZER_PIN, 0);
-            digitalWrite(SEPAR2_PIN, !digitalRead(SEPAR2_PIN));
-
-            // Depending on the P2 mode - TODO!!!
-            /*digitalWrite(BUZZER_PIN, 1);
-            vTaskDelay(3000 / portTICK_PERIOD_MS);
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
             digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR2_PIN, 1);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
-            digitalWrite(SEPAR2_PIN, 0);*/
+            digitalWrite(SEPAR2_PIN, 0);
         }
 
         else if (strstr(rxFrame.c_str(), "MOS_ON")) {
-            // TODO Additional mosfet on.
+
+            digitalWrite(MOS_GP_PIN, 1);
+            glob.dataFrame.mosState = 1;
         }
 
         else if (strstr(rxFrame.c_str(), "MOS_OFF")) {
-            // TODO Additional mosfet off.
+
+            digitalWrite(MOS_GP_PIN, 0);
+            glob.dataFrame.mosState = 0;
+        }
+
+        else if (strstr(rxFrame.c_str(), "MOS_CLK")) {
+
+            digitalWrite(MOS_GP_PIN, 1);
+            vTaskDelay(2000 / portTICK_PERIOD_MS);
+            digitalWrite(MOS_GP_PIN, 0);
+            glob.dataFrame.mosState = 0;
         }
 
         else if (strstr(rxFrame.c_str(), "RECAALIBRATE") && (glob.dataFrame.rocketState < FLIGHT)) {
