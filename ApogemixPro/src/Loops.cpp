@@ -297,7 +297,7 @@ void StateLoops::loraRxCallback(String rxFrame) {
             glob.dataFrame.mosState = 0;
         }
 
-        else if (strstr(rxFrame.c_str(), "RECAALIBRATE") && (glob.dataFrame.rocketState < FLIGHT)) {
+        else if (strstr(rxFrame.c_str(), "RECALIBRATE") && (glob.dataFrame.rocketState < FLIGHT)) {
 
             tasks.recalibrate();
         }
