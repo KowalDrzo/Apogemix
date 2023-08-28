@@ -71,11 +71,68 @@ String Website::generateHtml() {
     String html = R"rawliteral(
         <!DOCTYPE html>
         <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <title>Apogemix Pro configuration page</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f0f2f5;
+                }
+                .container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+                h3 {
+                    text-align: center;
+                    margin-top: 20px;
+                    color: #333;
+                }
+                hr {
+                    border: 1px solid #ccc;
+                    margin: 20px 0;
+                }
+                .block {
+                    margin-bottom: 20px;
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    background-color: #f9f9f9;
+                }
+                .button {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background-color: #007bff;
+                    color: #fff;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    text-decoration: none; /* Usunięcie podkreślenia */
+                }
+                .button:hover {
+                    background-color: #0056b3;
+                }
+                .gray-text {
+                    color: #808080;
+                }
+                .button-group {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 10px;
+                }
+            </style>
         </head>
         <body>
-            <h3>Apogemix Pro</h3><hr>
-            <p>Current settings:<br>
+            <div class="container">
+                <h3>Apogemix Pro</h3>
+                <hr>
+                <div class="block">
+                    <p class="gray-text">Current settings:</p>
         )rawliteral";
 
     html += "Flightdata file type: <strong>" + (glob.memory.isCsvFile ? String("csv") : String("binary")) + String("</strong><br>\n");
@@ -102,13 +159,16 @@ String Website::generateHtml() {
         + String("</strong>deg<br>\n");
 
     html += R"rawliteral(
-            </p><hr>
-            <a href='/FlightData.apg'>Download data from last flight.</a>
-            <p>Flight data table:
-            <table border='1'>
-                <tr>
-                    <th>Num</th><th>Apogee [m]</th><th>Max speed [m/s]</th>
-                </tr>
+            </div>
+                <div class="block">
+                    <a class="button" href="/FlightData.apg">Download data from last flight</a>
+                </div>
+                <div class="block">
+                    <p class="gray-text">Flight data table:</p>
+                    <table>
+                        <tr>
+                            <th>Num</th><th>Apogee [m]</th><th>Max speed [m/s]</th>
+                        </tr>
     )rawliteral";
 
     for (uint8_t i = 0; i < FLIGHTS_IN_MEM; i++) {
@@ -121,14 +181,20 @@ String Website::generateHtml() {
     }
 
     html += R"rawliteral(
-            </table>
-            </p><hr>
-            <p>Change settings:<br>
-            <a href='/e_recovery'>Edit recovery settings.<a/><br>
-            <a href='/e_telemetry'>Edit telemetry settings.<a/><br>
-            <a href='/e_servos'>Edit servos settings.<a/><br>
-            </p><hr>
-            <a href='/wifioff'>Turn off the wifi.</a>
+                    </table>
+                </div>
+                <div class="block">
+                    <p class="gray-text">Change settings:</p>
+                    <div class="button-group">
+                        <a class="button" href="/e_recovery">Edit recovery settings</a>
+                        <a class="button" href="/e_telemetry">Edit telemetry settings</a>
+                        <a class="button" href="/e_servos">Edit servos settings</a>
+                    </div>
+                </div>
+                <div class="block">
+                    <a class="button" href="/wifioff">Turn off the wifi</a>
+                </div>
+            </div>
         </body>
         </html>
     )rawliteral";
@@ -141,12 +207,70 @@ String Website::generateHtml() {
 String Website::generateSettingsPage(uint8_t settingsType) {
 
     String html = R"rawliteral(
-    <!DOCTYPE html>
-    <head>
-        <title>Apogemix Pro configuration page</title>
-    </head>
-    <body>
-        <h3>Settings for )rawliteral";
+        <!DOCTYPE html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Apogemix Pro configuration page</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f0f2f5;
+                }
+                .container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+                h3 {
+                    text-align: center;
+                    margin-top: 20px;
+                    color: #333;
+                }
+                hr {
+                    border: 1px solid #ccc;
+                    margin: 20px 0;
+                }
+                .block {
+                    margin-bottom: 20px;
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    background-color: #f9f9f9;
+                }
+                .button {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background-color: #007bff;
+                    color: #fff;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    text-decoration: none;
+                }
+                .button:hover {
+                    background-color: #0056b3;
+                }
+                input[type="number"],
+                input[type="text"],
+                input[type="submit"] {
+                    margin-top: 5px;
+                    padding: 5px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                }
+                .gray-text {
+                    color: #808080;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h3>Settings for )rawliteral";
 
     switch (settingsType) {
 
@@ -245,9 +369,10 @@ String Website::generateSettingsPage(uint8_t settingsType) {
     }
 
     html += R"rawliteral(
-            <input type="submit" value="save">
-        </form>
-        <a href='/'>Back to main page.<a/>
+            <input type="submit" class="button" value="save">
+            </form>
+            <a href="/" class="button">Back to main page</a>
+        </div>
     </body>
     </html>
 
