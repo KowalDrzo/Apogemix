@@ -287,3 +287,12 @@ void Tasks::servosSet(bool isApogee) {
         servos[1].write(glob.memory.servo2dd);
     }
 }
+
+/*********************************************************************/
+
+void Tasks::servosCustomAngle(uint8_t angle1, uint8_t angle2) {
+
+    servos[0].write(angle1);
+    servos[1].write(angle2);
+    Serial.printf("Servos set to: %d; %d\n", angle1, angle2);
+}

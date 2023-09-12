@@ -22,6 +22,7 @@ class Website {
     String generateHtml();
     String generateSettingsPage(uint8_t settingsType);
     void handleArgs(AsyncWebServerRequest *request);
+    String generateRecoveryTest();
 
 public:
 

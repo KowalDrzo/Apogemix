@@ -50,6 +50,48 @@ void Website::start() {
         request->send(200, "text/html", generateSettingsPage(SERVOS_SETTINGS));
     });
 
+    server.on("/recovery_test", HTTP_GET, [this](AsyncWebServerRequest *request) {
+
+        request->send(200, "text/html", generateRecoveryTest());
+    });
+
+    server.on("/recovery_test1", HTTP_POST, [this](AsyncWebServerRequest *request) {
+
+        digitalWrite(BUZZER_PIN, 1);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        digitalWrite(BUZZER_PIN, 0);
+        digitalWrite(SEPAR1_PIN, 1);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        digitalWrite(SEPAR1_PIN, 0);
+        request->send(200, "text/html", "OK");
+    });
+
+    server.on("/recovery_test2", HTTP_POST, [this](AsyncWebServerRequest *request) {
+
+        digitalWrite(BUZZER_PIN, 1);
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        digitalWrite(BUZZER_PIN, 0);
+        digitalWrite(SEPAR2_PIN, 1);
+        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        digitalWrite(SEPAR2_PIN, 0);
+        request->send(200, "text/html", "OK");
+    });
+
+    server.on("/set_servos", HTTP_POST,
+        [](AsyncWebServerRequest * request){},
+        NULL,
+        [](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
+
+            for (size_t i = 0; i < len; i++) {
+                Serial.write(data[i]);
+            }
+
+            Serial.println();
+
+            request->send(200);
+        }
+    );
+
     server.begin();
 }
 
@@ -189,6 +231,7 @@ String Website::generateHtml() {
                         <a class="button" href="/e_recovery">Edit recovery settings</a>
                         <a class="button" href="/e_telemetry">Edit telemetry settings</a>
                         <a class="button" href="/e_servos">Edit servos settings</a>
+                        <a class="button" href="/recovery_test">Test pyro or servos</a>
                     </div>
                 </div>
                 <div class="block">
@@ -484,4 +527,124 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
         EEPROM.put(0, glob.memory);
         EEPROM.commit();
     }
+}
+
+/*********************************************************************/
+
+String Website::generateRecoveryTest() {
+
+    String html = R"rawliteral(
+        <!DOCTYPE html>
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <title>Apogemix Pro configuration page</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    margin: 0;
+                    padding: 0;
+                    background-color: #f0f2f5;
+                }
+                .container {
+                    max-width: 800px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #fff;
+                    border-radius: 5px;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+                }
+                h3 {
+                    text-align: center;
+                    margin-top: 20px;
+                    color: #333;
+                }
+                hr {
+                    border: 1px solid #ccc;
+                    margin: 20px 0;
+                }
+                .block {
+                    margin-bottom: 20px;
+                    padding: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    background-color: #f9f9f9;
+                }
+                .button {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background-color: #007bff;
+                    color: #fff;
+                    border: none;
+                    border-radius: 5px;
+                    cursor: pointer;
+                    text-decoration: none;
+                }
+                .button:hover {
+                    background-color: #0056b3;
+                }
+                input[type="number"],
+                input[type="text"],
+                input[type="submit"] {
+                    margin-top: 5px;
+                    padding: 5px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                }
+                .gray-text {
+                    color: #808080;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h3>Recovery testing</h3><hr>
+                <button class="button" id="test1Button">Test pyro 1</button>
+                <button class="button" id="test2Button">Test pyro 2</button>
+                <input type="number" id="angle1" placeholder="Angle 1" min="0" max="180">
+                <input type="number" id="angle2" placeholder="Angle 2" min="0" max="180">
+                <button class="button" id="setServosButton">Set servos angle</button>
+                <hr>
+
+                <script>
+                    function confirmAction(message) {
+                        return confirm(message);
+                    }
+
+                    document.getElementById("test1Button").addEventListener("click", function() {
+                        if (confirmAction("Are you sure to fire channel 1?")) {
+                            fetch("/recovery_test1", {
+                                method: "POST"
+                            });
+                        }
+                    });
+
+                    document.getElementById("test2Button").addEventListener("click", function() {
+                        if (confirmAction("Are you sure to fire channel 2?")) {
+                            fetch("/recovery_test2", {
+                                method: "POST"
+                            });
+                        }
+                    });
+
+                    document.getElementById("setServosButton").addEventListener("click", function() {
+                        if (confirmAction("Are you sure to move servos?")) {
+                            const angle1Value = document.getElementById("angle1").value;
+                            const angle2Value = document.getElementById("angle2").value;
+                            const combinedValues = angle1Value + ";" + angle2Value;
+
+                            fetch("/set_servos", {
+                                method: "POST",
+                                body: combinedValues
+                            });
+                        }
+                    });
+                </script>
+            <a href="/" class="button">Back to main page</a>
+        </div>
+    </body>
+    </html>
+
+    )rawliteral";
+
+    return html;
 }

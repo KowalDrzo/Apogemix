@@ -45,6 +45,7 @@ public:
 
     void servosInit();
     void servosSet(bool isApogee);
+    void servosCustomAngle(uint8_t angle1, uint8_t angle2);
 };
 
 extern Tasks tasks;
