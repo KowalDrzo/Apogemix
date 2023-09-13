@@ -56,6 +56,7 @@ class Loops:
             commandStr = self.gui.getCommand()
             if commandStr:
                 self.txQueue.append(commandStr)
+            time.sleep(0.1)
 
     #########################################################
 
@@ -89,7 +90,7 @@ class Loops:
             cv2.imshow("FPV_Cam", frame)
 
             cv2.waitKey(1)
-            if cv2.getWindowProperty("FPV_Cam", cv2.WND_PROP_VISIBLE) < 1:
+            if cv2.getWindowProperty("FPV_Cam", cv2.WND_PROP_VISIBLE) < 1 or self.gui.forceExit:
                 break
 
         cap.release()
