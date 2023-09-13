@@ -12,7 +12,7 @@ void setup() {
     Serial1.begin(9600, SERIAL_8N1, GPS_TX_PIN, GPS_RX_PIN);
 
     Wire.begin(SDA_PIN, SCL_PIN);
-    tasks.bmp.begin(BMP085_ULTRAHIGHRES, &Wire);
+    tasks.bmp.begin(BMP085_HIGHRES, &Wire);
 
     pinMode(SEPAR1_PIN, OUTPUT);
     pinMode(SEPAR2_PIN, OUTPUT);
