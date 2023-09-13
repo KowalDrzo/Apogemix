@@ -292,7 +292,7 @@ void Tasks::servosSet(bool isApogee) {
 
 void Tasks::servosCustomAngle(uint8_t angle1, uint8_t angle2) {
 
-    servos[0].write(angle1);
-    servos[1].write(angle2);
+    if (angle1 >= 0 && angle1 <= 180) servos[0].write(angle1);
+    if (angle2 >= 0 && angle2 <= 180) servos[1].write(angle2);
     Serial.printf("Servos set to: %d; %d\n", angle1, angle2);
 }

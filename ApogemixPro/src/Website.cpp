@@ -82,11 +82,12 @@ void Website::start() {
         NULL,
         [](AsyncWebServerRequest * request, uint8_t *data, size_t len, size_t index, size_t total) {
 
-            for (size_t i = 0; i < len; i++) {
-                Serial.write(data[i]);
-            }
+            char buffer[100];
+            strncpy(buffer, (char*) data, len);
+            uint8_t angle1, angle2;
+            sscanf(buffer, "%d;%d", &angle1, &angle2);
 
-            Serial.println();
+            tasks.servosCustomAngle(angle1, angle2);
 
             request->send(200);
         }
@@ -627,15 +628,21 @@ String Website::generateRecoveryTest() {
                     });
 
                     document.getElementById("setServosButton").addEventListener("click", function() {
-                        if (confirmAction("Are you sure to move servos?")) {
-                            const angle1Value = document.getElementById("angle1").value;
-                            const angle2Value = document.getElementById("angle2").value;
-                            const combinedValues = angle1Value + ";" + angle2Value;
 
-                            fetch("/set_servos", {
-                                method: "POST",
-                                body: combinedValues
-                            });
+                        const angle1Value = parseFloat(document.getElementById("angle1").value);
+                        const angle2Value = parseFloat(document.getElementById("angle2").value);
+                        const combinedValues = angle1Value + ";" + angle2Value;
+
+                        if (angle1Value >= 0 && angle1Value <= 180 && angle2Value >= 0 && angle2Value <= 180) {
+                            if (confirmAction("Are you sure to move servos?")) {
+                                fetch("/set_servos", {
+                                    method: "POST",
+                                    body: combinedValues
+                                });
+                            }
+                        }
+                        else {
+                            alert("Please enter values between 0 and 180.");
                         }
                     });
                 </script>
