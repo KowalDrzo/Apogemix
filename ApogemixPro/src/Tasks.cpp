@@ -12,10 +12,24 @@ void Tasks::continuityTest() {
 
 /*********************************************************************/
 
+float Tasks::getPressureMedian() {
+
+    float press[3];
+
+    for (uint8_t i = 0; i < 3; i++) {
+        press[i] = bmp.readPressure();
+    }
+
+    std::sort(press, press+3);
+    return press[1];
+}
+
+/*********************************************************************/
+
 void Tasks::measure() {
 
     // Pressure and temperature:
-    glob.dataFrame.pressure = bmp.readPressure();
+    glob.dataFrame.pressure = getPressureMedian();
     glob.dataFrame.temper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
 
     // Time:

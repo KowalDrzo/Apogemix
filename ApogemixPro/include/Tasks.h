@@ -19,6 +19,7 @@ class Tasks {
 
     uint8_t criteriaCounter = 0;
     void continuityTest();
+    float getPressureMedian();
     Servo servos[2];
 
 public:
