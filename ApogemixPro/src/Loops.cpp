@@ -129,7 +129,7 @@ void StateLoops::sep1Loop() {
         if (pressMeasureTimer.check()) {
 
             dataLoop(1);
-            if (tasks.isSecondChuteTime()) {
+            if (tasks.isSecondChuteTime() && glob.memory.isSep2Staging == false) {
 
                 ignitionLoop(0);
                 break;
