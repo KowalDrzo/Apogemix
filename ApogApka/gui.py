@@ -1,10 +1,13 @@
 import tkinter as tk
+from tkinter import ttk
 import tkinter.font as tkFont
 import time
 import os
 from data_frame import DataFrame
 
 class Gui:
+
+    commands_list = ["MOS_ON", "MOS_OFF", "MOS_CLK", "RECALIBRATE"]
 
     def __init__(self):
 
@@ -21,6 +24,18 @@ class Gui:
         self.root.resizable(True, True)
 
         self.forceExit = False
+
+        callsignMenuLabel=tk.Label(self.root)
+        ft = tkFont.Font(family='Arial',size=13)
+        callsignMenuLabel["font"] = ft
+        callsignMenuLabel["fg"] = "#333333"
+        callsignMenuLabel["justify"] = "center"
+        callsignMenuLabel["text"] = "Callsign:"
+        callsignMenuLabel.place(x=250,y=20)
+
+        self.callsignMenuVar = tk.StringVar()
+        self.callsignMenu = ttk.Combobox(self.root, textvariable=self.callsignMenuVar)
+        self.callsignMenu.place(x=400, y=20)
 
         gpsLatLabel=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=18)
@@ -100,7 +115,15 @@ class Gui:
         cont2Label["fg"] = "#333333"
         cont2Label["justify"] = "center"
         cont2Label["text"] = "Ciągłość 2"
-        cont2Label.place(x=560,y=400,width=100,height=40)
+        cont2Label.place(x=560,y=390,width=100,height=40)
+
+        MosLabel=tk.Label(self.root)
+        ft = tkFont.Font(family='Arial',size=13)
+        MosLabel["font"] = ft
+        MosLabel["fg"] = "#333333"
+        MosLabel["justify"] = "center"
+        MosLabel["text"] = "Mosfet"
+        MosLabel.place(x=560,y=440,width=100,height=40)
 
         stateLabel=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=13)
@@ -108,7 +131,7 @@ class Gui:
         stateLabel["fg"] = "#333333"
         stateLabel["justify"] = "center"
         stateLabel["text"] = "Stan rakiety"
-        stateLabel.place(x=560,y=460,width=100,height=40)
+        stateLabel.place(x=560,y=490,width=100,height=40)
 
         self.test1Button=tk.Button(self.root)
         self.test1Button["bg"] = "#e9e9ed"
@@ -227,7 +250,6 @@ class Gui:
         self.cont1Val.place(x=670,y=340,width=40,height=40)
         self.cont1Val["offvalue"] = "0"
         self.cont1Val["onvalue"] = "1"
-        self.cont1Val["command"] = self.cont1Val_command
         self.cont1Val["state"] = tk.DISABLED
 
         self.cont2Val=tk.Checkbutton(self.root)
@@ -236,11 +258,21 @@ class Gui:
         self.cont2Val["fg"] = "#333333"
         self.cont2Val["justify"] = "center"
         self.cont2Val["text"] = ""
-        self.cont2Val.place(x=670,y=400,width=40,height=40)
+        self.cont2Val.place(x=670,y=390,width=40,height=40)
         self.cont2Val["offvalue"] = "0"
         self.cont2Val["onvalue"] = "1"
-        self.cont2Val["command"] = self.cont2Val_command
         self.cont2Val["state"] = tk.DISABLED
+
+        self.mosVal=tk.Checkbutton(self.root)
+        ft = tkFont.Font(family='Arial',size=10)
+        self.mosVal["font"] = ft
+        self.mosVal["fg"] = "#333333"
+        self.mosVal["justify"] = "center"
+        self.mosVal["text"] = ""
+        self.mosVal.place(x=670,y=440,width=40,height=40)
+        self.mosVal["offvalue"] = "0"
+        self.mosVal["onvalue"] = "1"
+        self.mosVal["state"] = tk.DISABLED
 
         self.stateVal=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=13)
@@ -248,7 +280,33 @@ class Gui:
         self.stateVal["fg"] = "#333333"
         self.stateVal["justify"] = "center"
         self.stateVal["text"] = "Text"
-        self.stateVal.place(x=660,y=460,width=130,height=40)
+        self.stateVal.place(x=660,y=490,width=130,height=40)
+
+        self.progress = ttk.Progressbar(self.root, length=200)
+        self.progress.place(x=560,y=540)
+
+        commandsMenuLabel=tk.Label(self.root)
+        ft = tkFont.Font(family='Arial',size=13)
+        commandsMenuLabel["font"] = ft
+        commandsMenuLabel["fg"] = "#333333"
+        commandsMenuLabel["justify"] = "center"
+        commandsMenuLabel["text"] = "Polecenia:"
+        commandsMenuLabel.place(x=340,y=480)
+
+        self.commandsMenuVar = tk.StringVar()
+        self.commandsMenu = ttk.Combobox(self.root, textvariable=self.commandsMenuVar)
+        self.commandsMenu.place(x=300, y=510)
+        self.commandsMenu["value"] = self.commands_list
+
+        self.commandSendButton=tk.Button(self.root)
+        self.commandSendButton["bg"] = "#e9e9ed"
+        ft = tkFont.Font(family='Arial',size=13)
+        self.commandSendButton["font"] = ft
+        self.commandSendButton["fg"] = "#000000"
+        self.commandSendButton["justify"] = "center"
+        self.commandSendButton["text"] = "Wyślij"
+        self.commandSendButton.place(x=350,y=540,width=70,height=30)
+        self.commandSendButton["command"] = self.sendButton_command
 
         self.txQueue = []
         self.root.protocol("WM_DELETE_WINDOW", self.onClosing)
@@ -292,7 +350,22 @@ class Gui:
         else:
             self.cont2Val.deselect()
 
+        if dataFrame.mosState:
+            self.mosVal.select()
+        else:
+            self.mosVal.deselect()
+
+        self.progress["value"] = (dataFrame.rocketState + 1) * 20
+
         self.update()
+
+    #########################################################
+
+    def updateCallsignMenu(self, callsign_list):
+
+        self.callsignMenu["values"] = callsign_list
+        if self.callsignMenu.get() == "" and len(callsign_list) > 0:
+            self.callsignMenu.set(callsign_list[0])
 
     #########################################################
 
@@ -303,6 +376,13 @@ class Gui:
 
     def test2Button_command(self):
         self.txQueue.append("TEST2")
+
+    #########################################################
+
+    def sendButton_command(self):
+
+        command = self.commandsMenuVar.get()
+        self.txQueue.append(command)
 
     #########################################################
 
@@ -321,16 +401,6 @@ class Gui:
             self.test2Button["state"] = tk.NORMAL
         else:
             self.test2Button["state"] = tk.DISABLED
-
-    #########################################################
-
-    def cont1Val_command(self):
-        print("command")
-
-    #########################################################
-
-    def cont2Val_command(self):
-        print("command")
 
     #########################################################
 
