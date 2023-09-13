@@ -1,4 +1,5 @@
 import time
+import os
 
 class Logger:
 
@@ -6,6 +7,7 @@ class Logger:
 
     def __init__(self):
         
+        os.makedirs("logs", exist_ok=True)
         self.fileName += time.strftime("%Y%m%d%H%M%S") + ".txt"
 
     def log(self, frameString):
