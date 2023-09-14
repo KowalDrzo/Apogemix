@@ -2,6 +2,9 @@
 #define GLOBALS_H
 
 #include "LoraModule.h"
+#include <EEPROM.h>
+#include <LITTLEFS.h>
+#include <WiFi.h>
 
 struct GlobalAggregator {
 

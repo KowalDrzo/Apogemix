@@ -4,16 +4,16 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include <LoRa.h>
+#include "PinDefinitions.h"
 
 class LoraModule {
 
 public:
 
-    void init();
-    void setFrequency(uint16_t freqMHz);
+    void init(uint16_t freqMHz);
+    void setFrequency(uint16_t freqMHz) { LoRa.setFrequency(freqMHz * 1E6); }
     void send(String txString);
-    
-    bool available();
+
     String read();
 };
 
