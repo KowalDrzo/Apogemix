@@ -18,7 +18,7 @@ if __name__ == "__main__":
     print("Opening Serial: " + serialName)
     loops = Loops()
 
-    serialThread = threading.Thread(target=loops.serialLoop, args=(serialName,))
+    serialThread = threading.Thread(target=loops.serialLoop, args=(serialName, frequencyMHz))
     serialThread.start()
 
     loops.guiLoop()
