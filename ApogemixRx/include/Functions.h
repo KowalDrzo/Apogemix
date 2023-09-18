@@ -7,4 +7,6 @@ void clearMem();
 
 void checkForNewFrequency(String command);
 
+void saveAndSetNewFrequency();
+
 #endif

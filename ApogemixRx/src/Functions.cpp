@@ -30,14 +30,21 @@ void checkForNewFrequency(String command) {
         sscanf(command.c_str(), "_FREQ;%d", &newFreq);
 
         glob.frequencyMHz = newFreq;
-        EEPROM.put(0, glob.frequencyMHz);
-        EEPROM.commit();
-
-        glob.loraModule.setFrequency(glob.frequencyMHz);
-
-        digitalWrite(LED_PIN, 1);
-        vTaskDelay(30 / portTICK_PERIOD_MS);
-        digitalWrite(LED_PIN, 0);
-        vTaskDelay(30 / portTICK_PERIOD_MS);
+        saveAndSetNewFrequency();
     }
+}
+
+/*********************************************************************/
+
+void saveAndSetNewFrequency() {
+
+    EEPROM.put(0, glob.frequencyMHz);
+    EEPROM.commit();
+
+    glob.loraModule.setFrequency(glob.frequencyMHz);
+
+    digitalWrite(LED_PIN, 1);
+    vTaskDelay(30 / portTICK_PERIOD_MS);
+    digitalWrite(LED_PIN, 0);
+    vTaskDelay(30 / portTICK_PERIOD_MS);
 }

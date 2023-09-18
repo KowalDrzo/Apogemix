@@ -1,12 +1,14 @@
-#include <Functions.h>
+#include "Website.h"
 
 GlobalAggregator glob;
+Website website;
 
 void setup() {
 
     Serial.begin(115200);
     Serial.setTimeout(10);
     pinMode(LED_PIN, OUTPUT);
+    pinMode(BUTTON_PIN, INPUT_PULLUP);
 
     // CONFIG:
     EEPROM.begin(sizeof(glob.frequencyMHz));
@@ -29,7 +31,16 @@ void loop() {
     }
 
     // LoRa to USB:
-    Serial.print(glob.loraModule.read());
+    String rxString = glob.loraModule.read();
+    Serial.print(rxString);
+    // TODO WEBSITE SEND rxString
+
+    // Website:
+    if (!digitalRead(BUTTON_PIN)) {
+
+        website.start();
+    }
+
 
     vTaskDelay(1);
 }

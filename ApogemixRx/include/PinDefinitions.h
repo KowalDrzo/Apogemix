@@ -9,5 +9,8 @@
 #define LORA_D0_PIN 9
 
 #define LED_PIN 15
+#define BUTTON_PIN 0
+
+#define APOGEMIX_ID 10
 
 #endif
