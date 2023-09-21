@@ -9,11 +9,12 @@
 
 class Website {
 
-    String ssid = String("Apogemix_rx_") + String(APOGEMIX_ID);
+    String ssid = String("Apogemix_rx") + String(APOGEMIX_ID);
     const char* password = "ApogemixRx";
     AsyncWebServer server = AsyncWebServer(80);
     bool enabled = false;
     void handleArgs(AsyncWebServerRequest *request);
+    String getDeviceFromArgs(AsyncWebServerRequest *request);
     String generateHtml();
 
 public:

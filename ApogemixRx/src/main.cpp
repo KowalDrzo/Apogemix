@@ -32,15 +32,16 @@ void loop() {
 
     // LoRa to USB:
     String rxString = glob.loraModule.read();
-    Serial.print(rxString);
-    // TODO WEBSITE SEND rxString
+    if (rxString.length() > 0) {
+        Serial.print(rxString);
+        addFrameToMap(rxString);
+    }
 
     // Website:
-    if (!digitalRead(BUTTON_PIN)) {
+    if (!digitalRead(BUTTON_PIN) && !website.isEnabled()) {
 
         website.start();
     }
-
 
     vTaskDelay(1);
 }

@@ -9,4 +9,8 @@ void checkForNewFrequency(String command);
 
 void saveAndSetNewFrequency();
 
+void addFrameToMap(String frameString);
+String getFrameFromMap(String deviceName);
+String getDevicesFromMap();
+
 #endif
