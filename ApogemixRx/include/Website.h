@@ -2,6 +2,7 @@
 #define WEBSITE_H
 
 #include "ESPAsyncWebServer.h"
+#include <AsyncTCP.h>
 #include <ESPmDNS.h>
 
 #include "PinDefinitions.h"
@@ -12,6 +13,7 @@ class Website {
     String ssid = String("Apogemix_rx") + String(APOGEMIX_ID);
     const char* password = "ApogemixRx";
     AsyncWebServer server = AsyncWebServer(80);
+    AsyncWebSocket ws = AsyncWebSocket("/ws");
     bool enabled = false;
     void handleArgs(AsyncWebServerRequest *request);
     String getDeviceFromArgs(AsyncWebServerRequest *request);
@@ -22,6 +24,7 @@ public:
     bool isEnabled() { return enabled; }
     void start();
     void stop();
+    void sendWsString(String wsString);
 };
 
 #endif

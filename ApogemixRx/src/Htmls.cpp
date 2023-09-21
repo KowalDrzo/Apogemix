@@ -88,7 +88,7 @@ String Website::generateHtml() {
                     margin-top: 10px;
                 }
 
-                .progressbar-fill {
+                .progressbar_fill {
                     height: 100%;
                     background-color: #007BFF;
                     border-radius: 5px;
@@ -98,7 +98,7 @@ String Website::generateHtml() {
                 .led {
                     font-weight: bold;
                     color: #eee;
-                    background-color: #005c00;
+                    background-color: #FFFFFF;
                     padding: 10px;
                     display: inline-block;
                     margin-top: 10px;
@@ -157,14 +157,6 @@ String Website::generateHtml() {
                     <div id="mosState" class="led">Mosfet</div>
                 </div>
                 <div class="tile">
-                    <div class="toggle-label">
-                        <input type="checkbox" id="activateTest1">
-                        <label for="toggle1">Activate test 1</label>
-                    </div>
-                    <div class="toggle-label">
-                        <input type="checkbox" id="activateTest2">
-                        <label for="toggle2">Activate test 2</label>
-                    </div>
                     <button class="button">Test 1</button>
                     <button class="button">Test 2</button>
                 </div>
@@ -181,7 +173,7 @@ String Website::generateHtml() {
                     <label class="label">Rocket State:</label>
                     <label class="label" id="rocketState">Text</label>
                     <div class="progressbar">
-                        <div class="progressbar-fill"></div>
+                        <div class="progressbar_fill" id="progressbar_fill"></div>
                     </div>
                 </div>
             </div>
@@ -197,16 +189,22 @@ String Website::generateHtml() {
                             console.log(devicesList);
                             const select = document.getElementById('deviceList');
 
-                            while (select.firstChild) {
-                                select.removeChild(select.firstChild);
-                            }
-
                             devicesList.forEach(device => {
-                                const option = document.createElement('option');
-                                option.text = device;
-                                select.add(option);
+
+                                var deviceOnList = false;
+                                for (var i = 0; i < select.options.length; i++) {
+                                    if (select.options[i].text === device) {
+                                    deviceOnList = true;
+                                    break;
+                                    }
+                                }
+
+                                if (!deviceOnList) {
+                                    const option = document.createElement('option');
+                                    option.text = device;
+                                    select.add(option);
+                                }
                             });
-                            setTimeout(getFrame, 300);
                         });
                 }
 
@@ -216,7 +214,6 @@ String Website::generateHtml() {
                     const selectedDevice = select.value;
 
                     if (!selectedDevice) {
-                        setTimeout(getFrame, 300);
                         return;
                     }
 
@@ -234,18 +231,57 @@ String Website::generateHtml() {
                             gpsAlt.textContent = frameData[2];
 
                             const press = document.getElementById('press');
-                            press.textContent = frameData[3];
+                            press.textContent = frameData[5];
                             const altitude = document.getElementById('altitude');
-                            altitude.textContent = frameData[4];
+                            altitude.textContent = frameData[6];
                             const speed = document.getElementById('speed');
-                            speed.textContent = frameData[5];
-                            
+                            speed.textContent = frameData[7];
 
-                            setTimeout(getFrame, 300);
+                            const temper = document.getElementById('temper');
+                            temper.textContent = frameData[4];
+                            const time_ms = document.getElementById('time_ms');
+                            time_ms.textContent = frameData[3];
+
+                            const continuities = frameData[8];
+                            var cont1 = document.getElementById("cont1");
+                            var cont2 = document.getElementById("cont2");
+                            var mosState = document.getElementById("mosState");
+                            if (continuities & 1) cont1.style.backgroundColor = "#005c00";
+                            else cont1.style.backgroundColor = "#FF0000";
+                            if (continuities & 2) cont2.style.backgroundColor = "#005c00";
+                            else cont2.style.backgroundColor = "#FF0000";
+                            if (continuities & 4) mosState.style.backgroundColor = "#005c00";
+                            else mosState.style.backgroundColor = "#FF0000";
+
+                            const state = frameData[9];
+                            var rocketState = document.getElementById("rocketState");
+                            var progressbar_fill = document.getElementById("progressbar_fill");
+                            if (state == 0) {
+                                rocketState.innerHTML = "On rail";
+                                progressbar_fill.style.width = "10%";
+                            }
+                            else if (state == 1) {
+                                rocketState.innerHTML = "Flight";
+                                progressbar_fill.style.width = "25%";
+                            }
+                            else if (state == 2) {
+                                rocketState.innerHTML = "First separation";
+                                progressbar_fill.style.width = "50%";
+                            }
+                            else if (state == 3) {
+                                rocketState.innerHTML = "Second separation";
+                                progressbar_fill.style.width = "75%";
+                            }
+                            else if (state == 4) {
+                                rocketState.innerHTML = "On ground";
+                                progressbar_fill.style.width = "100%";
+                            }
+
                         });
                 }
 
                 setInterval(getDevices, 3000);
+                setInterval(getFrame, 1000);
             </script>
         </body>
         </html>

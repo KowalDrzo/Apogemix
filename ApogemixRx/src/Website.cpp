@@ -29,6 +29,7 @@ void Website::start() {
         stop();
     });
 
+    server.addHandler(&ws);
     server.begin();
 
     for(uint8_t i = 0; i < 3; i++) {
@@ -69,6 +70,8 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
     }
 }
 
+/*********************************************************************/
+
 String Website::getDeviceFromArgs(AsyncWebServerRequest *request) {
 
     uint8_t paramNb = request->params();
@@ -85,4 +88,11 @@ String Website::getDeviceFromArgs(AsyncWebServerRequest *request) {
     }
 
     return String("");
+}
+
+/*********************************************************************/
+
+void Website::sendWsString(String wsString) {
+
+    ws.textAll(wsString);
 }
