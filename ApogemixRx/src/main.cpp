@@ -34,6 +34,7 @@ void loop() {
     String rxString = glob.loraModule.read();
     if (rxString.length() > 0) {
         Serial.print(rxString);
+        website.sendWsString(rxString);
         addFrameToMap(rxString);
     }
 

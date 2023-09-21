@@ -180,6 +180,16 @@ String Website::generateHtml() {
             <a href="/wifioff">Turn off WiFi.</a>
 
             <script>
+
+                const websocket = new WebSocket("ws://192.168.4.1/ws");
+
+                websocket.addEventListener("message", (event) => {
+                    const receivedData = event.data;
+                    parseFrame(receivedData);
+                });
+
+                setTimeout(getDevices, 1000);
+
                 function getDevices() {
 
                     fetch('/devices')
@@ -206,82 +216,76 @@ String Website::generateHtml() {
                                 }
                             });
                         });
+                    setTimeout(getDevices, 6000);
                 }
 
-                function getFrame() {
+                function parseFrame(receivedData) {
 
                     const select = document.getElementById('deviceList');
                     const selectedDevice = select.value;
+                    const frameData = receivedData.split(';');
 
                     if (!selectedDevice) {
                         return;
                     }
+                    if (frameData[0] != selectedDevice) {
+                        return;
+                    }
 
-                    fetch(`/frame?device=${selectedDevice}`)
-                        .then(response => response.text())
-                        .then(data => {
+                    const gpsLat = document.getElementById('gpsLat');
+                    gpsLat.textContent = frameData[1];
+                    const gpsLng = document.getElementById('gpsLng');
+                    gpsLng.textContent = frameData[2];
+                    const gpsAlt = document.getElementById('gpsAlt');
+                    gpsAlt.textContent = frameData[3];
 
-                            const frameData = data.split(';');
+                    const press = document.getElementById('press');
+                    press.textContent = frameData[6];
+                    const altitude = document.getElementById('altitude');
+                    altitude.textContent = frameData[7];
+                    const speed = document.getElementById('speed');
+                    speed.textContent = frameData[8];
 
-                            const gpsLat = document.getElementById('gpsLat');
-                            gpsLat.textContent = frameData[0];
-                            const gpsLng = document.getElementById('gpsLng');
-                            gpsLng.textContent = frameData[1];
-                            const gpsAlt = document.getElementById('gpsAlt');
-                            gpsAlt.textContent = frameData[2];
+                    const temper = document.getElementById('temper');
+                    temper.textContent = frameData[5];
+                    const time_ms = document.getElementById('time_ms');
+                    time_ms.textContent = frameData[4];
 
-                            const press = document.getElementById('press');
-                            press.textContent = frameData[5];
-                            const altitude = document.getElementById('altitude');
-                            altitude.textContent = frameData[6];
-                            const speed = document.getElementById('speed');
-                            speed.textContent = frameData[7];
+                    const continuities = frameData[9];
+                    var cont1 = document.getElementById("cont1");
+                    var cont2 = document.getElementById("cont2");
+                    var mosState = document.getElementById("mosState");
+                    if (continuities & 1) cont1.style.backgroundColor = "#005c00";
+                    else cont1.style.backgroundColor = "#FF0000";
+                    if (continuities & 2) cont2.style.backgroundColor = "#005c00";
+                    else cont2.style.backgroundColor = "#FF0000";
+                    if (continuities & 4) mosState.style.backgroundColor = "#005c00";
+                    else mosState.style.backgroundColor = "#FF0000";
 
-                            const temper = document.getElementById('temper');
-                            temper.textContent = frameData[4];
-                            const time_ms = document.getElementById('time_ms');
-                            time_ms.textContent = frameData[3];
-
-                            const continuities = frameData[8];
-                            var cont1 = document.getElementById("cont1");
-                            var cont2 = document.getElementById("cont2");
-                            var mosState = document.getElementById("mosState");
-                            if (continuities & 1) cont1.style.backgroundColor = "#005c00";
-                            else cont1.style.backgroundColor = "#FF0000";
-                            if (continuities & 2) cont2.style.backgroundColor = "#005c00";
-                            else cont2.style.backgroundColor = "#FF0000";
-                            if (continuities & 4) mosState.style.backgroundColor = "#005c00";
-                            else mosState.style.backgroundColor = "#FF0000";
-
-                            const state = frameData[9];
-                            var rocketState = document.getElementById("rocketState");
-                            var progressbar_fill = document.getElementById("progressbar_fill");
-                            if (state == 0) {
-                                rocketState.innerHTML = "On rail";
-                                progressbar_fill.style.width = "10%";
-                            }
-                            else if (state == 1) {
-                                rocketState.innerHTML = "Flight";
-                                progressbar_fill.style.width = "25%";
-                            }
-                            else if (state == 2) {
-                                rocketState.innerHTML = "First separation";
-                                progressbar_fill.style.width = "50%";
-                            }
-                            else if (state == 3) {
-                                rocketState.innerHTML = "Second separation";
-                                progressbar_fill.style.width = "75%";
-                            }
-                            else if (state == 4) {
-                                rocketState.innerHTML = "On ground";
-                                progressbar_fill.style.width = "100%";
-                            }
-
-                        });
+                    const state = frameData[10];
+                    var rocketState = document.getElementById("rocketState");
+                    var progressbar_fill = document.getElementById("progressbar_fill");
+                    if (state == 0) {
+                        rocketState.innerHTML = "On rail";
+                        progressbar_fill.style.width = "10%";
+                    }
+                    else if (state == 1) {
+                        rocketState.innerHTML = "Flight";
+                        progressbar_fill.style.width = "25%";
+                    }
+                    else if (state == 2) {
+                        rocketState.innerHTML = "First separation";
+                        progressbar_fill.style.width = "50%";
+                    }
+                    else if (state == 3) {
+                        rocketState.innerHTML = "Second separation";
+                        progressbar_fill.style.width = "75%";
+                    }
+                    else if (state == 4) {
+                        rocketState.innerHTML = "On ground";
+                        progressbar_fill.style.width = "100%";
+                    }
                 }
-
-                setInterval(getDevices, 3000);
-                setInterval(getFrame, 1000);
             </script>
         </body>
         </html>

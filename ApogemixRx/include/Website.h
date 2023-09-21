@@ -16,7 +16,6 @@ class Website {
     AsyncWebSocket ws = AsyncWebSocket("/ws");
     bool enabled = false;
     void handleArgs(AsyncWebServerRequest *request);
-    String getDeviceFromArgs(AsyncWebServerRequest *request);
     String generateHtml();
 
 public:
@@ -24,7 +23,7 @@ public:
     bool isEnabled() { return enabled; }
     void start();
     void stop();
-    void sendWsString(String wsString);
+    void sendWsString(String wsString) { ws.textAll(wsString); }
 };
 
 #endif

@@ -17,12 +17,6 @@ void Website::start() {
         request->send(200, "text/html", getDevicesFromMap());
     });
 
-    server.on("/frame", HTTP_GET, [this](AsyncWebServerRequest *request) {
-
-        String deviceName = getDeviceFromArgs(request);
-        request->send(200, "text/html", getFrameFromMap(deviceName));
-    });
-
     server.on("/wifioff", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         request->send(200, "text/html", String("<meta http-equiv=\"refresh\" content=\"0; URL=/\" />"));
@@ -68,31 +62,4 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
         }
         saveAndSetNewFrequency();
     }
-}
-
-/*********************************************************************/
-
-String Website::getDeviceFromArgs(AsyncWebServerRequest *request) {
-
-    uint8_t paramNb = request->params();
-
-    if (paramNb) {
-
-        for (uint8_t i = 0; i < paramNb; i++) {
-
-            AsyncWebParameter* p = request->getParam(i);
-            if (p->name() == "device") {
-                return p->value();
-            }
-        }
-    }
-
-    return String("");
-}
-
-/*********************************************************************/
-
-void Website::sendWsString(String wsString) {
-
-    ws.textAll(wsString);
 }
