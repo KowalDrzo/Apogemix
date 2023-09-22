@@ -3,6 +3,7 @@
 
 #include "ESPAsyncWebServer.h"
 #include <AsyncTCP.h>
+#include <ArduinoJson.h>
 #include <ESPmDNS.h>
 #include "SPIFFS.h"
 
@@ -17,6 +18,10 @@ class Website {
     AsyncWebSocket ws = AsyncWebSocket("/ws");
     bool enabled = false;
     void handleArgs(AsyncWebServerRequest *request);
+
+    // For POST requests:
+    String postDevice;
+    String postCommand;
 
 public:
 

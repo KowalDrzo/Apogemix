@@ -12,6 +12,16 @@ void Website::start() {
         request->send(SPIFFS, "/index.html", String());
     });
 
+    server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest *request){
+
+        request->send(SPIFFS, "/styles.css", "text/css");
+    });
+
+    server.on("/scripts.js", HTTP_GET, [](AsyncWebServerRequest *request){
+
+        request->send(SPIFFS, "/scripts.js", "application/javascript");
+    });
+
     server.on("/devices", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         request->send(200, "text/html", getDevicesFromMap());
@@ -23,11 +33,13 @@ void Website::start() {
         stop();
     });
 
-    server.on("/send_command", HTTP_POST, [this](AsyncWebServerRequest *request) {
+    ws.onEvent([](AsyncWebSocket * server, AsyncWebSocketClient * client, AwsEventType type, void * arg, uint8_t *data, size_t len){
 
-        // TODO!!!
-        request->send(200, "text/html", "OK");
-    });    
+        if (type == WS_EVT_DATA) {
+            glob.txString = String((char*)data);
+            glob.txRequest = true;
+        }
+    });
 
     server.addHandler(&ws);
     server.begin();
@@ -64,8 +76,8 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
 
                 uint16_t val = p->value().toInt();
                 if (val >= 100 && val <= 500) glob.frequencyMHz = val;
+                saveAndSetNewFrequency();
             }
         }
-        saveAndSetNewFrequency();
     }
 }
