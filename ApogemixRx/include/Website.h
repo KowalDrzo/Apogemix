@@ -4,6 +4,7 @@
 #include "ESPAsyncWebServer.h"
 #include <AsyncTCP.h>
 #include <ESPmDNS.h>
+#include "SPIFFS.h"
 
 #include "PinDefinitions.h"
 #include "Functions.h"
@@ -16,7 +17,6 @@ class Website {
     AsyncWebSocket ws = AsyncWebSocket("/ws");
     bool enabled = false;
     void handleArgs(AsyncWebServerRequest *request);
-    String generateHtml();
 
 public:
 

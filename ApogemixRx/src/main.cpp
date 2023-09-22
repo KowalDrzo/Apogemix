@@ -30,6 +30,13 @@ void loop() {
         checkForNewFrequency(glob.txString);
     }
 
+    // WiFi to LoRa:
+    if (glob.txRequest) {
+
+        glob.txRequest = false;
+        glob.loraModule.send(glob.txString);
+    }
+
     // LoRa to USB:
     String rxString = glob.loraModule.read();
     if (rxString.length() > 0) {
@@ -41,6 +48,7 @@ void loop() {
     // Website:
     if (!digitalRead(BUTTON_PIN) && !website.isEnabled()) {
 
+        SPIFFS.begin(true);
         website.start();
     }
 

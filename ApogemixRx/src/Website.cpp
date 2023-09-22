@@ -9,7 +9,7 @@ void Website::start() {
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         handleArgs(request);
-        request->send(200, "text/html", generateHtml());
+        request->send(SPIFFS, "/index.html", String());
     });
 
     server.on("/devices", HTTP_GET, [this](AsyncWebServerRequest *request) {
@@ -22,6 +22,12 @@ void Website::start() {
         request->send(200, "text/html", String("<meta http-equiv=\"refresh\" content=\"0; URL=/\" />"));
         stop();
     });
+
+    server.on("/send_command", HTTP_POST, [this](AsyncWebServerRequest *request) {
+
+        // TODO!!!
+        request->send(200, "text/html", "OK");
+    });    
 
     server.addHandler(&ws);
     server.begin();

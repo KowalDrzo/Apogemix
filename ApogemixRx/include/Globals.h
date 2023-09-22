@@ -13,6 +13,7 @@ struct GlobalAggregator {
     String txString;
     LoraModule loraModule;
     std::map<String, String> deviceDict;
+    bool txRequest;
 };
 
 extern GlobalAggregator glob;
