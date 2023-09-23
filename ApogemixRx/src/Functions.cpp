@@ -2,7 +2,7 @@
 
 void clearMem() {
 
-    glob.frequencyMHz = 439;
+    glob.frequencyMHz = 433;
 
     EEPROM.put(0, glob.frequencyMHz);
     EEPROM.commit();
@@ -60,7 +60,9 @@ void addFrameToMap(String frameString) {
         String deviceName = frameString.substring(0, delimiterPos);
         String deviceData = frameString.substring(delimiterPos + 1);
 
-        glob.deviceDict[deviceName] = deviceData;
+        if (deviceName.length() <= 11) {
+            glob.deviceDict[deviceName] = deviceData;
+        }
     }
 }
 

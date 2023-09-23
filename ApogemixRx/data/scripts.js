@@ -71,24 +71,14 @@ function parseFrame(receivedData) {
         return;
     }
 
-    const gpsLat = document.getElementById('gpsLat');
-    gpsLat.textContent = frameData[1];
-    const gpsLng = document.getElementById('gpsLng');
-    gpsLng.textContent = frameData[2];
-    const gpsAlt = document.getElementById('gpsAlt');
-    gpsAlt.textContent = frameData[3];
-
-    const press = document.getElementById('press');
-    press.textContent = frameData[6];
-    const altitude = document.getElementById('altitude');
-    altitude.textContent = frameData[7];
-    const speed = document.getElementById('speed');
-    speed.textContent = frameData[8];
-
-    const temper = document.getElementById('temper');
-    temper.textContent = frameData[5];
-    const time_ms = document.getElementById('time_ms');
-    time_ms.textContent = frameData[4];
+    document.querySelector("#gpsLat").textContent = frameData[1];
+    document.querySelector("#gpsLng").textContent = frameData[2];
+    document.querySelector("#gpsAlt").textContent = frameData[3];
+    document.querySelector("#press").textContent = frameData[6];
+    document.querySelector("#altitude").textContent = frameData[7];
+    document.querySelector("#speed").textContent = frameData[8];
+    document.querySelector("#temper").textContent = frameData[5];
+    document.querySelector("#time_ms").textContent = frameData[4];
 
     const continuities = frameData[9];
     var cont1 = document.getElementById("cont1");
