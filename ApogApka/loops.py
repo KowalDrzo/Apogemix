@@ -16,10 +16,14 @@ class Loops:
 
     #########################################################
 
-    def serialLoop(self, serialName: serial.Serial):
+    def serialLoop(self, serialName: serial.Serial, frequencyMHz: int):
 
         decodeErrors = 0
         ser = serial.Serial(serialName, 115200)
+
+        if frequencyMHz > 100:
+            freqStr = "_FREQ;" + str(frequencyMHz)
+            ser.write(freqStr.encode('utf-8'))
 
         while True:
 

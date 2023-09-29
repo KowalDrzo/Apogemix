@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apogemix Receive Station</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+    <div class="tile">
+        <h1>Apogemix Receive Station</h1>
+        <form>
+            <label for="freqmhz">Frequency MHz:</label>
+            <input type="text" id="freqmhz" name="freqmhz">
+            <button type="submit" class="button">Accept</button>
+        </form>
+        <h2>Devices List</h2>
+        <select id="deviceList">
+        </select>
+    </div>
+
+    <div class="tile_container">
+        <div class="tile">
+            <h2>GPS lat</h2>
+            <p class="placeholder" id="gpsLat">+NN.NNNN</p>
+        </div>
+        <div class="tile">
+            <h2>GPS lng</h2>
+            <p class="placeholder" id="gpsLng">+EEE.EEEE</p>
+        </div>
+        <div class="tile">
+            <h2>GPS altitude</h2>
+            <p class="placeholder" id="gpsAlt">AAAAA.A</p>
+        </div>
+        <div class="tile">
+            <h2>Pressure</h2>
+            <p class="placeholder" id="press">PPPPPP.P</p>
+        </div>
+        <div class="tile">
+            <h2>Baro altitude</h2>
+            <p class="placeholder" id="altitude">AAAAA.A</p>
+        </div>
+        <div class="tile">
+            <h2>Baro speed</h2>
+            <p class="placeholder" id="speed">SSSS.S</p>
+        </div>
+        <div class="tile">
+            <h2>Temperature</h2>
+            <p class="placeholder" id="temper">+TT.T</p>
+        </div>
+        <div class="tile">
+            <h2>Time [ms]</h2>
+            <p class="placeholder" id="time_ms">TTTTTTTT</p>
+        </div>
+        <div class="tile">
+            <div id="cont1" class="led">Continuity 1</div>
+            <div id="cont2" class="led">Continuity 2</div>
+            <div id="mosState" class="led">Mosfet</div>
+        </div>
+        <div class="tile">
+            <button class="button" id="test1Button" onclick="sendCommand('TEST1')">Test 1</button>
+            <button class="button" id="test2Button" onclick="sendCommand('TEST2')">Test 2</button>
+        </div>
+        <div class="tile">
+            <select id="commandList">
+                <option value="MOS_ON">MOS_ON</option>
+                <option value="MOS_OFF">MOS_OFF</option>
+                <option value="MOS_CLK">MOS_CLK</option>
+                <option value="RECALIBRATE">RECALIBRATE</option>
+            </select>
+            <button class="button" onclick="selectCommand()">Send command</button>
+        </div>
+        <div class="tile">
+            <label class="label">Rocket State:</label>
+            <label class="label" id="rocketState">Text</label>
+            <div class="progressbar">
+                <div class="progressbar_fill" id="progressbar_fill"></div>
+            </div>
+        </div>
+    </div>
+    <a href="/wifioff">Turn off WiFi.</a>
+    <script src="scripts.js"></script>
+</body>
+</html>

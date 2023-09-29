@@ -9,6 +9,9 @@ class SerialPicker:
     def getSelectedItem(self) -> str:
 
         self.selected = str(self.dropdownVar.get()).split("-")[0].strip()
+        if self.frequencyEntryVar.get():
+            self.frequencyMHz = int(self.frequencyEntryVar.get())
+
         self.root.destroy()
         return self.selected
 
@@ -36,6 +39,13 @@ class SerialPicker:
         self.dropdown.pack(padx=20, pady=10)
 
         self.refreshPorts()
+
+        self.freqLabel = tk.Label(self.root, text="Częstotliwość [MHz]")
+        self.freqLabel.pack()
+
+        self.frequencyEntryVar = tk.StringVar()
+        self.frequencyEntry = tk.Entry(self.root, textvariable=self.frequencyEntryVar)
+        self.frequencyEntry.pack()
 
         buttonFrame = tk.Frame(self.root)
         buttonFrame.pack()
