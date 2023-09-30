@@ -12,16 +12,6 @@ void Website::start() {
         request->send(SPIFFS, "/index.html", String());
     });
 
-    server.on("/styles.css", HTTP_GET, [](AsyncWebServerRequest *request){
-
-        request->send(SPIFFS, "/styles.css", "text/css");
-    });
-
-    server.on("/scripts.js", HTTP_GET, [](AsyncWebServerRequest *request){
-
-        request->send(SPIFFS, "/scripts.js", "application/javascript");
-    });
-
     server.on("/devices", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         request->send(200, "text/html", getDevicesFromMap());
