@@ -58,24 +58,11 @@ void addFrameToMap(String frameString) {
     if (delimiterPos != -1) {
 
         String deviceName = frameString.substring(0, delimiterPos);
-        String deviceData = frameString.substring(delimiterPos + 1);
 
         if (deviceName.length() <= 11) {
-            glob.deviceDict[deviceName] = deviceData;
+            glob.deviceDict.insert(deviceName);
         }
     }
-}
-
-/*********************************************************************/
-
-String getFrameFromMap(String deviceName) {
-
-    if (glob.deviceDict.find(deviceName) != glob.deviceDict.end()) {
-        
-        return glob.deviceDict[deviceName];
-    }
-
-    return String("");
 }
 
 /*********************************************************************/
@@ -85,7 +72,7 @@ String getDevicesFromMap() {
     String deviceNames;
 
     for (const auto& device : glob.deviceDict) {
-        deviceNames += device.first + ";";
+        deviceNames += device + ";";
     }
 
     if (deviceNames.endsWith(";")) {

@@ -4,7 +4,7 @@
 #include "LoraModule.h"
 #include <EEPROM.h>
 #include <WiFi.h>
-#include <map>
+#include <set>
 
 struct GlobalAggregator {
 
@@ -12,7 +12,7 @@ struct GlobalAggregator {
     String rxString;
     String txString;
     LoraModule loraModule;
-    std::map<String, String> deviceDict;
+    std::set<String> deviceDict;
     bool txRequest;
 };
 
