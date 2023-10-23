@@ -48,36 +48,3 @@ void saveAndSetNewFrequency() {
     digitalWrite(LED_PIN, 0);
     vTaskDelay(30 / portTICK_PERIOD_MS);
 }
-
-/*********************************************************************/
-
-void addFrameToMap(String frameString) {
-
-    int delimiterPos = frameString.indexOf(";");
-
-    if (delimiterPos != -1) {
-
-        String deviceName = frameString.substring(0, delimiterPos);
-
-        if (deviceName.length() <= 11) {
-            glob.deviceDict.insert(deviceName);
-        }
-    }
-}
-
-/*********************************************************************/
-
-String getDevicesFromMap() {
-
-    String deviceNames;
-
-    for (const auto& device : glob.deviceDict) {
-        deviceNames += device + ";";
-    }
-
-    if (deviceNames.endsWith(";")) {
-        deviceNames.remove(deviceNames.length() - 1);
-    }
-
-    return deviceNames;
-}

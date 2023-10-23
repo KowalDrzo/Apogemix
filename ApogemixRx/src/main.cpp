@@ -42,7 +42,6 @@ void loop() {
     if (rxString.length() > 0) {
         Serial.print(rxString);
         website.sendWsString(rxString);
-        addFrameToMap(rxString);
     }
 
     // Website:

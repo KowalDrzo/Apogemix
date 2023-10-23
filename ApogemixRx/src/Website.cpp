@@ -12,11 +12,6 @@ void Website::start() {
         request->send(SPIFFS, "/index.html", String());
     });
 
-    server.on("/devices", HTTP_GET, [this](AsyncWebServerRequest *request) {
-
-        request->send(200, "text/html", getDevicesFromMap());
-    });
-
     server.on("/wifioff", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         request->send(200, "text/html", String("<meta http-equiv=\"refresh\" content=\"0; URL=/\" />"));

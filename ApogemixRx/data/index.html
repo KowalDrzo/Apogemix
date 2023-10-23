@@ -101,14 +101,14 @@
 </head>
 <body>
     <div class="tile">
-        <h1>Apogemix Receive Station</h1>
+        <h1>ApogView lite</h1>
         <form>
             <label for="freqmhz">Frequency MHz:</label>
             <input type="text" id="freqmhz" name="freqmhz">
             <button type="submit" class="button">Accept</button>
         </form>
         <h2>Devices List</h2>
-        <select id="deviceList">
+        <select id="deviceList" onchange="deviceChanged()">
         </select>
     </div>
 
@@ -172,6 +172,7 @@
         </div>
     </div>
     <a href="/wifioff">Turn off WiFi.</a>
+    <p>ApogView 1.0.0 2023 by Michal Kowalski</p>
     <script>
         const websocket = new WebSocket("ws://192.168.4.1/ws");
 
@@ -180,7 +181,7 @@
             parseFrame(receivedData);
         });
 
-        setTimeout(getDevices, 1000);
+        let devicesDict = {};
 
         function selectCommand() {
 
@@ -204,58 +205,56 @@
             }
         }
 
-        function getDevices() {
-
-            fetch('/devices')
-                .then(response => response.text())
-                .then(data => {
-                    const devicesList = data.split(';');
-                    console.log(devicesList);
-                    const select = document.getElementById('deviceList');
-
-                    devicesList.forEach(device => {
-
-                        var deviceOnList = false;
-                        for (var i = 0; i < select.options.length; i++) {
-                            if (select.options[i].text === device) {
-                            deviceOnList = true;
-                            break;
-                            }
-                        }
-
-                        if (!deviceOnList) {
-                            const option = document.createElement('option');
-                            option.text = device;
-                            select.add(option);
-                        }
-                    });
-                });
-            setTimeout(getDevices, 6000);
-        }
-
         function parseFrame(receivedData) {
 
-            const select = document.getElementById('deviceList');
+            const [name, ...deviceContent] = receivedData.split(';');
+            devicesDict[name] = deviceContent;
+
+            let select = document.querySelector('#deviceList');
+
+            for (const deviceName in devicesDict) {
+
+                var deviceOnList = false;
+                for (var i = 0; i < select.options.length; i++) {
+                    if (select.options[i].text === deviceName) {
+                        deviceOnList = true;
+                        break;
+                    }
+                }
+
+                if (!deviceOnList) {
+                    const option = document.createElement('option');
+                    option.text = deviceName;
+                    select.add(option);
+                }
+            }
+            deviceChanged();
+        }
+
+        function deviceChanged() {
+
+            const select = document.querySelector('#deviceList');
             const selectedDevice = select.value;
-            const frameData = receivedData.split(';');
 
-            if (!selectedDevice) {
-                return;
+            if (selectedDevice) {
+                loadDeviceData(selectedDevice);
             }
-            if (frameData[0] != selectedDevice) {
-                return;
-            }
+        }
 
-            document.querySelector("#gpsLat").textContent = frameData[1];
-            document.querySelector("#gpsLng").textContent = frameData[2];
-            document.querySelector("#gpsAlt").textContent = frameData[3];
-            document.querySelector("#press").textContent = frameData[6];
-            document.querySelector("#altitude").textContent = frameData[7];
-            document.querySelector("#speed").textContent = frameData[8];
-            document.querySelector("#temper").textContent = frameData[5];
-            document.querySelector("#time_ms").textContent = frameData[4];
+        function loadDeviceData(deviceName) {
 
-            const continuities = frameData[9];
+            const deviceContent = devicesDict[deviceName];
+
+            document.querySelector("#gpsLat").textContent = deviceContent[0];
+            document.querySelector("#gpsLng").textContent = deviceContent[1];
+            document.querySelector("#gpsAlt").textContent = deviceContent[2];
+            document.querySelector("#press").textContent = deviceContent[5];
+            document.querySelector("#altitude").textContent = deviceContent[6];
+            document.querySelector("#speed").textContent = deviceContent[7];
+            document.querySelector("#temper").textContent = deviceContent[4];
+            document.querySelector("#time_ms").textContent = deviceContent[3];
+
+            const continuities = deviceContent[8];
             var cont1 = document.getElementById("cont1");
             var cont2 = document.getElementById("cont2");
             var mosState = document.getElementById("mosState");
@@ -266,7 +265,7 @@
             if (continuities & 4) mosState.style.backgroundColor = "#005c00";
             else mosState.style.backgroundColor = "#FF0000";
 
-            const state = frameData[10];
+            const state = deviceContent[9];
             var rocketState = document.getElementById("rocketState");
             var progressbar_fill = document.getElementById("progressbar_fill");
             if (state == 0) {

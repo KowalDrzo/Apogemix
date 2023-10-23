@@ -12,7 +12,6 @@ struct GlobalAggregator {
     String rxString;
     String txString;
     LoraModule loraModule;
-    std::set<String> deviceDict;
     bool txRequest;
 };
 
