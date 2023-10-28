@@ -218,6 +218,7 @@ void Tasks::clearMem() {
         glob.memory.flight[i].num = 0;
         glob.memory.flight[i].apogee = 0;
         glob.memory.flight[i].maxSpeed = 0;
+        glob.memory.secondSeparAltitude = 100;
     }
 
     EEPROM.put(0, glob.memory);

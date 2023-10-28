@@ -29,9 +29,7 @@ struct Memory {
     uint16_t lastFlightNum;
     Flight flight[FLIGHTS_IN_MEM];
 
-    uint16_t firstSeparDelay_ms;
     uint16_t secondSeparAltitude;
-    uint16_t wifiActiveTime_min;
 };
 
 enum RocketState {

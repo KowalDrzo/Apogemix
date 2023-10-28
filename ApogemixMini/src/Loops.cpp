@@ -13,11 +13,7 @@ void StateLoops::dataLoop(bool enableFlashWrite) {
 
 void StateLoops::ignitionLoop(bool apogee) {
 
-    if (apogee) {
-        
-        waitAndLogData(glob.memory.firstSeparDelay_ms);
-        digitalWrite(SEPAR1_PIN, 1);
-    }
+    if (apogee) digitalWrite(SEPAR1_PIN, 1);
     else digitalWrite(SEPAR2_PIN, 1);
 
     waitAndLogData(FIRE_TIME);
@@ -61,7 +57,7 @@ void StateLoops::railLoop() {
             if (!digitalRead(SWITCH_PIN) && !website.isEnabled()) {
 
                 website.start();
-                wifiTimer.start(glob.memory.wifiActiveTime_min * 60000);
+                wifiTimer.start(WIFI_TIME_MS);
             }
             if (website.isEnabled() && wifiTimer.check()) {
 
