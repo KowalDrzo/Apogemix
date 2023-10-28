@@ -38,6 +38,7 @@ public:
     void writeToFlash(bool force = false);
     void readFlash();
     void updateDataBase();
+    void recalibrate();
 
     void clearMem();
 };

@@ -6,6 +6,7 @@ void setup() {
 
     Serial.begin(74880);
     Serial.setTimeout(10);
+    Serial.println("");
 
     delay(1000);
 
@@ -27,7 +28,9 @@ void setup() {
     //tasks.clearMem();
 
     tasks.readFlash();
-    glob.initialPressure = tasks.bmp.readPressure();
+    tasks.recalibrate();
+    Serial.println(glob.initialTemper);
+
     tasks.buzz();
 
     // LOOPS:

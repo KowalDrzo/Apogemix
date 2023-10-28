@@ -28,8 +28,9 @@ float Tasks::getPressureMedian() {
 
 void Tasks::measure() {
 
-    // Pressure:
+    // Pressure and temperature:
     glob.dataFrame.pressure = getPressureMedian();
+    glob.dataFrame.temper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
 
     // Time:
     uint32_t newTime = millis();
@@ -89,7 +90,7 @@ void Tasks::buzz() {
 
 bool Tasks::isLaunchDetected() {
 
-    if (glob.dataFrame.altitude > 20) {
+    if (glob.dataFrame.altitude > 20 && glob.dataFrame.speed > 1) {
 
         criteriaCounter++;
         if (criteriaCounter >= CRITERIA_MARGIN) {
@@ -176,8 +177,12 @@ void Tasks::writeToFlash(bool force) {
     if (glob.dataFramesFifo.size() > 20 || force) {
 
         while(glob.dataFramesFifo.size()) {
+
             DataFrame tempData = glob.dataFramesFifo.pop();
-            file.write((uint8_t*) &tempData, sizeof(tempData));
+            char tempDataAscii[120];
+            strcpy(tempDataAscii, tempData.toString().c_str());
+            strcat(tempDataAscii, "\n");
+            file.write((uint8_t*) tempDataAscii, strlen(tempDataAscii));
         }
     }
 
@@ -192,10 +197,7 @@ void Tasks::readFlash() {
 
     file = SPIFFS.open("/FlightData.apg", "r");
 
-    DataFrame dane;
-    while (file.readBytes((char*) &dane, sizeof(dane))) {
-        Serial.println(dane.toString());
-    }
+    while (file.available()) Serial.print(file.readString());
 
     file.close();
 }
@@ -205,6 +207,9 @@ void Tasks::readFlash() {
 /*********************************************************************/
 
 void Tasks::clearMem() {
+
+    SPIFFS.begin();
+    File file = SPIFFS.open("/FlightData.apg", "w");
 
     for (uint8_t i = 0; i < FLIGHTS_IN_MEM; i++) {
 
@@ -217,6 +222,12 @@ void Tasks::clearMem() {
 
     EEPROM.put(0, glob.memory);
     EEPROM.commit();
+
+    buzzBeep(30, 30, 10);
+    while(1) {
+        delay(1000);
+        Serial.println("Cleared");
+    }
 }
 
 /*********************************************************************/
@@ -235,4 +246,12 @@ void Tasks::updateDataBase() {
 
     EEPROM.put(0, glob.memory);
     EEPROM.commit();
+}
+
+/*********************************************************************/
+
+void Tasks::recalibrate() {
+
+    glob.initialPressure = bmp.readPressure();
+    glob.initialTemper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
 }
