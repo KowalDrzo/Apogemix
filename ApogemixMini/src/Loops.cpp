@@ -64,6 +64,20 @@ void StateLoops::railLoop() {
                 website.stop();
             }
 
+            // Forced recovery tests:
+            if (glob.forceRecoveryTest) {
+
+                uint8_t recoveryPin = (glob.forceRecoveryTest == 1 ? SEPAR1_PIN : SEPAR2_PIN);
+                glob.forceRecoveryTest = 0;
+
+                digitalWrite(BUZZER_PIN, 1);
+                delay(1000);
+                digitalWrite(BUZZER_PIN, 0);
+                digitalWrite(recoveryPin, 1);
+                delay(2000);
+                digitalWrite(recoveryPin, 0);
+            }
+
             // DEBUG:
             if (Serial.available()) {
                 String rxDebugString = Serial.readString();

@@ -30,6 +30,7 @@ struct Memory {
     Flight flight[FLIGHTS_IN_MEM];
 
     uint16_t secondSeparAltitude;
+    bool isSep1BeforeApog;
 };
 
 enum RocketState {

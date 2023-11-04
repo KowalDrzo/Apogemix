@@ -5,16 +5,19 @@
 
 void Website::start() {
 
-    WiFi.softAP(ssid, password);
-    MDNS.begin("apogemix");
+    WiFi.softAP(ssid.c_str(), password);
 
     Serial.println("server on");
     enabled = true;
 
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
-        handleArgs(request);
         request->send(200, "text/html", generateHtml());
+    });
+
+    server.on("/api", HTTP_GET, [this](AsyncWebServerRequest *request) {
+
+        request->send(200, "text/html", glob.dataFrame.toString());
     });
 
     server.on("/wifioff", HTTP_GET, [this](AsyncWebServerRequest *request) {
@@ -25,6 +28,29 @@ void Website::start() {
     server.on("/FlightData.apg", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         request->send(SPIFFS, "/FlightData.apg", String());
+    });
+
+    server.on("/e_recovery", HTTP_GET, [this](AsyncWebServerRequest *request) {
+
+        handleArgs(request);
+        request->send(200, "text/html", generateSettingsPage(RECOVERY_SETTINGS));
+    });
+
+    server.on("/recovery_test", HTTP_GET, [this](AsyncWebServerRequest *request) {
+
+        request->send(200, "text/html", generateRecoveryTest());
+    });
+
+    server.on("/recovery_test1", HTTP_POST, [this](AsyncWebServerRequest *request) {
+
+        glob.forceRecoveryTest = 1;
+        request->send(200, "text/html", "OK");
+    });
+
+    server.on("/recovery_test2", HTTP_POST, [this](AsyncWebServerRequest *request) {
+
+        glob.forceRecoveryTest = 2;
+        request->send(200, "text/html", "OK");
     });
 
     server.begin();
@@ -43,29 +69,6 @@ void Website::stop() {
 
 /*********************************************************************/
 
-String Website::generateHtml() {
-
-    String html = "";
-
-    html += "<!DOCTYPE html><head>    <title>Apogemix mini configuration page</title></head><body>    <h3>        Apogemix mini    </h3><hr>    <p>        Current settings:        <ul>            <li>Second parachute ignition altitude: <strong>";
-
-    html += String(glob.memory.secondSeparAltitude);
-    html += "</strong> m</li>        </ul>    </p><hr>    <a href='/FlightData.apg'>Download data from last flight.</a>    <p>        Flight data table:        <table border='1'>            <tr>                <th>Num</th>                <th>Apogee [m]</th>                <th>Max speed [m/s]</th>            </tr>";
-    
-    for (uint8_t i = 0; i < FLIGHTS_IN_MEM; i++) {
-
-        html += "<tr><td>" + String(glob.memory.flight[i].num) + "</td>";
-        html += "<td>" + String(glob.memory.flight[i].apogee) + "</td>";
-        html += "<td>" + String(glob.memory.flight[i].maxSpeed) + "</td></tr>";
-    }
-    
-    html += "</table>    </p><hr>    <p>        Change settings:        <form><label for='setSecAlt'>Second parachute ignition altitude:</label><br><input type='number' min='50' max='5000' id='setSecAlt' name='setSecAlt'><br><br><input type='submit'><hr>        </form>    </p>    </p>    <a href='/wifioff'>Turn off the wifi.</a>    <p><hr>    </body></html>";
-
-    return html;
-}
-
-/*********************************************************************/
-
 void Website::handleArgs(AsyncWebServerRequest *request) {
 
     uint8_t paramNb = request->params();
@@ -77,13 +80,13 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
             AsyncWebParameter* p = request->getParam(i);
 
             // Recovery params:
-            /*else if (p->name() == "sep1Mode") {
+            if (p->name() == "sep1Mode") {
 
                 if      (p->value() == "1") glob.memory.isSep1BeforeApog = 1;
                 else if (p->value() == "0") glob.memory.isSep1BeforeApog = 0;
-            }*/
+            }
 
-            if (p->name() == "setSecAlt") {
+            else if (p->name() == "setSecAlt") {
 
                 uint16_t val = p->value().toInt();
                 if (val >= 50 && val <= 5000) glob.memory.secondSeparAltitude = val;
