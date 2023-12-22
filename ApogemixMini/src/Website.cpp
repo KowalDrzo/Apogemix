@@ -80,13 +80,7 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
             AsyncWebParameter* p = request->getParam(i);
 
             // Recovery params:
-            if (p->name() == "sep1Mode") {
-
-                if      (p->value() == "1") glob.memory.isSep1BeforeApog = 1;
-                else if (p->value() == "0") glob.memory.isSep1BeforeApog = 0;
-            }
-
-            else if (p->name() == "setSecAlt") {
+            if (p->name() == "setSecAlt") {
 
                 uint16_t val = p->value().toInt();
                 if (val >= 50 && val <= 5000) glob.memory.secondSeparAltitude = val;

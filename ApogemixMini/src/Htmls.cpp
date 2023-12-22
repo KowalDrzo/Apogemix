@@ -69,7 +69,6 @@ String Website::generateHtml() {
                     <p class="gray-text">Current settings:</p>
         )rawliteral";
 
-    html += "Pyro channel 1 mode: <strong>" + (glob.memory.isSep1BeforeApog ? String("At apogee") : String("After apogee")) + String("</strong><br>\n");
     html += "Dual deploy altitude: <strong>" + String(glob.memory.secondSeparAltitude) + String("</strong>m<br>\n");
 
     html += R"rawliteral(
@@ -190,17 +189,6 @@ String Website::generateSettingsPage(uint8_t settingsType) {
     case RECOVERY_SETTINGS:
 
         html += "recovery</h3>\n\t\t<form>\n";
-
-        // Separation 1 pin mode:
-        html += "<p>Set the separation 1 pin mode:</p>\n";
-        if (glob.memory.isSep1BeforeApog) {
-            html += "<input type='radio' name='sep1Mode' id='after' value='0'><label for='after'>fire just after the apogee (safer).</label><br>\n";
-            html += "<input type='radio' name='sep1Mode' id='apog' value='1' checked><label for='apog'>fire at the apogee,</label><br>\n";
-        }
-        else {
-            html += "<input type='radio' name='sep1Mode' id='after' value='0' checked><label for='after'>fire just after the apogee (safer).</label><br>\n";
-            html += "<input type='radio' name='sep1Mode' id='apog' value='1'><label for='apog'>fire at the apogee,</label><br>\n";
-        }
 
         // Separation 2 pin modes:
         html += "<label for='setSecAlt'>Second parachute ignition altitude (Current: <strong>"
