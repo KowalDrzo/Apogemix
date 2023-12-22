@@ -1,12 +1,14 @@
 #include "Website.h"
 
+#ifndef PRO
+
 String Website::generateHtml() {
 
     String html = R"rawliteral(
         <!DOCTYPE html>
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Apogemix Pro configuration page</title>
+            <title>Apogemix Standard configuration page</title>
             <style>
                 body {
                     font-family: Arial, sans-serif;
@@ -63,7 +65,7 @@ String Website::generateHtml() {
         </head>
         <body>
             <div class="container">
-                <h3>Apogemix Pro</h3>
+                <h3>Apogemix Standard</h3>
                 <hr>
                 <div class="block">
                     <p class="gray-text">Current settings:</p>
@@ -122,7 +124,6 @@ String Website::generateHtml() {
                     <div class="button-group">
                         <a class="button" href="/e_recovery">Edit recovery settings</a>
                         <a class="button" href="/e_telemetry">Edit telemetry settings</a>
-                        <a class="button" href="/e_servos">Edit servos settings</a>
                         <a class="button" href="/recovery_test">Test pyro or servos</a>
                     </div>
                 </div>
@@ -145,7 +146,7 @@ String Website::generateSettingsPage(uint8_t settingsType) {
         <!DOCTYPE html>
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Apogemix Pro configuration page</title>
+            <title>Apogemix Standard configuration page</title>
             <style>
                 body {
                     font-family: Arial, sans-serif;
@@ -324,7 +325,7 @@ String Website::generateRecoveryTest() {
         <!DOCTYPE html>
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Apogemix Pro configuration page</title>
+            <title>Apogemix Standard configuration page</title>
             <style>
                 body {
                     font-family: Arial, sans-serif;
@@ -387,9 +388,6 @@ String Website::generateRecoveryTest() {
                 <h3>Recovery testing</h3><hr>
                 <button class="button" id="test1Button">Test pyro 1</button>
                 <button class="button" id="test2Button">Test pyro 2</button>
-                <input type="number" id="angle1" placeholder="Angle 1" min="0" max="180">
-                <input type="number" id="angle2" placeholder="Angle 2" min="0" max="180">
-                <button class="button" id="setServosButton">Set servos angle</button>
                 <hr>
 
                 <script>
@@ -412,25 +410,6 @@ String Website::generateRecoveryTest() {
                             });
                         }
                     });
-
-                    document.getElementById("setServosButton").addEventListener("click", function() {
-
-                        const angle1Value = parseFloat(document.getElementById("angle1").value);
-                        const angle2Value = parseFloat(document.getElementById("angle2").value);
-                        const combinedValues = angle1Value + ";" + angle2Value;
-
-                        if (angle1Value >= 0 && angle1Value <= 180 && angle2Value >= 0 && angle2Value <= 180) {
-                            if (confirmAction("Are you sure to move servos?")) {
-                                fetch("/set_servos", {
-                                    method: "POST",
-                                    body: combinedValues
-                                });
-                            }
-                        }
-                        else {
-                            alert("Please enter values between 0 and 180.");
-                        }
-                    });
                 </script>
             <a href="/" class="button">Back to main page</a>
         </div>
@@ -441,3 +420,5 @@ String Website::generateRecoveryTest() {
 
     return html;
 }
+
+#endif
