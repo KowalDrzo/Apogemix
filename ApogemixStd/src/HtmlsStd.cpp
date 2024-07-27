@@ -72,7 +72,6 @@ String Website::generateHtml() {
         )rawliteral";
 
     html += "Flightdata file type: <strong>" + (glob.memory.isCsvFile ? String("csv") : String("binary")) + String("</strong><br>\n");
-    html += "Pyro channel 1 mode: <strong>" + (glob.memory.isSep1BeforeApog ? String("At apogee") : String("After apogee")) + String("</strong><br>\n");
     html += "Pyro channel 2 mode: <strong>" + (glob.memory.isSep2Staging ? String("Staging") : String("Double deploy")) + String("</strong><br>\n");
 
     if (glob.memory.isSep2Staging) {
@@ -217,17 +216,6 @@ String Website::generateSettingsPage(uint8_t settingsType) {
         else {
             html += "<input type='radio' name='dataSave' id='bin' value='0' checked><label for='0'>binary,</label><br>\n";
             html += "<input type='radio' name='dataSave' id='csv' value='1'><label for='1'>csv.</label><br>\n";
-        }
-
-        // Separation 1 pin mode:
-        html += "<p>Set the separation 1 pin mode:</p>\n";
-        if (glob.memory.isSep1BeforeApog) {
-            html += "<input type='radio' name='sep1Mode' id='after' value='0'><label for='after'>fire just after the apogee (safer).</label><br>\n";
-            html += "<input type='radio' name='sep1Mode' id='apog' value='1' checked><label for='apog'>fire at the apogee,</label><br>\n";
-        }
-        else {
-            html += "<input type='radio' name='sep1Mode' id='after' value='0' checked><label for='after'>fire just after the apogee (safer).</label><br>\n";
-            html += "<input type='radio' name='sep1Mode' id='apog' value='1'><label for='apog'>fire at the apogee,</label><br>\n";
         }
 
         // Separation 2 pin modes:

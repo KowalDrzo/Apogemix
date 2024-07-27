@@ -124,12 +124,6 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
                 else if (p->value() == "0") glob.memory.isCsvFile = 0;
             }
 
-            else if (p->name() == "sep1Mode") {
-
-                if      (p->value() == "1") glob.memory.isSep1BeforeApog = 1;
-                else if (p->value() == "0") glob.memory.isSep1BeforeApog = 0;
-            }
-
             else if (p->name() == "sep2Mode") {
 
                 if      (p->value() == "1") glob.memory.isSep2Staging = 1;

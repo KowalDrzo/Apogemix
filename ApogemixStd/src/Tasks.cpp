@@ -108,7 +108,7 @@ bool Tasks::isLaunchDetected() {
 
 bool Tasks::isApogeeDetected() {
 
-    if (glob.dataFrame.speed < -1 || (glob.memory.isSep1BeforeApog && glob.dataFrame.speed < 10)) {
+    if (glob.dataFrame.speed < -1 || (glob.isSep1BeforeApog && glob.dataFrame.speed < 10)) {
 
         criteriaCounter++;
         if (criteriaCounter > CRITERIA_MARGIN) {
@@ -248,6 +248,7 @@ void Tasks::clearMem() {
     buzzBeep(30, 30, 10);
     while(1) {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
+        Serial.println("Cleared");
     }
 }
 

@@ -97,6 +97,10 @@ void StateLoops::flightLoop() {
         if (pressMeasureTimer.check()) {
 
             dataLoop(1);
+            if (glob.dataFrame.speed > 30) {
+                glob.isSep1BeforeApog = true;
+            }
+
             if (tasks.isApogeeDetected()) {
 
                 ignitionLoop(1);

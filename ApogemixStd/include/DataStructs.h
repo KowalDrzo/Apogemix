@@ -31,7 +31,6 @@ struct Memory {
     Flight flight[FLIGHTS_IN_MEM];
 
     bool isCsvFile;
-    bool isSep1BeforeApog;
     bool isSep2Staging; // TODO test
     uint16_t stagingDelay; // TODO test
     uint16_t secondSeparAltitude;
