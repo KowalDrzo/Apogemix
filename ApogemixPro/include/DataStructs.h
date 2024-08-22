@@ -2,7 +2,7 @@
 #define DATA_STRUCTS_H
 
 #define APOGEMIX_ID 7
-//#define PRO
+#define PRO
 #define FLIGHTS_IN_MEM 30
 #define FRAMES_IN_Q 30
 #define ALPHA_H 0.2

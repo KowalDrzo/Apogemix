@@ -16,10 +16,10 @@ class Website {
 
     #ifdef PRO
     String ssid = String("Apogemix_pro_") + String(APOGEMIX_ID);
-    const char* password = "ApogemixPro";
+    const char* password = "apogemix";
     #else
     String ssid = String("Apogemix_std_") + String(APOGEMIX_ID);
-    const char* password = "ApogemixStd";
+    const char* password = "apogemix";
     #endif
 
     AsyncWebServer server = AsyncWebServer(80);
