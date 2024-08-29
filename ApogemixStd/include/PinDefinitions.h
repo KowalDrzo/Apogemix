@@ -12,7 +12,7 @@
 #define CONT2_PIN 3
 
 #define SDA_PIN 8
-#define SCL_PIN 9
+#define SCL_PIN 4
 
 #define GPS_TX_PIN 20
 #define GPS_RX_PIN -1

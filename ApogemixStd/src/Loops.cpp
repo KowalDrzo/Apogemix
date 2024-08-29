@@ -59,10 +59,7 @@ void StateLoops::railLoop() {
             }
 
             // WiFi itp:
-            if (
-                (!digitalRead(SWITCH_PIN) ||
-                (!glob.dataFrame.continuity1 && !glob.dataFrame.continuity2))
-                && !website.isEnabled()
+            if (!digitalRead(SWITCH_PIN) && !website.isEnabled()
             ) {
 
                 website.start();
