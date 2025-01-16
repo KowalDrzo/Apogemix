@@ -13,7 +13,7 @@
 class Website {
 
     String ssid = String("Apogemix_rx") + String(APOGEMIX_ID);
-    const char* password = "ApogemixRx";
+    const char* password = "apogemix";
     AsyncWebServer server = AsyncWebServer(80);
     AsyncWebSocket ws = AsyncWebSocket("/ws");
     bool enabled = false;
