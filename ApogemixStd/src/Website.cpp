@@ -57,23 +57,11 @@ void Website::start() {
 
     server.on("/recovery_test1", HTTP_POST, [this](AsyncWebServerRequest *request) {
 
-        digitalWrite(BUZZER_PIN, 1);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        digitalWrite(BUZZER_PIN, 0);
-        digitalWrite(SEPAR1_PIN, 1);
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
-        digitalWrite(SEPAR1_PIN, 0);
         request->send(200, "text/html", "OK");
     });
 
     server.on("/recovery_test2", HTTP_POST, [this](AsyncWebServerRequest *request) {
 
-        digitalWrite(BUZZER_PIN, 1);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        digitalWrite(BUZZER_PIN, 0);
-        digitalWrite(SEPAR2_PIN, 1);
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
-        digitalWrite(SEPAR2_PIN, 0);
         request->send(200, "text/html", "OK");
     });
 

@@ -18,6 +18,9 @@ void setup() {
     //clearMem();
 
     glob.loraModule.init(glob.frequencyMHz);
+
+    SPIFFS.begin(true);
+    website.start();
 }
 
 void loop() {
@@ -44,11 +47,10 @@ void loop() {
         website.sendWsString(rxString);
     }
 
-    // Website:
-    if (!digitalRead(BUTTON_PIN) && !website.isEnabled()) {
+    // Button:
+    if (!digitalRead(BUTTON_PIN)) {
 
-        SPIFFS.begin(true);
-        website.start();
+        glob.loraModule.send("Drop;TEST1");
     }
 
     vTaskDelay(1);

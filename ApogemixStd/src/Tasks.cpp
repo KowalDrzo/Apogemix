@@ -6,8 +6,8 @@ Tasks tasks;
 
 void Tasks::continuityTest() {
 
-    glob.dataFrame.continuity1 = !digitalRead(CONT1_PIN);
-    glob.dataFrame.continuity2 = !digitalRead(CONT2_PIN);
+    //glob.dataFrame.continuity1 = !digitalRead(CONT1_PIN);
+    //glob.dataFrame.continuity2 = !digitalRead(CONT2_PIN);
 }
 
 /*********************************************************************/
@@ -29,8 +29,8 @@ float Tasks::getPressureMedian() {
 void Tasks::measure() {
 
     // Pressure and temperature:
-    glob.dataFrame.pressure = getPressureMedian();
-    glob.dataFrame.temper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
+    glob.dataFrame.pressure = 101325;
+    glob.dataFrame.temper = 15;
 
     // Time:
     uint32_t newTime = millis();
@@ -65,10 +65,10 @@ void Tasks::buzzBeep(uint16_t activeTime, uint16_t sleepTime, uint8_t n) {
 
     for (; n > 0; n--) {
 
-        digitalWrite(BUZZER_PIN, 1);
+        /*digitalWrite(BUZZER_PIN, 1);
         vTaskDelay(activeTime / portTICK_PERIOD_MS);
         digitalWrite(BUZZER_PIN, 0);
-        vTaskDelay(sleepTime / portTICK_PERIOD_MS);
+        vTaskDelay(sleepTime / portTICK_PERIOD_MS);*/
     }
 }
 
@@ -274,6 +274,6 @@ void Tasks::updateDataBase() {
 
 void Tasks::recalibrate() {
 
-    glob.initialPressure = bmp.readPressure();
-    glob.initialTemper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
+    glob.initialPressure = 101325;//bmp.readPressure();
+    glob.initialTemper = 15;//bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
 }

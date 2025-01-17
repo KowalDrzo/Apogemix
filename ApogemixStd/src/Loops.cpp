@@ -1,6 +1,7 @@
 #include "Loops.h"
 
 StateLoops loops;
+Servo servo1;
 
 void StateLoops::dataLoop(bool enableFlashWrite) {
 
@@ -16,13 +17,13 @@ void StateLoops::dataLoop(bool enableFlashWrite) {
 
 void StateLoops::ignitionLoop(bool apogee) {
 
-    if (apogee) digitalWrite(SEPAR1_PIN, 1);
+    /*if (apogee) digitalWrite(SEPAR1_PIN, 1);
     else digitalWrite(SEPAR2_PIN, 1);
 
     waitAndLogData(FIRE_TIME);
 
     digitalWrite(SEPAR1_PIN, 0);
-    digitalWrite(SEPAR2_PIN, 0);
+    digitalWrite(SEPAR2_PIN, 0);*/
 }
 
 /*********************************************************************/
@@ -46,17 +47,16 @@ void StateLoops::railLoop() {
 
     pressMeasureTimer.start(RAIL_FLIGHT_LOOP_TIME);
     Website website;
+    servo1.setPeriodHertz(50);
+    servo1.attach(SERVO_1_PIN, 1000, 2000);
+    Serial.println("dupa1");
 
     while (1) {
 
         if (pressMeasureTimer.check()) {
 
             dataLoop(0);
-            if (tasks.isLaunchDetected()) {
-
-                if (website.isEnabled()) website.stop();
-                break;
-            }
+            Serial.println("dupa2");
 
             // WiFi itp:
             if (!digitalRead(SWITCH_PIN) && !website.isEnabled()
@@ -71,12 +71,6 @@ void StateLoops::railLoop() {
             }
         }
         vTaskDelay(1 / portTICK_PERIOD_MS);
-
-        // DEBUG:
-        if (Serial.available()) {
-            rxDebugString = Serial.readString();
-            if (strstr(rxDebugString.c_str(), "FORCE NEXT STATE")) break;
-        }
     }
 }
 
@@ -201,12 +195,15 @@ void StateLoops::loraLoop() {
     loraTimer.start(glob.memory.loraDelay_ms);
 
     //hspi.begin(SCK_PIN, MISO_PIN, MOSI_PIN, LORA_CS_PIN);
+    Serial.println("dupa3");
     SPI.begin(SCK_PIN, MISO_PIN, MOSI_PIN, LORA_CS_PIN);
     //LoRa.setSPI(hspi);
     LoRa.setPins(LORA_CS_PIN, LORA_RES_PIN, LORA_D0_PIN);
+    Serial.println("dupa4");
     LoRa.setSignalBandwidth(125E3);
     LoRa.begin(glob.memory.loraFreqMHz * 1E6);
     LoRa.setTimeout(100);
+    Serial.println("dupa5");
 
     while (1) {
 
@@ -233,24 +230,6 @@ void StateLoops::loraLoop() {
                 loraRxCallback(LoRa.readString());
             }
         }
-
-        // GROUND state:
-        if (glob.dataFrame.rocketState == GROUND) {
-
-            while (1) {
-
-                digitalWrite(BUZZER_PIN, 0);
-                vTaskDelay(9000 / portTICK_PERIOD_MS);
-
-                loraString = String(glob.memory.callsign) + String(";") + glob.dataFrame.toString();
-                LoRa.beginPacket();
-                LoRa.println(loraString);
-                LoRa.endPacket();
-
-                digitalWrite(BUZZER_PIN, 1);
-                vTaskDelay(1000 / portTICK_PERIOD_MS);
-            }
-        }
         vTaskDelay(1 / portTICK_PERIOD_MS);
     }
 }
@@ -261,49 +240,10 @@ void StateLoops::loraRxCallback(String rxFrame) {
 
     if (strstr(rxFrame.c_str(), glob.memory.callsign)) {
 
-        if (strstr(rxFrame.c_str(), "TEST1") && (glob.dataFrame.rocketState <= FLIGHT)) {
+        if (strstr(rxFrame.c_str(), "TEST1")) {
 
-            digitalWrite(BUZZER_PIN, 1);
-            vTaskDelay(1000 / portTICK_PERIOD_MS);
-            digitalWrite(BUZZER_PIN, 0);
-            digitalWrite(SEPAR1_PIN, 1);
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
-            digitalWrite(SEPAR1_PIN, 0);
-        }
-
-        else if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState <= FIRST_SEPAR) {
-
-            digitalWrite(BUZZER_PIN, 1);
-            vTaskDelay(1000 / portTICK_PERIOD_MS);
-            digitalWrite(BUZZER_PIN, 0);
-            digitalWrite(SEPAR2_PIN, 1);
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
-            digitalWrite(SEPAR2_PIN, 0);
-        }
-
-        else if (strstr(rxFrame.c_str(), "MOS_ON")) {
-
-            digitalWrite(MOS_GP_PIN, 1);
-            glob.dataFrame.mosState = 1;
-        }
-
-        else if (strstr(rxFrame.c_str(), "MOS_OFF")) {
-
-            digitalWrite(MOS_GP_PIN, 0);
-            glob.dataFrame.mosState = 0;
-        }
-
-        else if (strstr(rxFrame.c_str(), "MOS_CLK")) {
-
-            digitalWrite(MOS_GP_PIN, 1);
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
-            digitalWrite(MOS_GP_PIN, 0);
-            glob.dataFrame.mosState = 0;
-        }
-
-        else if (strstr(rxFrame.c_str(), "RECALIBRATE") && (glob.dataFrame.rocketState < FLIGHT)) {
-
-            tasks.recalibrate();
+            // Servo move:
+            servo1.write(180);
         }
     }
 }
