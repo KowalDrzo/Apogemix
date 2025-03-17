@@ -1,10 +1,8 @@
 #ifndef WEBSITE_H
 #define WEBSITE_H
 
-#include <ESP8266WiFi.h>
-#include <ESP8266mDNS.h>
-#include "ESPAsyncTCP.h"
 #include "ESPAsyncWebServer.h"
+#include <ESPmDNS.h>
 
 #include "Tasks.h"
 
@@ -17,7 +15,7 @@ class Website {
     };
 
     String ssid = String("Apogemix_mini_") + String(APOGEMIX_ID);
-    const char* password = "ApogemixMini";
+    const char* password = "apogemix";
     AsyncWebServer server = AsyncWebServer(80);
     bool enabled = false;
 

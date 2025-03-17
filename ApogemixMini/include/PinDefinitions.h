@@ -1,16 +1,16 @@
 #ifndef PIN_DEFINITIONS_H
 #define PIN_DEFINITIONS_H
 
-#define SWITCH_PIN 0
+#define SWITCH_PIN 9
 
-#define SEPAR1_PIN 4
-#define SEPAR2_PIN 5
-#define BUZZER_PIN 13
+#define SEPAR1_PIN 5
+#define SEPAR2_PIN 7
+#define BUZZER_PIN 0
 
-#define CONT1_PIN 14
-#define CONT2_PIN 16
+#define CONT1_PIN 6
+#define CONT2_PIN 3
 
-#define SDA_PIN 12
-#define SCL_PIN 2
+#define SDA_PIN 8
+#define SCL_PIN 4
 
 #endif

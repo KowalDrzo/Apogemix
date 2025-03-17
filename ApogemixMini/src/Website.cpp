@@ -6,6 +6,7 @@
 void Website::start() {
 
     WiFi.softAP(ssid.c_str(), password);
+    MDNS.begin("apogemix");
 
     Serial.println("server on");
     enabled = true;
@@ -22,12 +23,13 @@ void Website::start() {
 
     server.on("/wifioff", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
+        request->send(200, "text/html", String("<meta http-equiv=\"refresh\" content=\"0; URL=/\" />"));
         stop();
     });
 
     server.on("/FlightData.apg", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
-        request->send(SPIFFS, "/FlightData.apg", String());
+        request->send(LittleFS, "/FlightData.apg", String());
     });
 
     server.on("/e_recovery", HTTP_GET, [this](AsyncWebServerRequest *request) {

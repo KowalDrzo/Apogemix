@@ -168,10 +168,10 @@ void Tasks::writeToFlash(bool force) {
     if (!appendFlash) {
 
         appendFlash = true;
-        file = SPIFFS.open("/FlightData.apg", "w");
+        file = LittleFS.open("/FlightData.apg", "w");
     }
     else {
-        file = SPIFFS.open("/FlightData.apg", "a");
+        file = LittleFS.open("/FlightData.apg", "a");
     }
 
     if (glob.dataFramesFifo.size() > 20 || force) {
@@ -193,9 +193,9 @@ void Tasks::writeToFlash(bool force) {
 
 void Tasks::readFlash() {
 
-    SPIFFS.begin();
+    LittleFS.begin(true);
 
-    file = SPIFFS.open("/FlightData.apg", "r");
+    file = LittleFS.open("/FlightData.apg", "r");
 
     while (file.available()) Serial.print(file.readString());
 
@@ -208,8 +208,8 @@ void Tasks::readFlash() {
 
 void Tasks::clearMem() {
 
-    SPIFFS.begin();
-    File file = SPIFFS.open("/FlightData.apg", "w");
+    LittleFS.begin(true);
+    File file = LittleFS.open("/FlightData.apg", "w");
 
     for (uint8_t i = 0; i < FLIGHTS_IN_MEM; i++) {
 
