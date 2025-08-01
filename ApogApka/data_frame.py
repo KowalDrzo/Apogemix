@@ -61,15 +61,15 @@ class DataFrame:
 
         stateString = ""
         if self.rocketState == 0:
-            stateString = "Na wyrzutni"
+            stateString = "Rail"
         elif self.rocketState == 1:
-            stateString = "W locie"
+            stateString = "Flight"
         elif self.rocketState == 2:
-            stateString = "Pierwszy odzysk"
+            stateString = "Apogee"
         elif self.rocketState == 3:
-            stateString = "Drugi odzysk"
+            stateString = "Dual Deploy"
         elif self.rocketState == 4:
-            stateString = "Na ziemii"
+            stateString = "Ground"
 
         return stateString
 

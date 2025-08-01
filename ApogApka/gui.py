@@ -7,7 +7,7 @@ from data_frame import DataFrame
 
 class Gui:
 
-    commands_list = ["MOS_ON", "MOS_OFF", "MOS_CLK", "RECALIBRATE"]
+    commands_list = ["RECALIBRATE", "MOS_ON", "MOS_OFF", "MOS_CLK"]
 
     def __init__(self):
 
@@ -37,6 +37,7 @@ class Gui:
         self.callsignMenu = ttk.Combobox(self.root, textvariable=self.callsignMenuVar)
         self.callsignMenu.place(x=400, y=20)
 
+        """
         gpsLatLabel=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=18)
         gpsLatLabel["font"] = ft
@@ -60,15 +61,25 @@ class Gui:
         gpsAltLabel["justify"] = "center"
         gpsAltLabel["text"] = "GPS wysokość"
         gpsAltLabel.place(x=580,y=60,width=180,height=40)
+        """
+
+        gpsStrLabel=tk.Label(self.root)
+        ft = tkFont.Font(family='Arial',size=18)
+        gpsStrLabel["font"] = ft
+        gpsStrLabel["fg"] = "#333333"
+        gpsStrLabel["justify"] = "center"
+        gpsStrLabel["text"] = "GPS location"
+        gpsStrLabel.place(x=310,y=60,width=180,height=40)
 
         timeLabel=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=18)
         timeLabel["font"] = ft
         timeLabel["fg"] = "#333333"
         timeLabel["justify"] = "center"
-        timeLabel["text"] = "Czas ms"
-        timeLabel.place(x=310,y=340,width=180,height=40)
+        timeLabel["text"] = "Last frame delay"
+        timeLabel.place(x=160,y=340,width=230,height=40)
 
+        """
         temperatureLabel=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=18)
         temperatureLabel["font"] = ft
@@ -84,15 +95,17 @@ class Gui:
         pressureLabel["justify"] = "center"
         pressureLabel["text"] = "Ciśnienie"
         pressureLabel.place(x=20,y=200,width=180,height=40)
+        """
 
         altitudeLabel=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=18)
         altitudeLabel["font"] = ft
         altitudeLabel["fg"] = "#333333"
         altitudeLabel["justify"] = "center"
-        altitudeLabel["text"] = "Wysokość"
+        altitudeLabel["text"] = "Altitude [m]"
         altitudeLabel.place(x=310,y=200,width=180,height=40)
 
+        """
         speedLabel=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=18)
         speedLabel["font"] = ft
@@ -100,13 +113,14 @@ class Gui:
         speedLabel["justify"] = "center"
         speedLabel["text"] = "Prędkość"
         speedLabel.place(x=580,y=200,width=180,height=40)
+        """
 
         cont1Label=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=13)
         cont1Label["font"] = ft
         cont1Label["fg"] = "#333333"
         cont1Label["justify"] = "center"
-        cont1Label["text"] = "Ciągłość 1"
+        cont1Label["text"] = "Cont. 1"
         cont1Label.place(x=560,y=340,width=100,height=40)
 
         cont2Label=tk.Label(self.root)
@@ -114,7 +128,7 @@ class Gui:
         cont2Label["font"] = ft
         cont2Label["fg"] = "#333333"
         cont2Label["justify"] = "center"
-        cont2Label["text"] = "Ciągłość 2"
+        cont2Label["text"] = "Cont. 2"
         cont2Label.place(x=560,y=390,width=100,height=40)
 
         MosLabel=tk.Label(self.root)
@@ -130,8 +144,8 @@ class Gui:
         stateLabel["font"] = ft
         stateLabel["fg"] = "#333333"
         stateLabel["justify"] = "center"
-        stateLabel["text"] = "Stan rakiety"
-        stateLabel.place(x=560,y=490,width=100,height=40)
+        stateLabel["text"] = "Rocket state"
+        stateLabel.place(x=500,y=490,width=180,height=40)
 
         self.test1Button=tk.Button(self.root)
         self.test1Button["bg"] = "#e9e9ed"
@@ -160,8 +174,8 @@ class Gui:
         self.test1Active["font"] = ft
         self.test1Active["fg"] = "#333333"
         self.test1Active["justify"] = "center"
-        self.test1Active["text"] = "Aktywuj Test 1"
-        self.test1Active.place(x=50,y=510,width=150,height=25)
+        self.test1Active["text"] = "Active Test 1"
+        self.test1Active.place(x=40,y=510,width=150,height=25)
         self.test1Active["offvalue"] = "0"
         self.test1Active["onvalue"] = "1"
         self.test1Active["command"] = self.test1Active_command
@@ -171,12 +185,13 @@ class Gui:
         self.test2Active["font"] = ft
         self.test2Active["fg"] = "#333333"
         self.test2Active["justify"] = "center"
-        self.test2Active["text"] = "Aktywuj Test 2"
-        self.test2Active.place(x=50,y=550,width=150,height=25)
+        self.test2Active["text"] = "Active Test 2"
+        self.test2Active.place(x=40,y=550,width=150,height=25)
         self.test2Active["offvalue"] = "0"
         self.test2Active["onvalue"] = "1"
         self.test2Active["command"] = self.test2Active_command
 
+        """
         self.gpsLatVal=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=38)
         self.gpsLatVal["font"] = ft
@@ -200,7 +215,17 @@ class Gui:
         self.gpsAltVal["justify"] = "center"
         self.gpsAltVal["text"] = "AAAAA.A"
         self.gpsAltVal.place(x=530,y=100,width=260,height=80)
+        """
 
+        self.gpsStrVal=tk.Label(self.root)
+        ft = tkFont.Font(family='Arial',size=38)
+        self.gpsStrVal["font"] = ft
+        self.gpsStrVal["fg"] = "#333333"
+        self.gpsStrVal["justify"] = "center"
+        self.gpsStrVal["text"] = "+NN.NNNN,+EEE.EEEE"
+        self.gpsStrVal.place(x=0,y=100,width=780,height=80)
+
+        """
         self.pressureVal=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=38)
         self.pressureVal["font"] = ft
@@ -208,6 +233,7 @@ class Gui:
         self.pressureVal["justify"] = "center"
         self.pressureVal["text"] = "PPPPPP.P"
         self.pressureVal.place(x=0,y=240,width=260,height=80)
+        """
 
         self.altitudeVal=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=38)
@@ -217,6 +243,7 @@ class Gui:
         self.altitudeVal["text"] = "AAAAA.A"
         self.altitudeVal.place(x=280,y=240,width=260,height=80)
 
+        """
         self.speedVal=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=38)
         self.speedVal["font"] = ft
@@ -232,6 +259,7 @@ class Gui:
         self.temperatureVal["justify"] = "center"
         self.temperatureVal["text"] = "+TT.T"
         self.temperatureVal.place(x=0,y=380,width=260,height=80)
+        """
 
         self.timeVal=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=38)
@@ -239,7 +267,7 @@ class Gui:
         self.timeVal["fg"] = "#333333"
         self.timeVal["justify"] = "center"
         self.timeVal["text"] = "TTTTTTTT"
-        self.timeVal.place(x=280,y=380,width=260,height=80)
+        self.timeVal.place(x=140,y=380,width=300,height=80)
 
         self.cont1Val=tk.Checkbutton(self.root)
         ft = tkFont.Font(family='Arial',size=10)
@@ -282,21 +310,22 @@ class Gui:
         self.stateVal["text"] = "Text"
         self.stateVal.place(x=660,y=490,width=130,height=40)
 
-        self.progress = ttk.Progressbar(self.root, length=200)
-        self.progress.place(x=560,y=540)
+        self.progress = ttk.Progressbar(self.root, length=230)
+        self.progress.place(x=530,y=540)
 
         commandsMenuLabel=tk.Label(self.root)
         ft = tkFont.Font(family='Arial',size=13)
         commandsMenuLabel["font"] = ft
         commandsMenuLabel["fg"] = "#333333"
         commandsMenuLabel["justify"] = "center"
-        commandsMenuLabel["text"] = "Polecenia:"
+        commandsMenuLabel["text"] = "Commands:"
         commandsMenuLabel.place(x=340,y=480)
 
         self.commandsMenuVar = tk.StringVar()
         self.commandsMenu = ttk.Combobox(self.root, textvariable=self.commandsMenuVar)
         self.commandsMenu.place(x=300, y=510)
         self.commandsMenu["value"] = self.commands_list
+        self.commandsMenu.current(0)
 
         self.commandSendButton=tk.Button(self.root)
         self.commandSendButton["bg"] = "#e9e9ed"
@@ -304,7 +333,7 @@ class Gui:
         self.commandSendButton["font"] = ft
         self.commandSendButton["fg"] = "#000000"
         self.commandSendButton["justify"] = "center"
-        self.commandSendButton["text"] = "Wyślij"
+        self.commandSendButton["text"] = "Send"
         self.commandSendButton.place(x=350,y=540,width=70,height=30)
         self.commandSendButton["command"] = self.sendButton_command
 
@@ -330,13 +359,13 @@ class Gui:
 
     def showData(self, dataFrame: DataFrame):
 
-        self.gpsLatVal["text"] = dataFrame.gpsLat
-        self.gpsLngVal["text"] = dataFrame.gpsLng
-        self.gpsAltVal["text"] = dataFrame.gpsAlt
-        self.pressureVal["text"] = dataFrame.pressure
+        #self.gpsLatVal["text"] = dataFrame.gpsLat
+        self.gpsStrVal["text"] = f"{dataFrame.gpsLat},{dataFrame.gpsLng}"
+        #self.gpsAltVal["text"] = dataFrame.gpsAlt
+        #self.pressureVal["text"] = dataFrame.pressure
         self.altitudeVal["text"] = dataFrame.altitude
-        self.speedVal["text"] = dataFrame.speed
-        self.temperatureVal["text"] = dataFrame.temper
+        #self.speedVal["text"] = dataFrame.speed
+        #self.temperatureVal["text"] = dataFrame.temper
         self.timeVal["text"] = dataFrame.time
         self.stateVal["text"] = dataFrame.stateString()
 
