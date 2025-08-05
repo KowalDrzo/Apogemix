@@ -101,7 +101,7 @@
 </head>
 <body>
     <div class="tile">
-        <h1>ApogView lite</h1>
+        <h1>ApogApka (WiFi)</h1>
         <form>
             <label for="freqmhz">Frequency MHz:</label>
             <input type="text" id="freqmhz" name="freqmhz">
@@ -114,36 +114,16 @@
 
     <div class="tile_container">
         <div class="tile">
-            <h2>GPS lat</h2>
-            <p class="placeholder" id="gpsLat">+NN.NNNN</p>
+            <h2>GPS String</h2>
+            <p class="placeholder" id="gpsStr">+NN.NNNN, +EEE.EEEE</p>
         </div>
         <div class="tile">
-            <h2>GPS lng</h2>
-            <p class="placeholder" id="gpsLng">+EEE.EEEE</p>
-        </div>
-        <div class="tile">
-            <h2>GPS altitude</h2>
-            <p class="placeholder" id="gpsAlt">AAAAA.A</p>
-        </div>
-        <div class="tile">
-            <h2>Pressure</h2>
-            <p class="placeholder" id="press">PPPPPP.P</p>
-        </div>
-        <div class="tile">
-            <h2>Baro altitude</h2>
+            <h2>Baro altitude [m]</h2>
             <p class="placeholder" id="altitude">AAAAA.A</p>
         </div>
         <div class="tile">
-            <h2>Baro speed</h2>
-            <p class="placeholder" id="speed">SSSS.S</p>
-        </div>
-        <div class="tile">
-            <h2>Temperature</h2>
-            <p class="placeholder" id="temper">+TT.T</p>
-        </div>
-        <div class="tile">
-            <h2>Time [ms]</h2>
-            <p class="placeholder" id="time_ms">TTTTTTTT</p>
+            <h2>Time from last frame [s]</h2>
+            <p class="placeholder" id="time_s">TTTTTTTT</p>
         </div>
         <div class="tile">
             <div id="cont1" class="led">Continuity 1</div>
@@ -156,10 +136,10 @@
         </div>
         <div class="tile">
             <select id="commandList">
+                <option value="RECALIBRATE">RECALIBRATE</option>
                 <option value="MOS_ON">MOS_ON</option>
                 <option value="MOS_OFF">MOS_OFF</option>
                 <option value="MOS_CLK">MOS_CLK</option>
-                <option value="RECALIBRATE">RECALIBRATE</option>
             </select>
             <button class="button" onclick="selectCommand()">Send command</button>
         </div>
@@ -171,17 +151,38 @@
             </div>
         </div>
     </div>
-    <a href="/wifioff">Turn off WiFi.</a>
-    <p>ApogView 1.0.0 2023 by Michal Kowalski</p>
+    <a href="#" onclick="downloadData()" style="width: fit-content;">Download received frames</a>
+    <p>ApogApka 1.1.0 2025 by Michal Kowalski</p>
     <script>
-        const websocket = new WebSocket("ws://192.168.4.1/ws");
+        let websocket = new WebSocket("ws://192.168.4.1/ws");
 
         websocket.addEventListener("message", (event) => {
             const receivedData = event.data;
             parseFrame(receivedData);
         });
 
+        websocket.addEventListener("close", (event) => {
+            console.log("Reconnecting");
+            setTimeout(reconnectWs, 3000);
+        });
+
+        function reconnectWs() {
+            websocket = new WebSocket("ws://192.168.4.1/ws");
+
+            websocket.addEventListener("message", (event) => {
+                const receivedData = event.data;
+                parseFrame(receivedData);
+            });
+
+            websocket.addEventListener("close", (event) => {
+                console.log("Reconnecting");
+                setTimeout(reconnectWs, 3000);
+            });
+        }
+
         let devicesDict = {};
+        let framesToDownload = [];
+        let seconds = 0;
 
         function selectCommand() {
 
@@ -207,8 +208,9 @@
 
         function parseFrame(receivedData) {
 
-            const [name, ...deviceContent] = receivedData.split(';');
-            devicesDict[name] = deviceContent;
+            framesToDownload.push(receivedData);
+            const [frameCallsign, ...deviceContent] = receivedData.split(';');
+            devicesDict[frameCallsign] = deviceContent;
 
             let select = document.querySelector('#deviceList');
 
@@ -228,31 +230,27 @@
                     select.add(option);
                 }
             }
-            deviceChanged();
+            deviceChanged(frameCallsign);
         }
 
-        function deviceChanged() {
+        function deviceChanged(frameCallsign) {
 
             const select = document.querySelector('#deviceList');
             const selectedDevice = select.value;
 
-            if (selectedDevice) {
-                loadDeviceData(selectedDevice);
-            }
+            loadDeviceData(selectedDevice, frameCallsign);
         }
 
-        function loadDeviceData(deviceName) {
+        function loadDeviceData(deviceName, frameCallsign) {
 
             const deviceContent = devicesDict[deviceName];
 
-            document.querySelector("#gpsLat").textContent = deviceContent[0];
-            document.querySelector("#gpsLng").textContent = deviceContent[1];
-            document.querySelector("#gpsAlt").textContent = deviceContent[2];
-            document.querySelector("#press").textContent = deviceContent[5];
+            document.querySelector("#gpsStr").textContent = deviceContent[0] + ", " + deviceContent[1];
             document.querySelector("#altitude").textContent = deviceContent[6];
-            document.querySelector("#speed").textContent = deviceContent[7];
-            document.querySelector("#temper").textContent = deviceContent[4];
-            document.querySelector("#time_ms").textContent = deviceContent[3];
+
+            if (deviceName == frameCallsign) {
+                seconds = 0;
+            }
 
             const continuities = deviceContent[8];
             var cont1 = document.getElementById("cont1");
@@ -289,6 +287,34 @@
                 progressbar_fill.style.width = "100%";
             }
         }
+
+        function downloadData() {
+
+            if (framesToDownload.length === 0) {
+                alert("No data to download");
+                return;
+            }
+
+            const blob = new Blob(framesToDownload, { type: "text/plain" });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "ApogemixData.txt";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            URL.revokeObjectURL(url);
+        }
+
+        function frameTimer() {
+
+            document.querySelector("#time_s").textContent = seconds;
+            seconds += 1;
+        }
+
+        setInterval(frameTimer, 1000);
     </script>
 </body>
 </html>
