@@ -310,11 +310,11 @@
 
         function frameTimer() {
 
-            document.querySelector("#time_s").textContent = seconds;
-            seconds += 1;
+            document.querySelector("#time_s").textContent = parseFloat(seconds).toFixed(1);
+            seconds += 0.1;
         }
 
-        setInterval(frameTimer, 1000);
+        setInterval(frameTimer, 100);
     </script>
 </body>
 </html>
