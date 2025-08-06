@@ -38,10 +38,13 @@ class Loops:
                 print("\n" + callsign)
                 print(dataFrame)
 
+                if callsign == self.current_callsign:
+                    self.gui.reset_frame_delay_timer = True
+
                 if self.txQueue:
                     txFrame = self.current_callsign + ";" + self.txQueue.pop(0) + "\n"
                     ser.write(txFrame.encode('utf-8'))
-                    print("Wysłano: " + txFrame)
+                    print("Sent: " + txFrame)
 
             except(UnicodeDecodeError):
                 decodeErrors += 1
@@ -50,13 +53,15 @@ class Loops:
 
     def guiLoop(self):
 
+        sleeptime = 0.1
+
         while True:
 
             if self.current_callsign in self.last_frames:
                 self.gui.showData(self.last_frames[self.current_callsign])
             else:
                 self.gui.update()
-            
+
             self.gui.updateCallsignMenu(list(self.last_frames.keys()))
             self.current_callsign = self.gui.callsignMenuVar.get()
 
@@ -64,4 +69,5 @@ class Loops:
             if commandStr:
                 self.txQueue.append(commandStr)
 
-            time.sleep(0.1)
+            time.sleep(sleeptime)
+            self.gui.updateFrameDelayTimer(sleeptime)

@@ -40,7 +40,7 @@ class SerialPicker:
 
         self.refreshPorts()
 
-        self.freqLabel = tk.Label(self.root, text="Częstotliwość [MHz]")
+        self.freqLabel = tk.Label(self.root, text="Frequency [MHz]")
         self.freqLabel.pack()
 
         self.frequencyEntryVar = tk.StringVar()
