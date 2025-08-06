@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <EEPROM.h>
-#include <FS.h>
+#include <LittleFS.h>
 #include <Wire.h>
 #include <SPI.h>
 #include <Adafruit_BMP085.h>
