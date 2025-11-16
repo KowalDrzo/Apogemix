@@ -19,7 +19,7 @@ class Website {
     const char* password = "ApogemixPro";
     #else
     String ssid = String("Apogemix_std_") + String(APOGEMIX_ID);
-    const char* password = "ApogemixStd";
+    const char* password = "apogemix";
     #endif
 
     AsyncWebServer server = AsyncWebServer(80);

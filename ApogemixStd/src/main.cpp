@@ -9,10 +9,18 @@ void setup() {
 
     delay(3000);
 
-    Serial1.begin(9600, SERIAL_8N1, GPS_TX_PIN, GPS_RX_PIN);
+    Serial1.begin(GNSS_BAUD, SERIAL_8N1, GPS_TX_PIN, GPS_RX_PIN);
 
     Wire.begin(SDA_PIN, SCL_PIN);
+    #ifdef BMP580
+    tasks.bmp.begin(BMP5XX_ALTERNATIVE_ADDRESS, &Wire);
+    tasks.bmp.setTemperatureOversampling(BMP5XX_OVERSAMPLING_2X);
+    tasks.bmp.setPressureOversampling(BMP5XX_OVERSAMPLING_16X);
+    tasks.bmp.setIIRFilterCoeff(BMP5XX_IIR_FILTER_COEFF_3);
+    tasks.bmp.setOutputDataRate(BMP5XX_ODR_10_HZ);
+    #else
     tasks.bmp.begin(BMP085_HIGHRES, &Wire);
+    #endif
 
     pinMode(SEPAR1_PIN, OUTPUT);
     pinMode(SEPAR2_PIN, OUTPUT);
