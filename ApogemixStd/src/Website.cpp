@@ -5,6 +5,9 @@
 
 void Website::start() {
 
+    WiFi.mode(WIFI_AP);
+    WiFi.setTxPower(WIFI_POWER_8_5dBm);
+
     WiFi.softAP(ssid.c_str(), password);
     MDNS.begin("apogemix");
 
