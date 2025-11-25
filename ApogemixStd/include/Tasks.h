@@ -39,7 +39,7 @@ public:
     void buzzBeep(uint16_t activeTime, uint16_t sleepTime, uint8_t n);
 
     void measure();
-    void buzz();
+    void buzz(uint8_t fastBuzzNumber);
 
     bool isLaunchDetected();
     bool isApogeeDetected();

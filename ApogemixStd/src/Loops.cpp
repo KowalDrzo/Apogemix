@@ -191,24 +191,22 @@ void StateLoops::gpsLoop() {
 void StateLoops::loraLoop() {
 
     Timer loraTimer;
-    //SPIClass hspi(HSPI);
     String loraString;
 
     bool gpsFound = false;
+    bool loraActive = false;
 
-    tasks.buzz();
+    SPI.begin(SCK_PIN, MISO_PIN, MOSI_PIN, LORA_CS_PIN);
+    LoRa.setPins(LORA_CS_PIN, LORA_RES_PIN, LORA_D0_PIN);
+    LoRa.setSignalBandwidth(125E3);
+    loraActive = LoRa.begin(glob.memory.loraFreqMHz * 1E6);
+    LoRa.setTimeout(100);
+
+    tasks.buzz(loraActive ? 3 : 2);
 
     loraTimer.start(glob.memory.loraDelay_ms);
 
-    //hspi.begin(SCK_PIN, MISO_PIN, MOSI_PIN, LORA_CS_PIN);
-    SPI.begin(SCK_PIN, MISO_PIN, MOSI_PIN, LORA_CS_PIN);
-    //LoRa.setSPI(hspi);
-    LoRa.setPins(LORA_CS_PIN, LORA_RES_PIN, LORA_D0_PIN);
-    LoRa.setSignalBandwidth(125E3);
-    LoRa.begin(glob.memory.loraFreqMHz * 1E6);
-    LoRa.setTimeout(100);
-
-    while (1) {
+    while (loraActive) {
 
         // Tx:
         if (loraTimer.check()) {
@@ -222,7 +220,7 @@ void StateLoops::loraLoop() {
             if (glob.dataFrame.gpsLat != 0 && !gpsFound) {
 
                 gpsFound = true;
-                tasks.buzzBeep(30, 150, 3);
+                tasks.buzzBeep(30, 150, 4);
             }
         }
 
@@ -253,6 +251,7 @@ void StateLoops::loraLoop() {
         }
         vTaskDelay(1 / portTICK_PERIOD_MS);
     }
+    vTaskDelete(NULL);
 }
 
 /*********************************************************************/
