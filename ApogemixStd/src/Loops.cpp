@@ -237,16 +237,12 @@ void StateLoops::loraLoop() {
 
             while (1) {
 
-                digitalWrite(BUZZER_PIN, 0);
                 vTaskDelay(9000 / portTICK_PERIOD_MS);
 
                 loraString = String(glob.memory.callsign) + String(";") + glob.dataFrame.toString();
                 LoRa.beginPacket();
                 LoRa.println(loraString);
                 LoRa.endPacket();
-
-                digitalWrite(BUZZER_PIN, 1);
-                vTaskDelay(1000 / portTICK_PERIOD_MS);
             }
         }
         vTaskDelay(1 / portTICK_PERIOD_MS);

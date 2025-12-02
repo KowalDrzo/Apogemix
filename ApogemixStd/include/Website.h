@@ -18,7 +18,7 @@ class Website {
     String ssid = String("Apogemix_pro_") + String(APOGEMIX_ID);
     const char* password = "ApogemixPro";
     #else
-    String ssid = String("Apogemix_std_") + String(APOGEMIX_ID);
+    String ssid = String("Apogemix_") + String(APOGEMIX_ID);
     const char* password = "apogemix";
     #endif
 

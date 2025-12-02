@@ -74,5 +74,8 @@ void setup() {
 
 void loop() {
 
-    vTaskDelay(1 / portTICK_PERIOD_MS);
+    digitalWrite(BUZZER_PIN, 0);
+    vTaskDelay(9000 / portTICK_PERIOD_MS);
+    digitalWrite(BUZZER_PIN, 1);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
 }
