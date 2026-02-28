@@ -6,6 +6,7 @@
 void Website::start() {
 
     WiFi.softAP(ssid.c_str(), password);
+    WiFi.setOutputPower(8.0);
 
     Serial.println("server on");
     enabled = true;
@@ -77,7 +78,7 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
 
         for (uint8_t i = 0; i < paramNb; i++) {
 
-            AsyncWebParameter* p = request->getParam(i);
+            const AsyncWebParameter* p = request->getParam(i);
 
             // Recovery params:
             if (p->name() == "setSecAlt") {
