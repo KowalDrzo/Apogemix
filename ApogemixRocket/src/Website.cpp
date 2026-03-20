@@ -64,8 +64,6 @@ void Website::start() {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         digitalWrite(BUZZER_PIN, 0);
         digitalWrite(SEPAR1_PIN, 1);
-        vTaskDelay(FIRE_TIME / portTICK_PERIOD_MS);
-        digitalWrite(SEPAR1_PIN, 0);
         request->send(200, "text/html", "OK");
     });
 
@@ -77,6 +75,7 @@ void Website::start() {
         digitalWrite(SEPAR2_PIN, 1);
         vTaskDelay(FIRE_TIME / portTICK_PERIOD_MS);
         digitalWrite(SEPAR2_PIN, 0);
+        digitalWrite(SEPAR1_PIN, 0);
         request->send(200, "text/html", "OK");
     });
 

@@ -1,7 +1,7 @@
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
 
-#define APOGEMIX_ID 0
+#define APOGEMIX_ID 53
 #define GNSS_BAUD 115200
 
 #define FLIGHTS_IN_MEM 30

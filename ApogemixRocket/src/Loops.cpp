@@ -52,31 +52,14 @@ void StateLoops::railLoop() {
         if (pressMeasureTimer.check()) {
 
             dataLoop(0);
-            if (tasks.isLaunchDetected()) {
-
-                if (website.isEnabled()) website.stop();
-                break;
-            }
-
             // WiFi itp:
-            if (!digitalRead(SWITCH_PIN) && !website.isEnabled()
+            if (!website.isEnabled()
             ) {
 
                 website.start();
-                wifiTimer.start(WIFI_TIME_MS);
-            }
-            if (website.isEnabled() && wifiTimer.check()) {
-
-                website.stop();
             }
         }
         vTaskDelay(1 / portTICK_PERIOD_MS);
-
-        // DEBUG:
-        if (Serial.available()) {
-            rxDebugString = Serial.readString();
-            if (strstr(rxDebugString.c_str(), "FORCE NEXT STATE")) break;
-        }
     }
 }
 
@@ -262,8 +245,6 @@ void StateLoops::loraRxCallback(String rxFrame) {
             vTaskDelay(1000 / portTICK_PERIOD_MS);
             digitalWrite(BUZZER_PIN, 0);
             digitalWrite(SEPAR1_PIN, 1);
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
-            digitalWrite(SEPAR1_PIN, 0);
         }
 
         else if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState <= FIRST_SEPAR) {
@@ -274,31 +255,12 @@ void StateLoops::loraRxCallback(String rxFrame) {
             digitalWrite(SEPAR2_PIN, 1);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
             digitalWrite(SEPAR2_PIN, 0);
-        }
-
-        else if (strstr(rxFrame.c_str(), "MOS_ON")) {
-
-            digitalWrite(MOS_GP_PIN, 1);
-            glob.dataFrame.mosState = 1;
-        }
-
-        else if (strstr(rxFrame.c_str(), "MOS_OFF")) {
-
-            digitalWrite(MOS_GP_PIN, 0);
-            glob.dataFrame.mosState = 0;
-        }
-
-        else if (strstr(rxFrame.c_str(), "MOS_CLK")) {
-
-            digitalWrite(MOS_GP_PIN, 1);
-            vTaskDelay(2000 / portTICK_PERIOD_MS);
-            digitalWrite(MOS_GP_PIN, 0);
-            glob.dataFrame.mosState = 0;
+            digitalWrite(SEPAR1_PIN, 0);
         }
 
         else if (strstr(rxFrame.c_str(), "RECALIBRATE") && (glob.dataFrame.rocketState < FLIGHT)) {
 
-            tasks.recalibrate();
+            digitalWrite(SEPAR1_PIN, 0);
         }
     }
 }

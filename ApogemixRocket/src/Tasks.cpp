@@ -6,8 +6,9 @@ Tasks tasks;
 
 void Tasks::continuityTest() {
 
-    glob.dataFrame.continuity1 = !digitalRead(CONT1_PIN);
-    glob.dataFrame.continuity2 = !digitalRead(CONT2_PIN);
+    glob.dataFrame.continuity1 = digitalRead(CONT1_PIN);
+    glob.dataFrame.continuity2 = digitalRead(CONT2_PIN);
+    glob.dataFrame.mosState = digitalRead(CONT3_PIN);
 }
 
 /*********************************************************************/
