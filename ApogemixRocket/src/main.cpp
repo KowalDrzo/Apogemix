@@ -7,6 +7,8 @@ void setup() {
     Serial.begin(115200);
     Serial.setTimeout(10);
 
+    pinMode(15, OUTPUT);
+    digitalWrite(15, 1);
     delay(3000);
 
     Serial1.begin(GNSS_BAUD, SERIAL_8N1, GPS_TX_PIN, GPS_RX_PIN);
@@ -54,12 +56,12 @@ void setup() {
     Serial.println("RAIL STATE");
     loops.railLoop();
 
-    glob.dataFrame.rocketState = FLIGHT;
+    /*glob.dataFrame.rocketState = FLIGHT;
     Serial.println("FLIGHT STATE");
     loops.flightLoop();
 
     glob.dataFrame.rocketState = FIRST_SEPAR;
-    tasks.updateDataBase();
+    tasks.updateDataBase();*/
     Serial.println("FIRST SEPAR STATE");
     loops.sep1Loop();
 

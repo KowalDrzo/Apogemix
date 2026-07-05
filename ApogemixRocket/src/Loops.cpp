@@ -52,7 +52,7 @@ void StateLoops::railLoop() {
         if (pressMeasureTimer.check()) {
 
             dataLoop(0);
-            if (tasks.isLaunchDetected()) {
+            if (/*tasks.isLaunchDetected()*/ glob.dataFrame.rocketState == FIRST_SEPAR) {
 
                 if (website.isEnabled()) website.stop();
                 break;
@@ -264,6 +264,8 @@ void StateLoops::loraRxCallback(String rxFrame) {
             digitalWrite(SEPAR1_PIN, 1);
             vTaskDelay(2000 / portTICK_PERIOD_MS);
             digitalWrite(SEPAR1_PIN, 0);
+
+            glob.dataFrame.rocketState = FIRST_SEPAR;
         }
 
         else if (strstr(rxFrame.c_str(), "TEST2") && glob.dataFrame.rocketState <= FIRST_SEPAR) {

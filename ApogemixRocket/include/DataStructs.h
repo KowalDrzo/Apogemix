@@ -2,7 +2,7 @@
 #define DATA_STRUCTS_H
 
 #define APOGEMIX_ID 0
-#define GNSS_BAUD 115200
+#define GNSS_BAUD 9600
 
 #define FLIGHTS_IN_MEM 30
 #define FRAMES_IN_Q 30
