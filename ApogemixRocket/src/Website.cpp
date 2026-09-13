@@ -5,6 +5,9 @@
 
 void Website::start() {
 
+    WiFi.mode(WIFI_AP);
+    WiFi.setTxPower(WIFI_POWER_8_5dBm);
+
     WiFi.softAP(ssid.c_str(), password);
     MDNS.begin("apogemix");
 
@@ -61,7 +64,7 @@ void Website::start() {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         digitalWrite(BUZZER_PIN, 0);
         digitalWrite(SEPAR1_PIN, 1);
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        vTaskDelay(FIRE_TIME / portTICK_PERIOD_MS);
         digitalWrite(SEPAR1_PIN, 0);
         request->send(200, "text/html", "OK");
     });
@@ -72,7 +75,7 @@ void Website::start() {
         vTaskDelay(1000 / portTICK_PERIOD_MS);
         digitalWrite(BUZZER_PIN, 0);
         digitalWrite(SEPAR2_PIN, 1);
-        vTaskDelay(2000 / portTICK_PERIOD_MS);
+        vTaskDelay(FIRE_TIME / portTICK_PERIOD_MS);
         digitalWrite(SEPAR2_PIN, 0);
         request->send(200, "text/html", "OK");
     });

@@ -16,7 +16,6 @@ void StateLoops::dataLoop(bool enableFlashWrite) {
 
 void StateLoops::ignitionLoop(bool apogee) {
 
-    tasks.servosSet(apogee);
     if (apogee) digitalWrite(SEPAR1_PIN, 1);
     else digitalWrite(SEPAR2_PIN, 1);
 
@@ -47,7 +46,6 @@ void StateLoops::railLoop() {
 
     pressMeasureTimer.start(RAIL_FLIGHT_LOOP_TIME);
     Website website;
-    tasks.servosInit();
 
     while (1) {
 
@@ -61,7 +59,8 @@ void StateLoops::railLoop() {
             }
 
             // WiFi itp:
-            if (!digitalRead(SWITCH_PIN) && !website.isEnabled()) {
+            if (!digitalRead(SWITCH_PIN) && !website.isEnabled()
+            ) {
 
                 website.start();
                 wifiTimer.start(WIFI_TIME_MS);
@@ -95,6 +94,10 @@ void StateLoops::flightLoop() {
         if (pressMeasureTimer.check()) {
 
             dataLoop(1);
+            if (glob.dataFrame.speed > 30) {
+                glob.isSep1BeforeApog = true;
+            }
+
             if (tasks.isApogeeDetected()) {
 
                 ignitionLoop(1);
@@ -188,23 +191,22 @@ void StateLoops::gpsLoop() {
 void StateLoops::loraLoop() {
 
     Timer loraTimer;
-    SPIClass hspi(HSPI);
     String loraString;
 
     bool gpsFound = false;
+    bool loraActive = false;
 
-    tasks.buzz();
+    SPI.begin(SCK_PIN, MISO_PIN, MOSI_PIN, LORA_CS_PIN);
+    LoRa.setPins(LORA_CS_PIN, LORA_RES_PIN, LORA_D0_PIN);
+    LoRa.setSignalBandwidth(125E3);
+    loraActive = LoRa.begin(glob.memory.loraFreqMHz * 1E6);
+    LoRa.setTimeout(100);
+
+    tasks.buzz(loraActive ? 3 : 2);
 
     loraTimer.start(glob.memory.loraDelay_ms);
 
-    hspi.begin(SCK_PIN, MISO_PIN, MOSI_PIN, LORA_CS_PIN);
-    LoRa.setSPI(hspi);
-    LoRa.setPins(LORA_CS_PIN, LORA_RES_PIN, LORA_D0_PIN);
-    LoRa.setSignalBandwidth(125E3);
-    LoRa.begin(glob.memory.loraFreqMHz * 1E6);
-    LoRa.setTimeout(100);
-
-    while (1) {
+    while (loraActive) {
 
         // Tx:
         if (loraTimer.check()) {
@@ -218,7 +220,7 @@ void StateLoops::loraLoop() {
             if (glob.dataFrame.gpsLat != 0 && !gpsFound) {
 
                 gpsFound = true;
-                tasks.buzzBeep(30, 150, 3);
+                tasks.buzzBeep(30, 150, 4);
             }
         }
 
@@ -235,20 +237,17 @@ void StateLoops::loraLoop() {
 
             while (1) {
 
-                digitalWrite(BUZZER_PIN, 0);
                 vTaskDelay(9000 / portTICK_PERIOD_MS);
 
                 loraString = String(glob.memory.callsign) + String(";") + glob.dataFrame.toString();
                 LoRa.beginPacket();
                 LoRa.println(loraString);
                 LoRa.endPacket();
-
-                digitalWrite(BUZZER_PIN, 1);
-                vTaskDelay(1000 / portTICK_PERIOD_MS);
             }
         }
         vTaskDelay(1 / portTICK_PERIOD_MS);
     }
+    vTaskDelete(NULL);
 }
 
 /*********************************************************************/

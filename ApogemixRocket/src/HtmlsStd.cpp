@@ -8,7 +8,7 @@ String Website::generateHtml() {
         <!DOCTYPE html>
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Apogemix Standard configuration page</title>
+            <title>Apogemix configuration page</title>
             <style>
                 body {
                     font-family: Arial, sans-serif;
@@ -65,7 +65,7 @@ String Website::generateHtml() {
         </head>
         <body>
             <div class="container">
-                <h3>Apogemix Standard</h3>
+                <h3>Apogemix</h3>
                 <hr>
                 <div class="block">
                     <p class="gray-text">Current settings:</p>
@@ -138,7 +138,7 @@ String Website::generateSettingsPage(uint8_t settingsType) {
         <!DOCTYPE html>
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Apogemix Standard configuration page</title>
+            <title>Apogemix configuration page</title>
             <style>
                 body {
                     font-family: Arial, sans-serif;
@@ -283,7 +283,7 @@ String Website::generateRecoveryTest() {
         <!DOCTYPE html>
         <head>
             <meta name="viewport" content="width=device-width, initial-scale=1">
-            <title>Apogemix Standard configuration page</title>
+            <title>Apogemix configuration page</title>
             <style>
                 body {
                     font-family: Arial, sans-serif;

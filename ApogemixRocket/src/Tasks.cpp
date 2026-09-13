@@ -74,12 +74,12 @@ void Tasks::buzzBeep(uint16_t activeTime, uint16_t sleepTime, uint8_t n) {
 
 /*********************************************************************/
 
-void Tasks::buzz() {
+void Tasks::buzz(uint8_t fastBuzzNumber = 1) {
 
     continuityTest();
 
-    buzzBeep(30, 150, 2);
-    vTaskDelay(2000 / portTICK_PERIOD_MS);
+    buzzBeep(30, 150, fastBuzzNumber);
+    vTaskDelay(1000 / portTICK_PERIOD_MS);
 
     if (glob.dataFrame.continuity1 && glob.dataFrame.continuity2)   buzzBeep(500, 500, 3);
     else if (glob.dataFrame.continuity1)                            buzzBeep(500, 500, 1);
