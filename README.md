@@ -42,7 +42,9 @@ The core flight functionality works using **only the pressure sensor**. GPS and 
 - motor ignition mode (remote ignitor instead of rocketry computer),
 - magic number in EEPROM memory (to apply default setting after first device startup),
 - option in setting to run WiFi automatically or after button (both Rocket and Rx),
-- mah delay for supersonic flights.
+- mah delay for supersonic flights,
+- unique number not based on the hardcoded ID,
+- beeping during ascent.
 
 ## Repo content
 
@@ -104,11 +106,39 @@ Configured in the code (for advanced users only):
 
 To configure using WiFi (for each user):
 
-TODO
+- save data to CSV file or binary file -> CSV is easier to use and does not need decoding. It consumes more space in the flash memory, but the flash size is enough to use CSV even for really long rocket flights,
+- pyro channel 2 mode - dual deploy (fire at specified altitude during descent) or staging separation (fire at specified time after launch to activate the next stage in the rocket),
+- time in milliseconds to fire pyro channel 2 after launch (for multi stage rockets) - works only in staging separation mode,
+- altitude in meters to fire pyro channel 2 during descent (for advanced parachute systems) - works only in dual deploy mode.
+- set LoRa radio frequency in MHz,
+- set LoRa frame transmition period in ms,
+- set Callsign - must be unique, max 10 ASCII characters.
+
+### Buzzer
+
+- 2 short beeps after startup - Apogemix active without LoRa,
+- 3 short beeps after startup - Apogemix active with LoRa,
+- 4 short beeps after startup - localization found (GPS fix),
+- 1 long beep after startup - pyro channel 1 has continuity,
+- 2 long beeps after startup - pyro channel 2 has continuity,
+- 3 long beeps after startup - pyro channels 1 and 2 have continuity,
+
+After landing Apogemix beeps for 1 second each 10 seconds. It is made this way to find the rocket after landing easier.
 
 ### Testing
 
-TODO
+There are things that can be tested in Apogemix listed below:
+
+1. Test beeping count after startup:
+   - 2 beeps for Apogemix Mini,
+   - 3 beeps for Apogemix JP30 with LoRa,
+   - 4 beeps after some time outside (GPS).
+2. Test WiFi after pressing button, connect with the WiFi network, go to the Apogemix website [http://apogemix.local](http://apogemix.local),
+3. Connect e-match igniters and check the long beeps for the continuity (3 long beeps for both channels),
+4. Test LoRa connection between Apogemix in rocket and Apogemix ground station, check the pressure sensor stability (altitude),
+5. Make recovery test using WiFi or using LoRa.
+
+**please note.** Apogemix uses pressure sensor to detect launch, apogee and landing. Presure sensor placed outside, without any cover, cath the wind. Due to this fact, they can be falsed and detect launch that did not happened. Always when you test Apogemix outside use a proper cover or place the Apogemix inside the rocket's body tube.
 
 ## Author contact
 
