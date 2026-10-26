@@ -7,7 +7,12 @@ void setup() {
     Serial.begin(115200);
     Serial.setTimeout(10);
 
-    delay(3000);
+    const uint32_t serialWaitStart = millis();
+    while (!Serial && millis() - serialWaitStart < 3000) {
+        delay(10);
+    }
+    const bool serialConnected = Serial;
+
     Serial.print("Apogemix firmware version: ");
     Serial.println(FIRMWARE_VERSION);
 
@@ -37,7 +42,7 @@ void setup() {
     EEPROM.get(0, glob.memory);
     tasks.prepareMem();
 
-    tasks.readFlash();
+    if (serialConnected) tasks.readFlash();
     tasks.recalibrate();
     Serial.println(glob.initialTemper);
 

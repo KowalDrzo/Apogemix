@@ -121,13 +121,7 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
             AsyncWebParameter* p = request->getParam(i);
 
             // Recovery params:
-            if (p->name() == "dataSave") {
-
-                if      (p->value() == "1") glob.memory.isCsvFile = 1;
-                else if (p->value() == "0") glob.memory.isCsvFile = 0;
-            }
-
-            else if (p->name() == "sep2Mode") {
+            if (p->name() == "sep2Mode") {
 
                 if      (p->value() == "1") glob.memory.isSep2Staging = 1;
                 else if (p->value() == "0") glob.memory.isSep2Staging = 0;

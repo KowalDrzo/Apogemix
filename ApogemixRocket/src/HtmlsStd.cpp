@@ -76,7 +76,6 @@ String Website::generateHtml() {
                     <p class="gray-text">Current settings:</p>
         )rawliteral";
 
-    html += "Flightdata file type: <strong>" + (glob.memory.isCsvFile ? String("csv") : String("binary")) + String("</strong><br>\n");
     html += "Pyro channel 2 mode: <strong>" + (glob.memory.isSep2Staging ? String("Staging") : String("Double deploy")) + String("</strong><br>\n");
 
     if (glob.memory.isSep2Staging) {
@@ -210,18 +209,6 @@ String Website::generateSettingsPage(uint8_t settingsType) {
     case RECOVERY_SETTINGS:
 
         html += "recovery</h3>\n\t\t<form>\n";
-
-        // Binary or CSV file save:
-        html += "<p>Save data binary (less size but, needs to be converted in ApogApka, required if the time in air could be longer than 15 min.)\
-            or csv (more size, but conversion not needed, good for flights <15 min.)</p>\n";
-        if (glob.memory.isCsvFile) {
-            html += "<input type='radio' name='dataSave' id='bin' value='0'><label for='0'>binary,</label><br>\n";
-            html += "<input type='radio' name='dataSave' id='csv' value='1' checked><label for='1'>csv.</label><br>\n";
-        }
-        else {
-            html += "<input type='radio' name='dataSave' id='bin' value='0' checked><label for='0'>binary,</label><br>\n";
-            html += "<input type='radio' name='dataSave' id='csv' value='1'><label for='1'>csv.</label><br>\n";
-        }
 
         // Separation 2 pin modes:
         html += "<p>Set the separation 2 pin mode (dual deploy at descent or second stage ignite at ascent):</p>\n";

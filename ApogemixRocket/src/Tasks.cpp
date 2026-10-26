@@ -189,13 +189,8 @@ void Tasks::flashTask() {
                 DataFrame tempData;
                 xQueueReceive(glob.dataFramesFifo, &tempData, portMAX_DELAY);
 
-                if (glob.memory.isCsvFile) {
-                    char tempDataAscii[120];
-                    strcpy(tempDataAscii, tempData.toString().c_str());
-                    strcat(tempDataAscii, "\n");
-                    file.write((uint8_t*) tempDataAscii, strlen(tempDataAscii));
-                }
-                else file.write((uint8_t*) &tempData, sizeof(tempData));
+                String tempDataCsv = tempData.toString() + "\n";
+                file.write((const uint8_t*) tempDataCsv.c_str(), tempDataCsv.length());
             }
 
             file.close();
@@ -209,19 +204,18 @@ void Tasks::flashTask() {
 
 void Tasks::readFlash() {
 
-    LittleFS.begin(true);
+    if (!LittleFS.begin(true)) {
+        Serial.println("LittleFS mount failed; cannot read flight data");
+        return;
+    }
 
     File file = LittleFS.open("/FlightData.apg", "r");
+    if (!file) {
+        Serial.println("No flight data file found");
+        return;
+    }
 
-    if (glob.memory.isCsvFile) {
-        while (file.available()) Serial.print(file.readString());
-    }
-    else {
-        DataFrame dane;
-        while (file.readBytes((char*) &dane, sizeof(dane))) {
-            Serial.println(dane.toString());
-        }
-    }
+    while (file.available()) Serial.print(file.readString());
 
     file.close();
 }
