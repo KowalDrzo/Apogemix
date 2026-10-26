@@ -51,7 +51,7 @@ public:
     void updateDataBase();
     void recalibrate();
 
-    void clearMem();
+    void prepareMem();
 };
 
 extern Tasks tasks;

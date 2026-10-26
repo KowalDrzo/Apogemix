@@ -93,7 +93,9 @@ void StateLoops::flightLoop() {
 
         if (pressMeasureTimer.check()) {
 
+            digitalWrite(BUZZER_PIN, 1);
             dataLoop(1);
+            digitalWrite(BUZZER_PIN, 0);
             if (glob.dataFrame.speed > 30) {
                 glob.isSep1BeforeApog = true;
             }

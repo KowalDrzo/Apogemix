@@ -29,6 +29,7 @@ struct Flight {
 
 struct Memory {
 
+    uint16_t initializationMagic;
     uint8_t lastFlightIndex;
     uint16_t lastFlightNum;
     Flight flight[FLIGHTS_IN_MEM];

@@ -35,9 +35,7 @@ void setup() {
     // CONFIG:
     EEPROM.begin(sizeof(glob.memory));
     EEPROM.get(0, glob.memory);
-
-    // Only for first programming:
-    //tasks.clearMem();
+    tasks.prepareMem();
 
     tasks.readFlash();
     tasks.recalibrate();

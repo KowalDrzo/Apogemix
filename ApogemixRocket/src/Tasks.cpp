@@ -230,10 +230,23 @@ void Tasks::readFlash() {
 
 /*********************************************************************/
 
-void Tasks::clearMem() {
+void Tasks::prepareMem() {
 
-    LittleFS.begin(true);
+    constexpr uint16_t INITIALIZATION_MAGIC = 0x2137;
+    if (glob.memory.initializationMagic == INITIALIZATION_MAGIC) return;
+
+    if (!LittleFS.begin(true)) {
+        Serial.println("LittleFS mount failed; memory was not marked as cleared");
+        digitalWrite(BUZZER_PIN, 1);
+        return;
+    }
     File file = LittleFS.open("/FlightData.apg", "w");
+    if (!file) {
+        Serial.println("Could not clear /FlightData.apg; memory was not marked as cleared");
+        digitalWrite(BUZZER_PIN, 1);
+        return;
+    }
+    file.close();
 
     memset(&glob.memory, 0, sizeof(glob.memory));
 
@@ -241,15 +254,13 @@ void Tasks::clearMem() {
     glob.memory.loraDelay_ms = 2000;
     glob.memory.loraFreqMHz = 433;
     strcpy(glob.memory.callsign, "APOGEMIX");
+    glob.memory.initializationMagic = INITIALIZATION_MAGIC;
 
     EEPROM.put(0, glob.memory);
     EEPROM.commit();
 
     buzzBeep(30, 30, 10);
-    while(1) {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-        Serial.println("Cleared");
-    }
+    ESP.restart();
 }
 
 /*********************************************************************/
@@ -274,6 +285,6 @@ void Tasks::updateDataBase() {
 
 void Tasks::recalibrate() {
 
-    glob.initialPressure = bmp.readPressure();
+    glob.initialPressure = getPressureMedian();
     glob.initialTemper = bmp.readTemperature() * TEMPERATURE_FIX_A + TEMPERATURE_FIX_B;
 }
