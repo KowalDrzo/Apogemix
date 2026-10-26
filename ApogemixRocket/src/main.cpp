@@ -8,6 +8,8 @@ void setup() {
     Serial.setTimeout(10);
 
     delay(3000);
+    Serial.print("Apogemix firmware version: ");
+    Serial.println(FIRMWARE_VERSION);
 
     Serial1.begin(GNSS_BAUD, SERIAL_8N1, GPS_TX_PIN, GPS_RX_PIN);
 

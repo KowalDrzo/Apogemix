@@ -66,6 +66,11 @@ String Website::generateHtml() {
         <body>
             <div class="container">
                 <h3>Apogemix</h3>
+                <p class="gray-text">Firmware version: <strong>)rawliteral";
+
+    html += FIRMWARE_VERSION;
+
+    html += R"rawliteral(</strong></p>
                 <hr>
                 <div class="block">
                     <p class="gray-text">Current settings:</p>
