@@ -1,23 +1,15 @@
 #include "Functions.h"
 
-void clearMem() {
+void prepareMem() {
 
-    glob.frequencyMHz = 433;
+    constexpr uint16_t INITIALIZATION_MAGIC = 0x2137;
+    if (glob.memory.initializationMagic == INITIALIZATION_MAGIC) return;
 
-    EEPROM.put(0, glob.frequencyMHz);
+    glob.memory.frequencyMHz = 433;
+    glob.memory.initializationMagic = INITIALIZATION_MAGIC;
+
+    EEPROM.put(0, glob.memory);
     EEPROM.commit();
-
-    for (uint8_t i = 0; i < 10; i++) {
-
-        digitalWrite(LED_PIN, 1);
-        vTaskDelay(30 / portTICK_PERIOD_MS);
-        digitalWrite(LED_PIN, 0);
-        vTaskDelay(30 / portTICK_PERIOD_MS);
-    }
-
-    while(1) {
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
 }
 
 /*********************************************************************/
@@ -29,7 +21,7 @@ void checkForNewFrequency(String command) {
         uint16_t newFreq;
         sscanf(command.c_str(), "_FREQ;%d", &newFreq);
 
-        glob.frequencyMHz = newFreq;
+        glob.memory.frequencyMHz = newFreq;
         saveAndSetNewFrequency();
     }
 }
@@ -38,10 +30,10 @@ void checkForNewFrequency(String command) {
 
 void saveAndSetNewFrequency() {
 
-    EEPROM.put(0, glob.frequencyMHz);
+    EEPROM.put(0, glob.memory);
     EEPROM.commit();
 
-    glob.loraModule.setFrequency(glob.frequencyMHz);
+    glob.loraModule.setFrequency(glob.memory.frequencyMHz);
 
     digitalWrite(LED_PIN, 1);
     vTaskDelay(30 / portTICK_PERIOD_MS);

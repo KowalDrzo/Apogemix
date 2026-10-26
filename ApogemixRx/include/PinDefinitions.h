@@ -11,6 +11,4 @@
 #define LED_PIN 8
 #define BUTTON_PIN 9
 
-#define APOGEMIX_ID 10
-
 #endif

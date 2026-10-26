@@ -3,7 +3,7 @@
 
 #include <Globals.h>
 
-void clearMem();
+void prepareMem();
 
 void checkForNewFrequency(String command);
 

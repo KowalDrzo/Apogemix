@@ -14,13 +14,8 @@ class Website {
         SERVOS_SETTINGS
     };
 
-    #ifdef PRO
-    String ssid = String("Apogemix_pro_") + String(APOGEMIX_ID);
-    const char* password = "ApogemixPro";
-    #else
-    String ssid = String("Apogemix_") + String(APOGEMIX_ID);
+    String ssid;
     const char* password = "apogemix";
-    #endif
 
     AsyncWebServer server = AsyncWebServer(80);
     bool enabled = false;

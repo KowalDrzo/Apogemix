@@ -1,6 +1,37 @@
 #include "Website.h"
 
+namespace {
+
+String makeApogemixSsid() {
+    static const char* months[] = {
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+    char monthName[4] = {};
+    int day = 0;
+    int year = 0;
+    sscanf(__DATE__, "%3s %d %d", monthName, &day, &year);
+
+    uint8_t month = 0;
+    for (uint8_t i = 0; i < 12; ++i) {
+        if (strcmp(monthName, months[i]) == 0) {
+            month = i + 1;
+            break;
+        }
+    }
+
+    const uint32_t macSuffix = static_cast<uint32_t>(ESP.getEfuseMac() & 0xFFFFFF);
+    char suffix[16];
+    snprintf(suffix, sizeof(suffix), "%06lX_%02d%02d%02d",
+             static_cast<unsigned long>(macSuffix), year % 100, month, day);
+    return String("APOGEMIX_RX_") + suffix;
+}
+
+}
+
 void Website::start() {
+
+    ssid = makeApogemixSsid();
 
     WiFi.mode(WIFI_AP);
     WiFi.setTxPower(WIFI_POWER_13dBm);
@@ -63,7 +94,7 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
             if (p->name() == "freqmhz") {
 
                 uint16_t val = p->value().toInt();
-                if (val >= 100 && val <= 500) glob.frequencyMHz = val;
+                if (val >= 100 && val <= 500) glob.memory.frequencyMHz = val;
                 saveAndSetNewFrequency();
             }
         }

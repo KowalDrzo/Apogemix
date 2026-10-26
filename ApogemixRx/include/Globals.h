@@ -6,9 +6,14 @@
 #include <WiFi.h>
 #include <set>
 
+struct Memory {
+    uint16_t frequencyMHz;
+    uint16_t initializationMagic;
+};
+
 struct GlobalAggregator {
 
-    uint16_t frequencyMHz;
+    Memory memory;
     String rxString;
     String txString;
     LoraModule loraModule;

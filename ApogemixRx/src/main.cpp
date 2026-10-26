@@ -11,13 +11,11 @@ void setup() {
     pinMode(BUTTON_PIN, INPUT_PULLUP);
 
     // CONFIG:
-    EEPROM.begin(sizeof(glob.frequencyMHz));
-    EEPROM.get(0, glob.frequencyMHz);
+    EEPROM.begin(sizeof(glob.memory));
+    EEPROM.get(0, glob.memory);
+    prepareMem();
 
-    // Only for first programming:
-    //clearMem();
-
-    glob.loraModule.init(glob.frequencyMHz);
+    glob.loraModule.init(glob.memory.frequencyMHz);
 }
 
 void loop() {
