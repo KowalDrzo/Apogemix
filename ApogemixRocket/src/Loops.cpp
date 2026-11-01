@@ -21,8 +21,8 @@ void StateLoops::ignitionLoop(bool apogee) {
 
     waitAndLogData(FIRE_TIME);
 
-    digitalWrite(SEPAR1_PIN, 0);
-    digitalWrite(SEPAR2_PIN, 0);
+    if (apogee) digitalWrite(SEPAR1_PIN, 0);
+    else digitalWrite(SEPAR2_PIN, 0);
 }
 
 /*********************************************************************/
@@ -105,6 +105,7 @@ void StateLoops::flightLoop() {
 
     pressMeasureTimer.start(RAIL_FLIGHT_LOOP_TIME);
     stagingTimer.start(glob.memory.stagingDelay - STAGING_TIME_OFFSET_MS);
+    bool stagingIgnited = false;
 
     while(1) {
 
@@ -126,10 +127,10 @@ void StateLoops::flightLoop() {
         vTaskDelay(1 / portTICK_PERIOD_MS);
 
         // Staging:
-        if (glob.memory.isSep2Staging && stagingTimer.check()) {
+        if (glob.memory.isSep2Staging && !stagingIgnited && stagingTimer.check()) {
 
             ignitionLoop(0);
-            glob.memory.isSep2Staging = false;
+            stagingIgnited = true;
         }
 
         // DEBUG:
