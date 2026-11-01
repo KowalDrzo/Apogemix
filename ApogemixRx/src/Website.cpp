@@ -91,11 +91,15 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
 
             AsyncWebParameter* p = request->getParam(i);
 
-            if (p->name() == "freqmhz") {
+            if (p->name() == "preset") {
 
-                uint16_t val = p->value().toInt();
-                if (val >= 100 && val <= 500) glob.memory.frequencyMHz = val;
-                saveAndSetNewFrequency();
+                if (p->value() == "ism") updateFrequency(APOGEMIX_ISM_FREQUENCY_MHZ);
+                else if (p->value() == "ham") updateFrequency(APOGEMIX_HAM_FREQUENCY_MHZ);
+            }
+            else if (p->name() == "freqmhz") {
+
+                float val = p->value().toFloat();
+                updateFrequency(val);
             }
         }
     }

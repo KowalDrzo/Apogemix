@@ -105,8 +105,12 @@
         <p>Firmware version: <strong>0.1.0</strong></p>
         <form>
             <label for="freqmhz">Frequency MHz:</label>
-            <input type="text" id="freqmhz" name="freqmhz">
+            <input type="number" step="0.001" min="410" max="490" id="freqmhz" name="freqmhz">
             <button type="submit" class="button">Accept</button>
+        </form>
+        <form>
+            <button type="submit" class="button" name="preset" value="ism">Apogemix ISM (434.625 MHz)</button>
+            <button type="submit" class="button" name="preset" value="ham">Apogemix HAM (439.000 MHz)</button>
         </form>
         <h2>Devices List</h2>
         <select id="deviceList" onchange="deviceChanged()">

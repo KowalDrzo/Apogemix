@@ -1,11 +1,11 @@
 #include "LoraModule.h"
 
-void LoraModule::init(uint16_t freqMHz) {
+void LoraModule::init(float freqMHz) {
 
     SPI.begin(SCK_PIN, MISO_PIN, MOSI_PIN, LORA_CS_PIN);
     LoRa.setPins(LORA_CS_PIN, LORA_RES_PIN, LORA_D0_PIN);
     LoRa.setSignalBandwidth(125E3);
-    LoRa.begin(freqMHz * 1E6);
+    LoRa.begin(static_cast<long>(freqMHz * 1000000.0f));
     LoRa.setTimeout(100);
 }
 

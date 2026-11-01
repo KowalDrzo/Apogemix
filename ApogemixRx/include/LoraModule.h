@@ -10,8 +10,8 @@ class LoraModule {
 
 public:
 
-    void init(uint16_t freqMHz);
-    void setFrequency(uint16_t freqMHz) { LoRa.setFrequency(freqMHz * 1E6); }
+    void init(float freqMHz);
+    void setFrequency(float freqMHz) { LoRa.setFrequency(static_cast<long>(freqMHz * 1000000.0f)); }
     void send(String txString);
 
     String read();

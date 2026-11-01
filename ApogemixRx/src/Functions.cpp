@@ -3,9 +3,17 @@
 void prepareMem() {
 
     constexpr uint16_t INITIALIZATION_MAGIC = 0x2137;
-    if (glob.memory.initializationMagic == INITIALIZATION_MAGIC) return;
+    if (glob.memory.initializationMagic == INITIALIZATION_MAGIC) {
+        if (glob.memory.frequencyMHz >= MIN_FREQUENCY_MHZ &&
+            glob.memory.frequencyMHz <= MAX_FREQUENCY_MHZ) return;
 
-    glob.memory.frequencyMHz = 433;
+        glob.memory.frequencyMHz = 433.0f;
+        EEPROM.put(0, glob.memory);
+        EEPROM.commit();
+        return;
+    }
+
+    glob.memory.frequencyMHz = 433.0f;
     glob.memory.initializationMagic = INITIALIZATION_MAGIC;
 
     EEPROM.put(0, glob.memory);
@@ -16,19 +24,24 @@ void prepareMem() {
 
 void checkForNewFrequency(String command) {
 
-    if (strstr(command.c_str(), "_FREQ;")) {
+    const char* frequencyCommand = strstr(command.c_str(), "_FREQ;");
+    if (frequencyCommand) {
 
-        uint16_t newFreq;
-        sscanf(command.c_str(), "_FREQ;%d", &newFreq);
+        float newFreq;
+        if (sscanf(frequencyCommand, "_FREQ;%f", &newFreq) != 1 ||
+            !(newFreq >= MIN_FREQUENCY_MHZ && newFreq <= MAX_FREQUENCY_MHZ)) return;
 
-        glob.memory.frequencyMHz = newFreq;
-        saveAndSetNewFrequency();
+        updateFrequency(newFreq);
     }
 }
 
 /*********************************************************************/
 
-void saveAndSetNewFrequency() {
+bool updateFrequency(float frequencyMHz) {
+
+    if (!(frequencyMHz >= MIN_FREQUENCY_MHZ && frequencyMHz <= MAX_FREQUENCY_MHZ)) return false;
+
+    glob.memory.frequencyMHz = frequencyMHz;
 
     EEPROM.put(0, glob.memory);
     EEPROM.commit();
@@ -39,4 +52,5 @@ void saveAndSetNewFrequency() {
     vTaskDelay(30 / portTICK_PERIOD_MS);
     digitalWrite(LED_PIN, 0);
     vTaskDelay(30 / portTICK_PERIOD_MS);
+    return true;
 }
