@@ -1,7 +1,7 @@
 #ifndef DATA_STRUCTS_H
 #define DATA_STRUCTS_H
 
-#define FIRMWARE_VERSION "0.1.0"
+#define FIRMWARE_VERSION "0.2.0"
 #define GNSS_BAUD 115200
 
 #define FLIGHTS_IN_MEM 30

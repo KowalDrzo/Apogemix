@@ -2,7 +2,7 @@
 
 ### Wi-Fi flight computer for experimental rockets
 
-**Apogemix** is an flight control and telemetry system designed to bring modern connectivity, flight monitoring and automation to experimental rockets.
+**Apogemix** is a flight control and telemetry system designed to bring modern connectivity, flight monitoring and automation to experimental rockets.
 
 **Bring Wi-Fi altimetry into your rocket.**
 
@@ -25,7 +25,7 @@ Apogemix software is compatible with Apogemix hardware listed below:
 
 ## Existing features
 
-- detect flight states (RAIL, LAUNCH, APOGEE, DUAL_DEPLOY, LANDING),
+- detect flight states (`RAIL`, `FLIGHT`, `FIRST_SEPAR`, `SECOND_SEPAR` and `GROUND`),
 - fire e-matches using 2 mosfet channels,
 - save flight data (altitude vs time),
 - send GPS location to the ground station using LoRa (GPS & LoRa versions only),
@@ -37,14 +37,9 @@ The core flight functionality works using **only the pressure sensor**. GPS and 
 ## Future features
 
 - servo control,
-- more simple settings for LoRa,
 - password for LoRa recovery test,
 - motor ignition mode (remote ignitor instead of rocketry computer),
-- magic number in EEPROM memory (to apply default setting after first device startup),
-- option in setting to run WiFi automatically or after button (both Rocket and Rx),
-- mah delay for supersonic flights,
-- unique number not based on the hardcoded ID,
-- beeping during ascent.
+- mah delay for supersonic flights.
 
 ## Repo content
 
@@ -59,7 +54,7 @@ The Apogemix should be powered in the way that could be able to deliver enough p
 
 For the voltage it is best to use fully charged lipo 1s (> 1000 mAh, > 4,1V) or charged lipo 2s (> 250 mAh, > 8V).
 
-The liion 14500 cells should be avoided due to their high internal resistance. Liion 18650 and 21700 can be used but only the high current versions (tabless cells).
+The li-ion 14500 cells should be avoided due to their high internal resistance. Li-ion 18650 and 21700 can be used but only the high current versions (tabless cells).
 
 ### WiFi connection
 
@@ -69,9 +64,9 @@ Apogemix uses ESP32-C3 microcontroller which has a 2.4 GHz WiFi module built-in.
 - settings configuration for ground station,
 - ground station telemetry.
 
-A WiFi connection can be established only in the `RAIL` state. During the flight WiFi of the rocket module is turned off to save power consumption. WiFi for both rocket and ground modules starts when the *BOOT* button on ESP32-C3 is pressed after system initalization.
+The rocket module provides WiFi only while it is in the `RAIL` state. In **Recovery settings**, choose whether WiFi starts automatically and stays on until the rail loop ends, or starts after pressing the board button and stays on for `WIFI_TIME_MS` (10 minutes). WiFi and the web server are stopped whenever the rail loop exits, including when launch is detected. The ground station has its own WiFi behavior.
 
-The Apogemix with WiFi turned on created a network `Apogemix_<ID>`. To connect with this network you need to use `apogemix` password. After connecting, you should open the web browser and go to one of these urls to see the configuration / telemetry page:
+When WiFi is on, the rocket creates a network named `APOGEMIX_<MAC>_<YYMMDD>`. To connect with this network you need to use `apogemix` password. After connecting, you should open the web browser and go to one of these urls to see the configuration / telemetry page:
 
 [http://apogemix.local](http://apogemix.local)
 
@@ -88,7 +83,6 @@ Apogemix has settings configured in the code and settings which are designed to 
 Configured in the code (for advanced users only):
 
 - WiFi Tx Power set to `WIFI_POWER_8_5dBm` - for stability. Can be set higher for better range,
-- `APOGEMIX_ID` - must be unique number,
 - `GNSS_BAUD` set to `9600` or `115200` - depends on the used localization module,
 - defined `BMP580` - use BMP580, if commented use older and less precise BMP180,
 - `FLIGHTS_IN_MEM` set to `30` - how many flight information should be remembered (flight number, apogee altitude and maximum velocity). The extended flight data is available only for the last flight. I suggest not to change it,
@@ -101,18 +95,16 @@ Configured in the code (for advanced users only):
 - `FIRE_TIME` set to `2000` ms - how long the mosfets should be active during chute deployment. I suggest not to change it,
 - `TEMPERATURE_FIX_A` set to `0.855` - linear coefficient to fix temperature measurement. I suggest not to change it,
 - `TEMPERATURE_FIX_B` set to `(-1.188)` - offset coefficient to fix temperature measurement. I suggest not to change it,
-- `WIFI_TIME_MS` set to `600000` ms - turn off the WiFi after this time after enabling it,
+- `WIFI_TIME_MS` set to `600000` ms (10 minutes) - WiFi duration in the button-activated rail mode; automatic rail mode stays on until `railLoop` exits,
 - `CALLSIGN_LEN` set to `11` characters (10 + `\0`) - maximum lenght of the LoRa callsign. Changing it can make receiving LoRa telemetry impossible.
 
 To configure using WiFi (for each user):
 
-- save data to CSV file or binary file -> CSV is easier to use and does not need decoding. It consumes more space in the flash memory, but the flash size is enough to use CSV even for really long rocket flights,
-- pyro channel 2 mode - dual deploy (fire at specified altitude during descent) or staging separation (fire at specified time after launch to activate the next stage in the rocket),
-- time in milliseconds to fire pyro channel 2 after launch (for multi stage rockets) - works only in staging separation mode,
-- altitude in meters to fire pyro channel 2 during descent (for advanced parachute systems) - works only in dual deploy mode.
-- set LoRa radio frequency in MHz,
-- set LoRa frame transmition period in ms,
-- set Callsign - must be unique, max 10 ASCII characters.
+- pyro channel 2 mode - either dual deploy (fire at the configured altitude during descent) or staging (fire once after the configured delay in `FLIGHT`); staging excludes the dual-deploy firing,
+- staging delay in milliseconds - used only in staging mode,
+- second parachute deployment altitude in meters - used only in dual-deploy mode,
+- WiFi mode - automatic for the whole rail loop, or button-activated for `WIFI_TIME_MS`,
+- LoRa channel (`Apogemix ISM` or `Apogemix HAM`) and callsign (up to 10 characters).
 
 ### Buzzer
 
@@ -133,7 +125,7 @@ There are things that can be tested in Apogemix listed below:
    - 2 beeps for Apogemix Mini,
    - 3 beeps for Apogemix JP30 with LoRa,
    - 4 beeps after some time outside (GPS).
-2. Test WiFi after pressing button, connect with the WiFi network, go to the Apogemix website [http://apogemix.local](http://apogemix.local),
+2. Test the configured WiFi mode: connect automatically in `RAIL` or press the board button, then open [http://apogemix.local](http://apogemix.local). The page includes configuration, recovery tests and a confirmed ESP reboot button.
 3. Connect e-match igniters and check the long beeps for the continuity (3 long beeps for both channels),
 4. Test LoRa connection between Apogemix in rocket and Apogemix ground station, check the pressure sensor stability (altitude),
 5. Make recovery test using WiFi or using LoRa.
