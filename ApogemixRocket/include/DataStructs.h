@@ -17,6 +17,14 @@
 #define WIFI_TIME_MS 600000
 #define CALLSIGN_LEN 11
 
+#define LORA_TX_PERIOD_MS 2137
+#define LORA_CHANNEL_ISM 0
+#define LORA_CHANNEL_HAM 1
+#define LORA_ISM_FREQUENCY_HZ 434625000L
+#define LORA_HAM_FREQUENCY_HZ 439000000L
+#define LORA_ISM_TX_POWER_DBM 14
+#define LORA_HAM_TX_POWER_DBM 20
+
 #include <stdint.h>
 
 struct Flight {
@@ -36,8 +44,7 @@ struct Memory {
     bool isSep2Staging; // TODO test
     uint16_t stagingDelay; // TODO test
     uint16_t secondSeparAltitude;
-    uint16_t loraFreqMHz;
-    uint16_t loraDelay_ms;
+    uint16_t loraChannel;
     char callsign[CALLSIGN_LEN];
 };
 

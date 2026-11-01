@@ -86,8 +86,8 @@ String Website::generateHtml() {
     }
 
     html += "Dual deploy altitude: <strong>" + String(glob.memory.secondSeparAltitude) + String("</strong>m<br>\n");
-    html += "Telemetry frequency: <strong>" + String(glob.memory.loraFreqMHz) + String("</strong>MHz<br>\n");
-    html += "Telemetry period: <strong>" + String(glob.memory.loraDelay_ms) + String("</strong>ms<br>\n");
+    const bool useHamChannel = glob.memory.loraChannel == LORA_CHANNEL_HAM;
+    html += "Radio channel: <strong>" + String(useHamChannel ? "Apogemix HAM license (439.000 MHz)" : "Apogemix ISM band (434.625 MHz)") + String("</strong><br>\n");
     html += "Telemetry callsign: <strong>" + String(glob.memory.callsign) + String("</strong><br>\n");
 
     html += R"rawliteral(
@@ -234,14 +234,14 @@ String Website::generateSettingsPage(uint8_t settingsType) {
 
         html += "telemetry</h3>\n\t\t<form>\n";
 
-        // Transmitter modes:
-        html += "<label for='setLoraFreq'>LoRa frequency (Current: <strong>"
-            + String(glob.memory.loraFreqMHz) + "</strong>MHz):</label><br>\n";
-        html += "<input type='number' min='100' max='999' name='setLoraFreq'><br>\n";
-        html += "<label for='setLoRaDelay'>LoRa send period (Current: <strong>"
-            + String(glob.memory.loraDelay_ms) + "</strong>ms):</label><br>\n";
-        html += "<input type='number' min='500' max='5000' name='setLoRaDelay'><br>\n";
-        html += "<label for='setCallSign'>LoRa send period (Current: <strong>"
+        // Radio channel:
+        html += "<label for='setLoraChannel'>Radio channel (Current: <strong>"
+            + String(glob.memory.loraChannel == LORA_CHANNEL_HAM ? "Apogemix HAM" : "Apogemix ISM") + "</strong>):</label><br>\n";
+        html += "<select id='setLoraChannel' name='setLoraChannel'>\n";
+        html += "<option value='0'" + String(glob.memory.loraChannel != LORA_CHANNEL_HAM ? " selected" : "") + ">Apogemix ISM band 434.625 MHz</option>\n";
+        html += "<option value='1'" + String(glob.memory.loraChannel == LORA_CHANNEL_HAM ? " selected" : "") + ">Apogemix HAM license 439.000 MHz</option>\n";
+        html += "</select><br>\n";
+        html += "<label for='setCallSign'>LoRa callsign (Current: <strong>"
             + String(glob.memory.callsign) + "</strong>):</label><br>\n";
         html += "<input type='text' maxlength='10' name='setCallSign'><br>\n";
 

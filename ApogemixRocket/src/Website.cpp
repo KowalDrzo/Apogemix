@@ -171,16 +171,12 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
             }
 
             // Telemetry params:
-            else if (p->name() == "setLoraFreq") {
+            else if (p->name() == "setLoraChannel") {
 
                 uint16_t val = p->value().toInt();
-                if (val >= 100 && val <= 999) glob.memory.loraFreqMHz = val;
-            }
-
-            else if (p->name() == "setLoRaDelay") {
-
-                uint16_t val = p->value().toInt();
-                if (val >= 500 && val <= 5000) glob.memory.loraDelay_ms = val;
+                if (val == LORA_CHANNEL_ISM || val == LORA_CHANNEL_HAM) {
+                    glob.memory.loraChannel = val;
+                }
             }
 
             else if (p->name() == "setCallSign" && p->value().length() >= 2) {

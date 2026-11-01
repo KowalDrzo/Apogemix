@@ -245,8 +245,7 @@ void Tasks::prepareMem() {
     memset(&glob.memory, 0, sizeof(glob.memory));
 
     glob.memory.secondSeparAltitude = 100;
-    glob.memory.loraDelay_ms = 2000;
-    glob.memory.loraFreqMHz = 433;
+    glob.memory.loraChannel = LORA_CHANNEL_ISM;
     strcpy(glob.memory.callsign, "APOGEMIX");
     glob.memory.initializationMagic = INITIALIZATION_MAGIC;
 
