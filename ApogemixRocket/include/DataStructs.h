@@ -15,6 +15,8 @@
 #define TEMPERATURE_FIX_A 0.855
 #define TEMPERATURE_FIX_B (-1.188)
 #define WIFI_TIME_MS 600000
+#define WIFI_MODE_BUTTON 0
+#define WIFI_MODE_RAIL_LOOP 1
 #define CALLSIGN_LEN 11
 
 #define LORA_TX_PERIOD_MS 2137
@@ -44,7 +46,8 @@ struct Memory {
     bool isSep2Staging; // TODO test
     uint16_t stagingDelay; // TODO test
     uint16_t secondSeparAltitude;
-    uint16_t loraChannel;
+    uint8_t loraChannel;
+    uint8_t wifiMode;
     char callsign[CALLSIGN_LEN];
 };
 

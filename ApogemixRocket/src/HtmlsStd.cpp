@@ -53,6 +53,12 @@ String Website::generateHtml() {
                 .button:hover {
                     background-color: #0056b3;
                 }
+                .button-danger {
+                    background-color: #dc3545;
+                }
+                .button-danger:hover {
+                    background-color: #b02a37;
+                }
                 .gray-text {
                     color: #808080;
                 }
@@ -89,6 +95,15 @@ String Website::generateHtml() {
     const bool useHamChannel = glob.memory.loraChannel == LORA_CHANNEL_HAM;
     html += "Radio channel: <strong>" + String(useHamChannel ? "Apogemix HAM license (439.000 MHz)" : "Apogemix ISM band (434.625 MHz)") + String("</strong><br>\n");
     html += "Telemetry callsign: <strong>" + String(glob.memory.callsign) + String("</strong><br>\n");
+    html += "WiFi mode: <strong>";
+    if (glob.memory.wifiMode == WIFI_MODE_RAIL_LOOP) {
+        html += "from the start until the end of the rail loop";
+    }
+    else {
+        html += "after pressing the button, for "
+            + String(WIFI_TIME_MS / 60000) + " minutes";
+    }
+    html += "</strong><br>\n";
 
     html += R"rawliteral(
             </div>
@@ -124,9 +139,18 @@ String Website::generateHtml() {
                     </div>
                 </div>
                 <div class="block">
-                    <a class="button" href="/wifioff">Turn off the wifi</a>
+                    <button class="button button-danger" id="rebootButton">Reboot ESP</button>
                 </div>
             </div>
+            <script>
+                document.getElementById("rebootButton").addEventListener("click", async function() {
+                    if (!confirm("Restart ApogemixRocket?")) return;
+                    this.disabled = true;
+                    try {
+                        await fetch("/reboot", { method: "POST" });
+                    } catch (error) {}
+                });
+            </script>
         </body>
         </html>
     )rawliteral";
@@ -226,6 +250,16 @@ String Website::generateSettingsPage(uint8_t settingsType) {
         html += "<label for='setSecAlt'>Second parachute ignition altitude (Current: <strong>"
             + String(glob.memory.secondSeparAltitude) + "</strong>m):</label><br>\n";
         html += "<input type='number' min='50' max='5000' name='setSecAlt'><br>\n";
+
+        // WiFi availability during the rail loop:
+        html += "<p>WiFi availability during the rail loop:</p>\n";
+        html += "<input type='radio' name='wifiMode' id='wifiButton' value='0'";
+        if (glob.memory.wifiMode == WIFI_MODE_BUTTON) html += " checked";
+        html += "><label for='wifiButton'>after pressing the button, for "
+            + String(WIFI_TIME_MS / 60000) + " minutes</label><br>\n";
+        html += "<input type='radio' name='wifiMode' id='wifiRailLoop' value='1'";
+        if (glob.memory.wifiMode == WIFI_MODE_RAIL_LOOP) html += " checked";
+        html += "><label for='wifiRailLoop'>from the start until the end of the rail loop</label><br>\n";
 
         break;
 

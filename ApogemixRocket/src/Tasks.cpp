@@ -247,6 +247,7 @@ void Tasks::prepareMem() {
     glob.memory.secondSeparAltitude = 100;
     glob.memory.loraChannel = LORA_CHANNEL_ISM;
     strcpy(glob.memory.callsign, "APOGEMIX");
+    glob.memory.wifiMode = WIFI_MODE_BUTTON;
     glob.memory.initializationMagic = INITIALIZATION_MAGIC;
 
     EEPROM.put(0, glob.memory);

@@ -47,25 +47,34 @@ void StateLoops::railLoop() {
     pressMeasureTimer.start(RAIL_FLIGHT_LOOP_TIME);
     Website website;
 
+    if (glob.memory.wifiMode == WIFI_MODE_RAIL_LOOP) {
+        website.start();
+    }
+
     while (1) {
+
+        if (website.shouldReboot()) {
+            if (website.isEnabled()) website.stop();
+            ESP.restart();
+        }
 
         if (pressMeasureTimer.check()) {
 
             dataLoop(0);
             if (tasks.isLaunchDetected()) {
-
-                if (website.isEnabled()) website.stop();
                 break;
             }
 
             // WiFi itp:
-            if (!digitalRead(SWITCH_PIN) && !website.isEnabled()
+            if (glob.memory.wifiMode == WIFI_MODE_BUTTON
+            && !digitalRead(SWITCH_PIN) && !website.isEnabled()
             ) {
 
                 website.start();
                 wifiTimer.start(WIFI_TIME_MS);
             }
-            if (website.isEnabled() && wifiTimer.check()) {
+            if (glob.memory.wifiMode == WIFI_MODE_BUTTON
+            && website.isEnabled() && wifiTimer.check()) {
 
                 website.stop();
             }
@@ -78,6 +87,14 @@ void StateLoops::railLoop() {
             if (strstr(rxDebugString.c_str(), "FORCE NEXT STATE")) break;
         }
     }
+
+    if (website.isRebootRequested()) {
+        while (!website.shouldReboot()) vTaskDelay(1 / portTICK_PERIOD_MS);
+        if (website.isEnabled()) website.stop();
+        ESP.restart();
+    }
+
+    if (website.isEnabled()) website.stop();
 }
 
 /*********************************************************************/

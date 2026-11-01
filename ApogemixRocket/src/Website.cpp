@@ -45,6 +45,11 @@ void Website::start() {
     Serial.println("server on");
     enabled = true;
 
+    if (routesRegistered) {
+        server.begin();
+        return;
+    }
+
     server.on("/", HTTP_GET, [this](AsyncWebServerRequest *request) {
 
         request->send(200, "text/html", generateHtml());
@@ -55,10 +60,10 @@ void Website::start() {
         request->send(200, "text/html", glob.dataFrame.toString());
     });
 
-    server.on("/wifioff", HTTP_GET, [this](AsyncWebServerRequest *request) {
+    server.on("/reboot", HTTP_POST, [this](AsyncWebServerRequest *request) {
 
-        request->send(200, "text/html", String("<meta http-equiv=\"refresh\" content=\"0; URL=/\" />"));
-        stop();
+        request->send(202, "text/plain", "Restarting");
+        requestReboot();
     });
 
     server.on("/FlightData.apg", HTTP_GET, [this](AsyncWebServerRequest *request) {
@@ -124,6 +129,7 @@ void Website::start() {
             request->send(200);
         }
     );
+    routesRegistered = true;
 
     server.begin();
 }
@@ -135,7 +141,8 @@ void Website::start() {
 void Website::stop() {
 
     Serial.println("server off");
-    //WiFi.softAPdisconnect(true);
+    server.end();
+    WiFi.softAPdisconnect(true);
     enabled = false;
 }
 
@@ -168,6 +175,14 @@ void Website::handleArgs(AsyncWebServerRequest *request) {
 
                 uint16_t val = p->value().toInt();
                 if (val >= 50 && val <= 5000) glob.memory.secondSeparAltitude = val;
+            }
+
+            else if (p->name() == "wifiMode") {
+
+                int val = p->value().toInt();
+                if (val == WIFI_MODE_BUTTON || val == WIFI_MODE_RAIL_LOOP) {
+                    glob.memory.wifiMode = static_cast<uint8_t>(val);
+                }
             }
 
             // Telemetry params:
