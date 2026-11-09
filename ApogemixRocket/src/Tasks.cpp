@@ -2,7 +2,7 @@
 
 Tasks tasks;
 
-#define CRITERIA_MARGIN 5
+#define CRITERIA_MARGIN 3
 
 void Tasks::continuityTest() {
 
@@ -108,7 +108,7 @@ bool Tasks::isLaunchDetected() {
 
 bool Tasks::isApogeeDetected() {
 
-    if (glob.dataFrame.speed < -1 || (glob.isSep1BeforeApog && glob.dataFrame.speed < 10)) {
+    if (glob.dataFrame.altitude > 118) {
 
         criteriaCounter++;
         if (criteriaCounter > CRITERIA_MARGIN) {
