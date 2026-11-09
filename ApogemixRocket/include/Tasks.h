@@ -6,7 +6,7 @@
 #include <LittleFS.h>
 #include <Wire.h>
 #include <SPI.h>
-#include <Adafruit_BMP3XX.h>
+#include "BMP388.h"
 #include <TinyGPS++.h>
 
 #include "PinDefinitions.h"
@@ -22,7 +22,7 @@ class Tasks {
 
 public:
 
-    Adafruit_BMP3XX bmp;
+    BMP388 bmp;
     TinyGPSPlus gps;
 
     void buzzBeep(uint16_t activeTime, uint16_t sleepTime, uint8_t n);

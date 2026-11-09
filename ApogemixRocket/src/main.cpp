@@ -16,11 +16,11 @@ void setup() {
 
     Wire.begin(SDA_PIN, SCL_PIN);
 
-    tasks.bmp.begin_I2C();
-    tasks.bmp.setTemperatureOversampling(BMP3_OVERSAMPLING_2X);
-    tasks.bmp.setPressureOversampling(BMP3_OVERSAMPLING_16X);
-    tasks.bmp.setIIRFilterCoeff(BMP3_IIR_FILTER_COEFF_3);
-    tasks.bmp.setOutputDataRate(BMP3_ODR_12_5_HZ);
+    tasks.bmp.setDebug(false);
+    tasks.bmp.begin(0x76, &Wire);
+    tasks.bmp.setTemperatureOversampling(BMP388_OS_2X);
+    tasks.bmp.setPressureOversampling(BMP388_OS_16X);
+    tasks.bmp.setOutputDataRate(BMP388_ODR_16_HZ);
 
     pinMode(SEPAR1_PIN, OUTPUT);
     pinMode(SEPAR2_PIN, OUTPUT);
