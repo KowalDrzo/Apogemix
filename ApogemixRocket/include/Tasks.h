@@ -1,18 +1,12 @@
 #ifndef TASKS_H
 #define TASKS_H
 
-#define BMP580
-
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <LittleFS.h>
 #include <Wire.h>
 #include <SPI.h>
-#ifdef BMP580
-#include <Adafruit_BMP5xx.h>
-#else
-#include <Adafruit_BMP085.h>
-#endif
+#include <Adafruit_BMP3XX.h>
 #include <TinyGPS++.h>
 
 #include "PinDefinitions.h"
@@ -28,12 +22,7 @@ class Tasks {
 
 public:
 
-    #ifdef BMP580
-    Adafruit_BMP5xx
-    #else
-    Adafruit_BMP085
-    #endif
-    bmp;
+    Adafruit_BMP3XX bmp;
     TinyGPSPlus gps;
 
     void buzzBeep(uint16_t activeTime, uint16_t sleepTime, uint8_t n);
